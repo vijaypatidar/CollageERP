@@ -1,12 +1,12 @@
 package com.svceindore.userservice.client;
 
-import com.svceindore.userservice.configs.Roles;
 import com.svceindore.userservice.model.Student;
 import com.svceindore.userservice.model.User;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response;
@@ -15,9 +15,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+@RefreshScope
 @Component
 public class KeycloakClient {
 
+    @Value("${defaultPassword:12345}")
+    private String defaultPassword;
     private final String realm;
     private final Keycloak keycloak;
     Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -56,13 +59,12 @@ public class KeycloakClient {
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
         credentialRepresentation.setTemporary(false);
         credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
-        credentialRepresentation.setValue(user.getPassword());
+        credentialRepresentation.setValue(defaultPassword);
         userRepresentation.setCredentials(Collections.singletonList(credentialRepresentation));
-
+        logger.info("Create account " + user.toString() + " Password " + defaultPassword);
         try {
             Response response = keycloak.realm(realm).users().create(userRepresentation);
             logger.info("Response: " + response.getStatus());
-            logger.info("Response: " + response.getMetadata());
             return response;
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,7 +74,7 @@ public class KeycloakClient {
 
     private List<String> getStudentRoles() {
         ArrayList<String> studentRoles = new ArrayList<>();
-        studentRoles.add(Roles.USER_ROLE);
+        studentRoles.add("USER");
         return studentRoles;
     }
 

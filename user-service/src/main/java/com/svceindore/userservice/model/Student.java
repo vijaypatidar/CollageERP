@@ -10,7 +10,6 @@ public class Student extends User {
                 "course='" + course + '\'' +
                 ", branch='" + branch + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

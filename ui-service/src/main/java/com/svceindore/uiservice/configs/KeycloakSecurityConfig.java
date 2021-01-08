@@ -1,4 +1,4 @@
-package com.svceindore.userservice.configs;
+package com.svceindore.uiservice.configs;
 
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;

@@ -16,7 +16,7 @@ import java.security.Principal;
 import java.util.Set;
 import java.util.logging.Logger;
 
-@RequestMapping("api/v1/user/")
+@RequestMapping("/api/user/")
 @RestController
 public class UserController {
 
@@ -30,7 +30,6 @@ public class UserController {
     @RolesAllowed({Roles.ADMIN_ROLE})
     @PostMapping("/createStudent")
     public ResponseEntity<String> getCreateStudent(@RequestBody Student student) {
-        logger.info("Create Student " + student.toString());
         Response re = keycloakClient.createUser(student);
         if (re.getStatus() == 201) {
             return ResponseEntity.status(HttpStatus.CREATED).body("user account created successfully");
