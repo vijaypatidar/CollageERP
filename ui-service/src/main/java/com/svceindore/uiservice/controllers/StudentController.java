@@ -15,7 +15,7 @@ public class StudentController {
         this.restTemplate = restTemplate;
     }
 
-    @RequestMapping({"/home", "/home.html"})
+    @RequestMapping({"/student-home.html", "/student-home"})
     public String getHome() {
         return "student-home";
     }
