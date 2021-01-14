@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<style>
+    #profile-container{
+        width: 400px;
+        background: white;
+        display: inline-block;
+        margin-top: 10px;
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 20px;
+    }
+    #profile-container:hover{
+        box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+    }
+    table td:first-child{
+        text-align: right;
+    }
+    table td:last-child{
+        text-align: left;
+    }
+    table{
+        display: inline-block;
+    }
+    body{
+        background: white;
+        text-align: center;
+    }
+</style>
+<body>
+    <div id="profile-container" th:fragment="user-profile">
+        <table>
+            <tr>
+                <td>
+                    Name:
+                </td>
+                <td th:text="${#authentication.name}">
+                    vijay
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Username:
+                </td>
+                <td>
+                    vijay31
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Email:
+                </td>
+                <td th:text="${#authentication.name}">
+                    vijay@gmail.com
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,89 +1,40 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
 <body>
-
-<style>
-    #header {
-        height: 50px;
-        background: #06090f;
-        margin: 0;
-        user-select: none;
-    }
-
-    body {
-        padding: 0;
-        margin: 0;
-    }
-
-    #logo-div {
-        width: 50px;
-        height: 50px;
-        float: left;
-        color: #F9A826;
-        line-height: 50px;
-        text-align: center;
-    }
-
-    #header-app-name {
-        float: left;
-        height: 50px;
-        line-height: 50px;
-        color: white;
-    }
-
-    #auth-info-div {
-        height: 50px;
-        float: right;
-    }
-
-    #btnLogout {
-        height: 50px;
-        width: 50px;
-        float: right;
-        line-height: 60px;
-        text-align: center;
-    }
-
-    #btnLogoutIcon {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        background-image: url("/img/logout-button.png");
-        background-size: cover;
-    }
-
-    #user-info-name {
-        float: left;
-        line-height: 50px;
-        text-align: center;
-        margin-right: 5px;
-        color: white;
-    }
-</style>
-
 <script>
     function logout() {
-        const http =new XMLHttpRequest();
-        http.open('GET','/logout');
+        const http = new XMLHttpRequest();
+        http.open('GET', '/logout');
         http.onreadystatechange = function () {
             if (this.readyState === 4) {
                 if (this.status === 200) {
-                    window.location = window.location.origin+"/home.html"
+                    window.location = window.location.origin + "/home.html"
                 }
             }
         };
         http.send();
     }
+    function login() {
+        window.location = window.location.origin + "/sso/login"
+    }
 </script>
-
+<link rel="stylesheet" href="/css/header.css">
 <div id="header" th:fragment="header">
     <div id="logo-div">ERP</div>
     <div id="header-app-name">
-        Collage ERP
+        CollageERP
     </div>
-    <div id="auth-info-div">
-        <div id="user-info-name" th:text="${#request.getAttribute('name')}">vijay</div>
-        <div id="btnLogout" onclick="logout()">
+    <div class="auth-info-div" th:if="${#request.getAttribute('name')}!=null">
+        <div class="user-info-name" th:text="${#request.getAttribute('name')}">vijay</div>
+        <div class="btnLogout" onclick="logout()">
             <div id="btnLogoutIcon"></div>
+        </div>
+    </div>
+    <div class="auth-info-div" th:if="${#request.getAttribute('name')}==null" onclick="login()">
+        <div class="user-info-name">Login</div>
+        <div class="btnLogout">
+            <div class="btnLogout">
+                <div id="btnLoginIcon"></div>
+            </div>
         </div>
     </div>
 </div>

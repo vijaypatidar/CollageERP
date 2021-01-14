@@ -1,0 +1,66 @@
+#header {
+    height: 50px;
+    background: #fafafb;
+    margin: 0;
+    user-select: none;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#logo-div {
+    width: 50px;
+    height: 50px;
+    float: left;
+    color: #F9A826;
+    line-height: 50px;
+    text-align: center;
+}
+
+#header-app-name {
+    float: left;
+    height: 50px;
+    line-height: 50px;
+    color: #5c6369;
+    font-weight: bold;
+    font-size: large;
+    font-family: monospace;
+}
+
+.auth-info-div {
+    height: 50px;
+    float: right;
+}
+
+.btnLogout {
+    height: 50px;
+    width: 50px;
+    float: right;
+    line-height: 60px;
+    text-align: center;
+}
+
+#btnLogoutIcon,#btnLoginIcon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+}
+#btnLogoutIcon{
+    background-image: url("/img/logout-button.png");
+}
+#btnLoginIcon{
+    background-image: url("/img/login-button.png");
+}
+
+
+.user-info-name {
+    float: left;
+    line-height: 50px;
+    text-align: center;
+    margin-right: 5px;
+    color: #5c6369;
+}
