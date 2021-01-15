@@ -1,0 +1,24 @@
+.nav-item, .nav-item-heading {
+    padding: 5px 10px;
+    margin-bottom: 1px;
+    color: #424242;
+}
+
+.nav-item {
+    padding-left: 25px;
+    font-size: 14px;
+}
+
+.nav-item:hover {
+    background: #F9A826;
+}
+
+#navigation {
+    display: flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+#navigation::-webkit-scrollbar {
+    display: none;
+}

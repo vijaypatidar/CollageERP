@@ -14,11 +14,12 @@
         http.send();
     }
     function login() {
+        console.log(window.location)
         window.location = window.location.origin + "/sso/login"
     }
 </script>
 <link rel="stylesheet" href="/css/header.css">
-<div id="header" th:fragment="header">
+<div id="header">
     <div id="logo-div">ERP</div>
     <div id="header-app-name">
         CollageERP

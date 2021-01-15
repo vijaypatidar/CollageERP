@@ -4,8 +4,19 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/home.css">
 </head>
 <body>
-<div th:replace="header"></div>
+<div class="box">
+    <div class="header" th:replace="header"></div>
+    <div class="container" th:if="${#request.getAttribute('name')}!=null">
+        <div  th:replace="navigation"></div>
+        <div id="content" th:replace="default"></div>
+    </div>
+
+    <div class="container" th:if="${#request.getAttribute('name')}==null">
+        <div th:replace="access-denied"></div>
+    </div>
+</div>
 </body>
 </html>
