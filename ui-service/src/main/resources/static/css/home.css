@@ -20,6 +20,8 @@ body {
 #content{
     flex-grow: 1;
     margin: 8px;
+    text-align: center;
+    padding:5px 10px;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
 }
 

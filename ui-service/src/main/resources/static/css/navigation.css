@@ -2,6 +2,7 @@
     padding: 5px 10px;
     margin-bottom: 1px;
     color: #424242;
+    user-select: none;
 }
 
 .nav-item {
@@ -10,7 +11,9 @@
 }
 
 .nav-item:hover {
-    background: #F9A826;
+    background: #f9a826;
+    border-bottom-right-radius: 25px;
+    border-top-right-radius: 25px;
 }
 
 #navigation {

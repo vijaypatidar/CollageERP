@@ -20,11 +20,17 @@ public class StudentController {
         return "student-home";
     }
 
+    @RequestMapping({"/create-student-account.html", "/create-student-account"})
+    public String createStudentAccount() {
+        return "create-student-account";
+    }
+
     @ResponseBody
     @RequestMapping("/role")
     public String getRoles() {
         return restTemplate.getForObject("http://user-service/api/user/myRoles", String.class);
     }
+
 
 
 }
