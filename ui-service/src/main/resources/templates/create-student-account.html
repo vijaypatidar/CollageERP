@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Student Account</title>
+    <style>
+        input{
+            margin: 3px;
+            padding: 3px;
+            width: 400px;
+            outline: none;
+        }
+        button{
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function createStudent(){
+            // check user in database with http request
+            const http = new XMLHttpRequest();
+            // send post request to login url
+            http.open("POST", "http://localhost:8081/api/user/createStudent", true);
+            http.setRequestHeader("Content-type", "application/json");
+            http.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    alert(this.responseText);
+                }else if (this.readyState === 4 &&this.status===403){
+                    alert("Access denied")
+                }
+            };
+            let data = {
+
+            };
+            http.send(JSON.stringify(data));
+        }
+    </script>
+</head>
+<body>
+<div>
+    <label>
+        <input placeholder="enter first name" type="text" id="firstName"/>
+    </label><br>
+    <label>
+        <input placeholder="enter last name" type="text" id="lastName"/>
+    </label><br>
+    <label>
+        <input placeholder="enter email" type="text" id="email"/>
+    </label><br>
+    <label>
+        <input placeholder="enter mobile" type="text" id="mobile no."/>
+    </label><br>
+    <button onclick="createStudent()">Create account</button>
+</div>
+</body>
+</html>

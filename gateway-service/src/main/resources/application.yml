@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: GATEWAY-SERVICE
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/user/**
+
+        - id: exam-service
+          uri: lb://EXAM-SERVICE
+          predicates:
+            - Path=/api/exam/**
+
+        - id: user-interface-service
+          uri: lb://UI-SERVICE
+          predicates:
+            - Path=/**
+
+server:
+  port: 8080

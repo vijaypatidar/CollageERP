@@ -1,0 +1,32 @@
+html,
+body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+#navigation {
+    width: 200px;
+    background: white;
+    z-index: 0;
+    border-right: 1px solid #d4d4d4;;
+}
+#content{
+    flex-grow: 1;
+    margin: 8px;
+    text-align: center;
+    padding:5px 10px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    height: inherit;
+}
