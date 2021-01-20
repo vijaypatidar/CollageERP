@@ -56,4 +56,10 @@ public class UserController {
         KeycloakAuthenticationToken keycloakAuthenticationToken = (KeycloakAuthenticationToken) principal;
         return keycloakAuthenticationToken.getAccount().getRoles();
     }
+
+    @GetMapping("/detail")
+    public String getApiDetail() {
+        return "API for managing user.";
+    }
+
 }
