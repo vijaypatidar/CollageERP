@@ -23,7 +23,7 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.cors().and().authorizeRequests()
-                .antMatchers("/js/*","/img/*", "/css/*").permitAll()
+                .antMatchers("/js/**","/img/**", "/css/**").permitAll()
                 .anyRequest().permitAll();
         http.csrf().disable();
     }

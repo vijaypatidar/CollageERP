@@ -3,7 +3,7 @@
 <script>
     function logout() {
         const http = new XMLHttpRequest();
-        http.open('GET', '/logout');
+        http.open('GET', '/auth/logout');
         http.onreadystatechange = function () {
             if (this.readyState === 4) {
                 if (this.status === 200) {
@@ -15,7 +15,7 @@
     }
     function login() {
         console.log(window.location)
-        window.location = window.location.origin + "/sso/login"
+        window.location = window.location.origin + "/auth/login"
     }
 </script>
 <link rel="stylesheet" href="/css/header.css">

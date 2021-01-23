@@ -10,9 +10,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.logging.Logger;
 
 @RefreshScope
@@ -49,8 +47,9 @@ public class KeycloakClient {
         userRepresentation.setLastName(user.getLastName());
         userRepresentation.setEmail(user.getEmail());
 
+
         if (user instanceof Student) {
-            userRepresentation.setRealmRoles(getStudentRoles());
+            userRepresentation.setGroups(Collections.singletonList("Students"));
         }
 
         userRepresentation.setAttributes(Collections.singletonMap("origin", Collections.singletonList("keycloak admin client")));
@@ -70,12 +69,6 @@ public class KeycloakClient {
             e.printStackTrace();
         }
         return null;
-    }
-
-    private List<String> getStudentRoles() {
-        ArrayList<String> studentRoles = new ArrayList<>();
-        studentRoles.add("USER");
-        return studentRoles;
     }
 
 }

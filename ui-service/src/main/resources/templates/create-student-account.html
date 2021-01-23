@@ -19,7 +19,7 @@
             // check user in database with http request
             const http = new XMLHttpRequest();
             // send post request to login url
-            http.open("POST", "http://localhost:8081/api/user/createStudent", true);
+            http.open("POST", "/api/user/createStudent", true);
             http.setRequestHeader("Content-type", "application/json");
             http.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
