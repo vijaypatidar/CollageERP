@@ -1,6 +1,17 @@
 spring:
   application:
     name: GATEWAY-SERVICE
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8180/auth/realms/CollageERP
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            client-id: collage-erp-web
   cloud:
     gateway:
       routes:
