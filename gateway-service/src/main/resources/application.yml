@@ -29,6 +29,8 @@ spring:
           uri: lb://UI-SERVICE
           predicates:
             - Path=/**
+      default-filters:
+        - TokenRelay
 
 server:
   port: 8080

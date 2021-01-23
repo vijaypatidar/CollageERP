@@ -28,7 +28,15 @@ public class KeycloakSecurityConfig {
                 new OidcClientInitiatedServerLogoutSuccessHandler(clientRegistrationRepository)));
 
         // Require authentication for all requests
-        http.authorizeExchange().anyExchange().authenticated();
+        http.authorizeExchange()
+                .pathMatchers(
+                        "/",
+                        "/home",
+                        "/js/**",
+                        "/img/**",
+                        "/css/**"
+                        ).permitAll()
+                .anyExchange().authenticated();
 
         // Allow showing /home within a frame
         http.headers().frameOptions().mode(XFrameOptionsServerHttpHeadersWriter.Mode.SAMEORIGIN);
