@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div style="display: flex;width: 100%">
     <div style="flex-grow: 1"></div>
     <div style="width: 100%;text-align: center">
         <img id="img404" style="width: 300px" src="/img/undraw_access_denied.png" alt="page not found">
-        <p>
+        <p sec:authorize="!isAuthenticated()">
             Access denied, You are not allowed access this page, Please login to continue.
+        </p>
+        <p sec:authorize="isAuthenticated()">
+            Access denied, You don't have access to this resource. Contact admin if you thing there is some fault.
         </p>
     </div>
     <div style="flex-grow: 1"></div>

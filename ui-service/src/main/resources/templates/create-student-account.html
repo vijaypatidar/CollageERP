@@ -4,19 +4,37 @@
     <meta charset="UTF-8">
     <title>Create Student Account</title>
     <style>
-        input{
-            margin: 3px;
+        form {
+            margin-top: 100px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        form label {
+            color: #5c6369;
+        }
+
+        input {
             padding: 3px;
             width: 400px;
             outline: none;
+            margin-bottom: 5px;
         }
-        button{
+
+        button {
             margin-top: 20px;
         }
     </style>
     <script>
-        function createStudent(){
-            // check user in database with http request
+        function createStudent() {
+            const studentForm = document.forms["studentForm"];
+            const email = studentForm['email'].value;
+            const firstName = studentForm['firstName'].value;
+            const lastName = studentForm['lastName'].value;
+            const username = studentForm['username'].value;
+
             const http = new XMLHttpRequest();
             // send post request to login url
             http.open("POST", "/api/user/createStudent", true);
@@ -24,32 +42,38 @@
             http.onreadystatechange = function () {
                 if (this.readyState === 4 && this.status === 200) {
                     alert(this.responseText);
-                }else if (this.readyState === 4 &&this.status===403){
+                } else if (this.readyState === 4 && this.status === 403) {
                     alert("Access denied")
+                } else if (this.readyState === 4 && this.status === 409) {
+                    alert("Username or email already exists")
                 }
             };
             let data = {
-
+                username: username,
+                firstName: firstName,
+                lastName: lastName,
+                email: email
             };
             http.send(JSON.stringify(data));
+            return false;
         }
     </script>
 </head>
 <body>
 <div>
-    <label>
-        <input placeholder="enter first name" type="text" id="firstName"/>
-    </label><br>
-    <label>
-        <input placeholder="enter last name" type="text" id="lastName"/>
-    </label><br>
-    <label>
-        <input placeholder="enter email" type="text" id="email"/>
-    </label><br>
-    <label>
-        <input placeholder="enter mobile" type="text" id="mobile no."/>
-    </label><br>
-    <button onclick="createStudent()">Create account</button>
+    <form name="studentForm" onsubmit="createStudent();return false;" style="display:inline-block;text-align: left">
+        <h2 style="text-align: center">Create Student</h2>
+        <label for="username">enter username</label><br>
+        <input autocomplete="off" id="username" name="username" required type="text"/><br>
+        <label for="firstName">enter first name</label><br>
+        <input autocomplete="off" id="firstName" name="firstName" required type="text"/><br>
+        <label for="lastName">enter last name</label><br>
+        <input autocomplete="off" id="lastName" name="lastName" required type="text"/><br>
+        <label for="email">enter email</label><br>
+        <input autocomplete="off" id="email" name="email" required type="text"/><br>
+        <button type="submit">Create account</button>
+    </form>
+
 </div>
 </body>
 </html>
