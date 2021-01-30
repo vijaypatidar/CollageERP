@@ -1,4 +1,4 @@
-<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
 <script>
     function logout() {
@@ -24,13 +24,13 @@
     <div id="header-app-name">
         CollageERP
     </div>
-    <div class="auth-info-div" th:if="${#request.getAttribute('name')}!=null">
+    <div class="auth-info-div" sec:authorize="isAuthenticated()">
         <div class="user-info-name" th:text="${#request.getAttribute('name')}">vijay</div>
         <div class="btnLogout" onclick="logout()">
             <div id="btnLogoutIcon"></div>
         </div>
     </div>
-    <div class="auth-info-div" th:if="${#request.getAttribute('name')}==null" onclick="login()">
+    <div class="auth-info-div" onclick="login()" sec:authorize="!isAuthenticated()">
         <div class="user-info-name">Login</div>
         <div class="btnLogout">
             <div class="btnLogout">

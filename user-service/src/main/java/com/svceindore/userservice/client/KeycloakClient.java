@@ -60,7 +60,7 @@ public class KeycloakClient {
         credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
         credentialRepresentation.setValue(defaultPassword);
         userRepresentation.setCredentials(Collections.singletonList(credentialRepresentation));
-        logger.info("Create account " + user.toString() + " Password " + defaultPassword);
+        logger.info("Create account request " + user.toString() + " Password " + defaultPassword);
         try {
             Response response = keycloak.realm(realm).users().create(userRepresentation);
             logger.info("Response: " + response.getStatus());

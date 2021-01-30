@@ -1,13 +1,13 @@
 spring:
   application:
-    name: GATEWAY-SERVICE
+    name: gateway-service
 
   security:
     oauth2:
       client:
         provider:
           keycloak:
-            issuer-uri: http://localhost:8180/auth/realms/CollageERP
+            issuer-uri: ${AUTH_ROOT_URL:http://localhost:8180}/auth/realms/CollageERP
             user-name-attribute: preferred_username
         registration:
           keycloak:
@@ -25,10 +25,17 @@ spring:
           predicates:
             - Path=/api/exam/**
 
+        - id: library-service
+          uri: lb://LIBRARY-SERVICE
+          predicates:
+            - Path=/api/library/**
+
         - id: user-interface-service
           uri: lb://UI-SERVICE
           predicates:
             - Path=/**
+
+
       default-filters:
         - TokenRelay
 

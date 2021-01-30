@@ -1,7 +1,8 @@
 .nav-item, .nav-item-heading {
     padding: 5px 10px;
     margin-bottom: 1px;
-    color: #424242;
+    color: #27343b;
+    font-family: system-ui, sans-serif;
     user-select: none;
 }
 
@@ -11,9 +12,9 @@
 }
 
 .nav-item:hover {
-    background: #f9a826;
-    border-bottom-right-radius: 25px;
-    border-top-right-radius: 25px;
+    background: rgba(249,168,38,.6);
+    border-bottom-right-radius: 30px;
+    border-top-right-radius: 30px;
 }
 
 #navigation {
