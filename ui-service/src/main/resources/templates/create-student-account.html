@@ -40,7 +40,7 @@
             http.open("POST", "/api/user/createStudent", true);
             http.setRequestHeader("Content-type", "application/json");
             http.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 200) {
+                if (this.readyState === 4 && this.status === 201) {
                     alert(this.responseText);
                 } else if (this.readyState === 4 && this.status === 403) {
                     alert("Access denied")
@@ -48,6 +48,7 @@
                     alert("Username or email already exists")
                 }
             };
+            //year=first,brach,batch,semester,rollNumber
             let data = {
                 username: username,
                 firstName: firstName,

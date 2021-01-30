@@ -11,6 +11,7 @@
         <module name="CollageERP" />
         <module name="gateway-service" />
         <module name="ui-service" />
+        <module name="library-service" />
         <module name="user-service" />
         <module name="discovery-service" />
         <module name="exam-service" />
@@ -27,6 +28,7 @@
       <module name="discovery-service" options="-parameters" />
       <module name="exam-service" options="-parameters" />
       <module name="gateway-service" options="-parameters" />
+      <module name="library-service" options="-parameters" />
       <module name="ui-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
