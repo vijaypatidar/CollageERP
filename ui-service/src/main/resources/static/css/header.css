@@ -1,5 +1,4 @@
 .navbar {
-    z-index: 5;
     border-style: inherit;
     border-top:3px solid #F9A826;
     user-select: none;
@@ -45,6 +44,5 @@
     float: left;
     line-height: 50px;
     text-align: center;
-    margin-right: 5px;
     color: #5c6369;
 }

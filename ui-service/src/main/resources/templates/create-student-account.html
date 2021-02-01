@@ -1,64 +1,67 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>Create Student Account</title>
-    <script>
-        function createStudent() {
-            //disable button
-            // $("#btnCreate").prop("disabled", true);
-            const studentForm = document.forms["studentForm"];
-            const email = studentForm['email'].value;
-            const firstName = studentForm['firstName'].value;
-            const lastName = studentForm['lastName'].value;
-            const username = studentForm['username'].value;
+<script>
 
-            const http = new XMLHttpRequest();
-            // send post request to login url
-            http.open("POST", "/api/user/createStudent", true);
-            http.setRequestHeader("Content-type", "application/json");
-            http.onreadystatechange = function () {
-                if (this.readyState === 4) {
-                    if (this.status === 201) {
-                        alert(this.responseText);
+    function checkForm(id) {
+        $(id).addClass('was-validated')
+    }
+
+    function createStudent() {
+        //disable button
+        $("#btnCreate").prop("disabled", true);
+        const studentForm = document.forms["studentForm"];
+        const email = studentForm['email'].value;
+        const firstName = studentForm['firstName'].value;
+        const lastName = studentForm['lastName'].value;
+        const username = studentForm['username'].value;
+
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/user/createStudent", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onreadystatechange = function () {
+            if (this.readyState === 4) {
+                if (this.status === 201) {
+                    alert(this.responseText);
+                } else {
+                    $("#btnCreate").prop("disabled", false);
+                    if (this.status === 403) {
+                        // $(this).prop("disabled",false);
+                        alert("Access denied")
+
+                    } else if (this.status === 409) {
+                        // $(this).prop("disabled",false);
+                        alert("Username or email already exists")
                     } else {
-                        // $("#btnCreate").prop("disabled", false);
-                        if (this.status === 403) {
-                            // $(this).prop("disabled",false);
-                            alert("Access denied")
-
-                        } else if (this.status === 409) {
-                            // $(this).prop("disabled",false);
-                            alert("Username or email already exists")
-                        }else {
-                            alert(this.responseText);
-                        }
+                        alert(this.responseText);
                     }
                 }
-            };
-            //year=first,brach,batch,semester,rollNumber
-            let data = {
-                username: username,
-                firstName: firstName,
-                lastName: lastName,
-                email: email
-            };
-            http.send(JSON.stringify(data));
-            return false;
-        }
-    </script>
-</head>
+            }
+        };
+        //year=first,brach,batch,semester,rollNumber
+        let data = {
+            username: username,
+            firstName: firstName,
+            lastName: lastName,
+            email: email
+        };
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
 <body>
 <div class="container">
     <div class="row my-2">
         <div class="col-md-8 offset-md-2">
             <h1 class="h2 my-3">Student Registration</h1>
-            <h4 class="mb-2">Personal detail</h4>
-            <form class="needs-validation mb-3" name="studentForm" onsubmit="createStudent();return false;">
-                <div class="row g-3">
+            <h4 class="h5 mb-2">Personal detail</h4>
+            <form class="mb-3 needs-validation" id="studentRegistrationForm" name="studentForm"
+                  onsubmit="createStudent();return false;">
+                <div class="row g-2">
                     <div class="col-sm-6">
                         <label class="form-label" for="firstName">First name</label>
-                        <input class="form-control" id="firstName" name="firstName" required type="text">
+                        <input class="form-control" id="firstName" name="firstName"
+                               required type="text">
                         <div class="invalid-feedback">
                             Valid first name is required.
                         </div>
@@ -76,7 +79,8 @@
                         <label class="form-label" for="username">Username</label>
                         <div class="input-group">
                             <span class="input-group-text">@</span>
-                            <input class="form-control" id="username" name="username" placeholder="Username" required
+                            <input class="form-control rounded-end" id="username" name="username" placeholder="Username"
+                                   required
                                    type="text">
                             <div class="invalid-feedback">
                                 Your username is required.
@@ -88,7 +92,14 @@
                         <label class="form-label" for="email">Email</label>
                         <input class="form-control" id="email" placeholder="you@example.com" required type="email">
                         <div class="invalid-feedback">
-                            Please enter a valid email address for shipping updates.
+                            Please enter a valid email address for regular updates.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="mobile">Mobile</label>
+                        <input class="form-control" id="mobile" placeholder="+91-XXXXXXXXXX" required type="tel">
+                        <div class="invalid-feedback">
+                            Please enter a valid phone number
                         </div>
                     </div>
 
@@ -121,11 +132,12 @@
                             Zip code required.
                         </div>
                     </div>
+                    <hr class="my-4">
+
+                    <button class="btn btn-outline-success" id="btnCreate" onclick="checkForm('#studentRegistrationForm')" type="submit">Continue
+                        to registration
+                    </button>
                 </div>
-
-                <hr class="my-4">
-
-                <button class="btn btn-primary" id="btnCreate" type="submit">Continue to registration</button>
             </form>
         </div>
     </div>

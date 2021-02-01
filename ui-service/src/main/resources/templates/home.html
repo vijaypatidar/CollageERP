@@ -14,7 +14,7 @@
 <body>
 <div th:class="container-fluid" th:replace="fragments/header::header"></div>
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" sec:authorize="isAuthenticated()">
         <nav th:replace="fragments/navigation::navigation"></nav>
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
@@ -22,34 +22,14 @@
                 <div th:replace="default"></div>
             </div>
 
-            <div sec:authorize="!isAuthenticated()">
-                <div th:replace="access-denied"></div>
-            </div>
-            <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
         </main>
     </div>
-
-
-    <!-- logout Modal -->
-    <div aria-hidden="true" class="modal fade" id="logoutModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-                </div>
-                <div class="modal-body border-0">
-                    Please choose logout to continue.
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                    <a href="/logout"><button class="btn btn-danger" type="button">Logout</button></a>
-                </div>
-            </div>
-        </div>
+    <div class="row my-3" sec:authorize="!isAuthenticated()">
+        <div th:replace="access-denied"></div>
     </div>
+
 </div>
-<script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
