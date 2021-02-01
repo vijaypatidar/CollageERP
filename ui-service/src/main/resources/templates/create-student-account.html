@@ -1,34 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Create Student Account</title>
-    <style>
-        form {
-            margin-top: 100px;
-            padding: 10px;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        form label {
-            color: #5c6369;
-        }
-
-        input {
-            padding: 3px;
-            width: 400px;
-            outline: none;
-            margin-bottom: 5px;
-        }
-
-        button {
-            margin-top: 20px;
-        }
-    </style>
     <script>
         function createStudent() {
+            //disable button
+            // $("#btnCreate").prop("disabled", true);
             const studentForm = document.forms["studentForm"];
             const email = studentForm['email'].value;
             const firstName = studentForm['firstName'].value;
@@ -40,12 +18,22 @@
             http.open("POST", "/api/user/createStudent", true);
             http.setRequestHeader("Content-type", "application/json");
             http.onreadystatechange = function () {
-                if (this.readyState === 4 && this.status === 201) {
-                    alert(this.responseText);
-                } else if (this.readyState === 4 && this.status === 403) {
-                    alert("Access denied")
-                } else if (this.readyState === 4 && this.status === 409) {
-                    alert("Username or email already exists")
+                if (this.readyState === 4) {
+                    if (this.status === 201) {
+                        alert(this.responseText);
+                    } else {
+                        // $("#btnCreate").prop("disabled", false);
+                        if (this.status === 403) {
+                            // $(this).prop("disabled",false);
+                            alert("Access denied")
+
+                        } else if (this.status === 409) {
+                            // $(this).prop("disabled",false);
+                            alert("Username or email already exists")
+                        }else {
+                            alert(this.responseText);
+                        }
+                    }
                 }
             };
             //year=first,brach,batch,semester,rollNumber
@@ -61,19 +49,86 @@
     </script>
 </head>
 <body>
-<div>
-    <form name="studentForm" onsubmit="createStudent();return false;" style="display:inline-block;text-align: left">
-        <h2 style="text-align: center">Create Student</h2>
-        <label for="username">enter username</label><br>
-        <input autocomplete="off" id="username" name="username" required type="text"/><br>
-        <label for="firstName">enter first name</label><br>
-        <input autocomplete="off" id="firstName" name="firstName" required type="text"/><br>
-        <label for="lastName">enter last name</label><br>
-        <input autocomplete="off" id="lastName" name="lastName" required type="text"/><br>
-        <label for="email">enter email</label><br>
-        <input autocomplete="off" id="email" name="email" required type="text"/><br>
-        <button type="submit">Create account</button>
-    </form>
+<div class="container">
+    <div class="row my-2">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="h2 my-3">Student Registration</h1>
+            <h4 class="mb-2">Personal detail</h4>
+            <form class="needs-validation mb-3" name="studentForm" onsubmit="createStudent();return false;">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label class="form-label" for="firstName">First name</label>
+                        <input class="form-control" id="firstName" name="firstName" required type="text">
+                        <div class="invalid-feedback">
+                            Valid first name is required.
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="form-label" for="lastName">Last name</label>
+                        <input class="form-control" id="lastName" name="lastName" required type="text">
+                        <div class="invalid-feedback">
+                            Valid last name is required.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="username">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text">@</span>
+                            <input class="form-control" id="username" name="username" placeholder="Username" required
+                                   type="text">
+                            <div class="invalid-feedback">
+                                Your username is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" id="email" placeholder="you@example.com" required type="email">
+                        <div class="invalid-feedback">
+                            Please enter a valid email address for shipping updates.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="address">Address</label>
+                        <input class="form-control" id="address" name="address" required type="text">
+                        <div class="invalid-feedback">
+                            Please enter address.
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <label class="form-label" for="state">State</label>
+                        <select class="form-select" id="state" required>
+                            <option value="">Choose...</option>
+                            <option th:each="state : ${#request.getAttribute('states')}" th:text="${state}">
+                                Madhya pradesh
+                            </option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please provide a valid state.
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label" for="zip">Zip</label>
+                        <input class="form-control" id="zip" placeholder="" required="" type="text">
+                        <div class="invalid-feedback">
+                            Zip code required.
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <button class="btn btn-primary" id="btnCreate" type="submit">Continue to registration</button>
+            </form>
+        </div>
+    </div>
 
 </div>
 </body>

@@ -30,6 +30,7 @@ public class UserController {
     @RolesAllowed({Roles.ADMIN_ROLE})
     @PostMapping("/createStudent")
     public ResponseEntity<String> getCreateStudent(@RequestBody Student student) {
+        logger.info("Create student account request "+student.toString());
         Response re = keycloakClient.createUser(student);
         if (re.getStatus() == 201) {
             return ResponseEntity.status(HttpStatus.CREATED).body("user account created successfully");

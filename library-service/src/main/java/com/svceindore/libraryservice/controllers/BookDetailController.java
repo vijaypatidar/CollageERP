@@ -6,12 +6,10 @@ import com.svceindore.libraryservice.repositories.BookDetailRepository;
 import com.svceindore.libraryservice.repositories.BookRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.List;
 
 /**
  * Created by Vijay Patidar
@@ -42,6 +40,17 @@ public class BookDetailController {
 
         bookDetailRepository.insert(bookDetail);
         return ResponseEntity.status(HttpStatus.CREATED).body("Book Detail added, id = " + bookDetail.getId());
+    }
+
+    @GetMapping("/bookDetail")
+    public List<BookDetail> getBookDetails(){
+        return bookDetailRepository.findAll();
+    }
+
+
+    @GetMapping(path = "/bookDetail?search")
+    public List<BookDetail> searchAndGetBookDetails(){
+        return bookDetailRepository.findAll();
     }
 
 }

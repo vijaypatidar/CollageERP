@@ -1,0 +1,53 @@
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+
+<nav class="navbar p-0" th:fragment="header">
+    <script>
+        function logout() {
+            const http = new XMLHttpRequest();
+            http.open('GET', '/auth/logout');
+            http.onreadystatechange = function () {
+                if (this.readyState === 4) {
+                    if (this.status === 200) {
+                        window.location = window.location.origin + "/home.html"
+                    }
+                }
+            };
+            http.send();
+        }
+        function login() {
+            console.log(window.location)
+            window.location = window.location.origin + "/auth/login"
+        }
+    </script>
+    <link href="/css/header.css" rel="stylesheet">
+    <div class="container-fluid">
+        <div class="navbar-brand">
+            <a class="text-decoration-none my-logo">ERP</a>
+            <a class="text-decoration-none brand-app-name">CollageERP</a>
+        </div>
+        <div class="d-flex">
+
+            <div sec:authorize="isAuthenticated()">
+                <div class="user-info-name" th:text="${#request.getAttribute('name')}">vijay</div>
+                <div class="btnLogout" onclick="logout()">
+                    <div data-bs-target="#logoutModal" data-bs-toggle="modal" id="btnLogoutIcon">
+                    </div>
+                </div>
+
+            </div>
+            <div class="user-info-name" onclick="login()" sec:authorize="!isAuthenticated()">
+                Login
+                <div class="btnLogout">
+                    <div class="btnLogout">
+                        <div id="btnLoginIcon"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>
