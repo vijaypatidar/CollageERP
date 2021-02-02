@@ -9,14 +9,14 @@
 
 <div class="container">
     <div class="row">
-        <img alt="page not found" class="col-md-4 col-6 offset-3 offset-md-4 my-5" src="/img/undraw_access_denied.png">
+        <img alt="page not found" class="col-lg-3 col-md-4 col-6 m-auto" src="/img/undraw_access_denied.png">
     </div>
     <div class="row">
         <div class="col-md-6 offset-md-3 col-12">
-            <p sec:authorize="!isAuthenticated()">
+            <p class="text-center" sec:authorize="!isAuthenticated()">
                 Access denied, You are not allowed access this page, Please login to continue.
             </p>
-            <p sec:authorize="isAuthenticated()">
+            <p class="text-center" sec:authorize="isAuthenticated()">
                 Access denied, You don't have access to this resource. Contact admin if you thing there is some fault.
             </p>
         </div>

@@ -4,6 +4,7 @@
     <option name="state">
       <map>
         <entry key="file://$PROJECT_DIR$/ui-service/src/main/resources/templates/footer.jsp" value="file://$PROJECT_DIR$/ui-service/src/main/resources/templates" />
+        <entry key="file://$PROJECT_DIR$/ui-service/src/main/resources/templates/fragments/header.html" value="file://$PROJECT_DIR$/ui-service/src/main/resources/templates/fragments" />
       </map>
     </option>
   </component>

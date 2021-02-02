@@ -18,6 +18,25 @@ public class BookDetail {
     private List<String> authors;
     private int totalCopies;
     private int availableCopies;
+    private String rackId;
+    private int rackRow;
+
+    public String getRackId() {
+        return rackId;
+    }
+
+    public void setRackId(String rackId) {
+        this.rackId = rackId;
+    }
+
+    public int getRackRow() {
+        return rackRow;
+    }
+
+    public void setRackRow(int rackRow) {
+        this.rackRow = rackRow;
+    }
+
     private String isbn;//optional
 
     public String getId() {
