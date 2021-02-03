@@ -24,7 +24,7 @@
 
     <div sec:authorize="hasRole('ADMIN')">
         <div class="nav-item-heading" sec:authorize="hasRole('ADMIN')">Faculties</div>
-        <div class="nav-item">New Faculty</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('faculty/create-faculty-account.html')">New Faculty</div>
         <div class="nav-item">Manage Faculty</div>
     </div>
 

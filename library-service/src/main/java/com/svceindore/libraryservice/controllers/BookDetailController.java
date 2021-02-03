@@ -6,7 +6,10 @@ import com.svceindore.libraryservice.repositories.BookDetailRepository;
 import com.svceindore.libraryservice.repositories.BookRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
@@ -17,7 +20,6 @@ import java.util.List;
  * Time: 12:11 PM
  **/
 @RestController
-@RequestMapping("/api/library")
 public class BookDetailController {
 
     private final BookRepository bookRepository;

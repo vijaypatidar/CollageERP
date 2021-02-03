@@ -1,6 +1,8 @@
 server:
   port: 8580
   forward-headers-strategy: framework
+  servlet:
+    context-path: "/api/library"
 spring:
   application:
     name: library-service
@@ -17,7 +19,6 @@ spring:
       database: libray
       username: ${MONGO_DB_ROOT_USERNAME:admin}
       password: ${MONGO_DB_ROOT_PASSWORD:root}
-
 
 eureka:
   instance:

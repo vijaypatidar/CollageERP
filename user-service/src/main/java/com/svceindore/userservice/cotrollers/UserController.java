@@ -2,6 +2,7 @@ package com.svceindore.userservice.cotrollers;
 
 import com.svceindore.userservice.client.KeycloakClient;
 import com.svceindore.userservice.configs.Roles;
+import com.svceindore.userservice.model.Faculty;
 import com.svceindore.userservice.model.Student;
 import com.svceindore.userservice.model.User;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
@@ -29,9 +30,21 @@ public class UserController {
 
     @RolesAllowed({Roles.ADMIN_ROLE})
     @PostMapping("/createStudent")
-    public ResponseEntity<String> getCreateStudent(@RequestBody Student student) {
+    public ResponseEntity<String> createStudent(@RequestBody Student student) {
         logger.info("Create student account request "+student.toString());
         Response re = keycloakClient.createUser(student);
+        if (re.getStatus() == 201) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("user account created successfully");
+        } else if (re.getStatus() == 409) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("user already exist for this username or email.");
+        }
+        return null;
+    }
+    @RolesAllowed({Roles.ADMIN_ROLE})
+    @PostMapping("/createFaculty")
+    public ResponseEntity<String> createFaculty(@RequestBody Faculty faculty) {
+        logger.info("Create faculty account request "+faculty.toString());
+        Response re = keycloakClient.createUser(faculty);
         if (re.getStatus() == 201) {
             return ResponseEntity.status(HttpStatus.CREATED).body("user account created successfully");
         } else if (re.getStatus() == 409) {

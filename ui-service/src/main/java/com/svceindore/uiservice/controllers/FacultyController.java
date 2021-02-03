@@ -8,28 +8,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 
-@RequestMapping("/student")
+@RequestMapping("/faculty")
 @Controller
-public class StudentController {
+public class FacultyController {
 
     private final DataUtils dataUtils;
 
-    public StudentController(DataUtils dataUtils) {
+    public FacultyController(DataUtils dataUtils) {
         this.dataUtils = dataUtils;
     }
 
-    @RequestMapping({"/student-home.html", "/student-home"})
-    public String getHome() {
-        return "student-home";
-    }
-
     @RolesAllowed({Roles.ADMIN_ROLE})
-    @RequestMapping({"/create-student-account.html", "/create-student-account"})
+    @RequestMapping({"/create-faculty-account.html", "/create-faculty-account"})
     public String createStudentAccount(HttpServletRequest request) {
-        request.setAttribute("states", dataUtils.getStates());
-        request.setAttribute("countries", dataUtils.getCountries());
-        return "create-student-account";
+        request.setAttribute("states",dataUtils.getStates());
+        request.setAttribute("countries",dataUtils.getCountries());
+        return "create-faculty-account";
     }
-
 
 }
