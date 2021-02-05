@@ -239,7 +239,16 @@
                 // $('#' + it.).removeClass('bg-success'/);
             })
             $('#' + event.target.id).addClass('bg-success');
+            if (handleRackIdChange)
+                handleRackIdChange(event.target.id);
         })
     })
+
+    function setSelectedRack(rackId){
+        document.querySelectorAll('.rack').forEach(function (it) {
+            it.classList.remove('bg-success')
+        })
+        $('#' + rackId).addClass('bg-success');
+    }
 </script>
 </body>

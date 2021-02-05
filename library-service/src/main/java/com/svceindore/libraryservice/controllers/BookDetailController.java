@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Vijay Patidar
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 public class BookDetailController {
 
+    private Logger logger = Logger.getLogger(getClass().getCanonicalName());
     private final BookRepository bookRepository;
     private final BookDetailRepository bookDetailRepository;
 
@@ -33,6 +35,7 @@ public class BookDetailController {
     @RolesAllowed({Roles.ADMIN_LIBRARIAN, Roles.ADMIN_ROLE})
     @PostMapping("/bookDetail")
     public ResponseEntity<?> addBook(@RequestBody BookDetail bookDetail) {
+        logger.info("Add book deatil "+bookDetail.toString());
         if (bookDetail.getTitle() == null || bookDetail.getTitle().isEmpty()) {
             return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body("Book title required.");
         }
@@ -41,7 +44,7 @@ public class BookDetailController {
         }
 
         bookDetailRepository.insert(bookDetail);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Book Detail added, id = " + bookDetail.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookDetail.getId());
     }
 
     @GetMapping("/bookDetail")

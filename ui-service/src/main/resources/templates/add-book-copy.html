@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script>
+    function checkForm(id) {
+        $(id).addClass('was-validated')
+    }
+
+    function handleRackIdChange(rackId) {
+        document.getElementById('rackId').value = rackId
+    }
+
+    function addBookCopy() {
+        //disable button
+        $("#btnAddDetail").prop("disabled", true);
+        const bookDetail = document.forms["bookDetail"];
+        //year=first,brach,batch,semester,rollNumber
+        let data = {
+            id: bookDetail['id'].value,
+            bid: bookDetail['bid'].value
+        };
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/library/bookCopy", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onreadystatechange = function () {
+            if (this.readyState === 4) {
+                $("#btnAddDetail").prop("disabled", false);
+                if (this.status === 201) {
+                    alert(this.responseText);
+                } else {
+                    if (this.status === 403) {
+                        // $(this).prop("disabled",false);
+                        alert("Access denied")
+                    } else if (this.status === 409) {
+                        // $(this).prop("disabled",false);
+                        alert("Book already exits with same copy id");
+                    } else {
+                        alert(this.responseText);
+                    }
+                }
+            }
+        };
+
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+<body>
+<div class="container">
+    <div class="row my-2">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="h2 my-3">Add Book copy</h1>
+            <form class="mb-3 needs-validation" id="bookDetailForm" name="bookDetail"
+                  onsubmit="addBookCopy();return false;">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label" for="bookTitle">Boot title</label>
+                        <input class="form-control"
+                               disabled
+                               id="bookTitle"
+                               name="title"
+                               type="text">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="bid">Book Id</label>
+
+                        <input class="form-control"
+                               disabled
+                               id="bid"
+                               name="authors"
+                               th:value="${bid}" type="text">
+
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="id">Copy Id</label>
+                        <input class="form-control" data-bs-target="#mapModal" data-bs-toggle="modal"
+                               id="id" placeholder="Book copy id"
+                               required type="text">
+                    </div>
+                    <hr class="my-4">
+
+                    <button class="btn btn-outline-success" id="btnAddDetail"
+                            onclick="checkForm('#bookDetailForm')" type="submit">Add Copy
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

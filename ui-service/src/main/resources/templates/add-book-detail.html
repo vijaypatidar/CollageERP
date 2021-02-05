@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script>
+    function checkForm(id) {
+        $(id).addClass('was-validated')
+    }
+
+    function handleRackIdChange(rackId) {
+        document.getElementById('rackId').value = rackId
+    }
+
+    function addBookDetail() {
+        //disable button
+        $("#btnAddDetail").prop("disabled", true);
+        const bookDetail = document.forms["bookDetail"];
+        //year=first,brach,batch,semester,rollNumber
+        let data = {
+            title: bookDetail['title'].value,
+            authors: bookDetail['authors'].value.split(','),
+            rackId: bookDetail['rackId'].value,
+            rackRow: bookDetail['rackRow'].value,
+            isbn: bookDetail['isbn'].value
+        };
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/library/bookDetail", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onreadystatechange = function () {
+            if (this.readyState === 4) {
+                if (this.status === 201) {
+                    loadPageInContentDiv("library/add-book-copy.html?bookId="+this.responseText);
+                } else {
+                    $("#btnAddDetail").prop("disabled", false);
+                    if (this.status === 403) {
+                        // $(this).prop("disabled",false);
+                        alert("Access denied")
+
+                    } else if (this.status === 409) {
+                        // $(this).prop("disabled",false);
+                        alert("Username or email already exists")
+                    } else {
+                        alert(this.responseText);
+                    }
+                }
+            }
+        };
+
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+<body>
+<div class="container">
+    <div class="row my-2">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="h2 my-3">New Book Detail</h1>
+            <form class="mb-3 needs-validation" id="bookDetailForm" name="bookDetail"
+                  onsubmit="addBookDetail();return false;">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label" for="bookTitle">Boot title</label>
+                        <input class="form-control"
+                               id="bookTitle"
+                               name="title"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="authors">Book authors</label>
+
+                        <input class="form-control"
+                               id="authors"
+                               name="authors"
+                               placeholder="separated by commas"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Author name is required.
+                        </div>
+
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="rackId">Rack Id</label>
+                        <input class="form-control" data-bs-target="#mapModal" data-bs-toggle="modal" disabled
+                               id="rackId" placeholder="Rack id"
+                               type="text">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="rackRow">Rack Row</label>
+                        <input class="form-control" id="rackRow" placeholder="1" type="number">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="isbn">Book ISBN<span class="text-muted">(optional)</span></label>
+
+                        <input class="form-control"
+                               id="isbn"
+                               name="isbn"
+                               placeholder="1260440230"
+                               type="text">
+
+                    </div>
+                    <hr class="my-4">
+
+                    <button class="btn btn-outline-success" id="btnAddDetail"
+                            onclick="checkForm('#bookDetailForm')" type="submit">Add Book Detail
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<!-- library map modal -->
+<div aria-hidden="true" class="modal fade" id="mapModal" tabindex="1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content row">
+            <div th:replace="svgi-library-map"></div>
+            <div class="modal-footer">
+                <button class="btn btn-success" data-bs-dismiss="modal" type="button">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

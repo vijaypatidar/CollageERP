@@ -18,8 +18,10 @@ public class BookDetail {
     private List<String> authors;
     private int totalCopies;
     private int availableCopies;
+    private String isbn;//optional
     private String rackId;
     private int rackRow;
+
 
     public String getRackId() {
         return rackId;
@@ -36,8 +38,6 @@ public class BookDetail {
     public void setRackRow(int rackRow) {
         this.rackRow = rackRow;
     }
-
-    private String isbn;//optional
 
     public String getId() {
         return id;
@@ -85,5 +85,19 @@ public class BookDetail {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
+    }
+
+    @Override
+    public String toString() {
+        return "BookDetail{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", authors=" + authors +
+                ", totalCopies=" + totalCopies +
+                ", availableCopies=" + availableCopies +
+                ", rackId='" + rackId + '\'' +
+                ", rackRow=" + rackRow +
+                ", isbn='" + isbn + '\'' +
+                '}';
     }
 }
