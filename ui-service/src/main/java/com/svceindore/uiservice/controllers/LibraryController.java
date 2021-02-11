@@ -1,10 +1,11 @@
 package com.svceindore.uiservice.controllers;
 
+import com.svceindore.uiservice.model.BookDetail;
+import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by Vijay Patidar
@@ -15,10 +16,10 @@ import org.springframework.web.client.RestTemplate;
 @Controller()
 public class LibraryController {
 
-    private final RestTemplate restTemplate;
+    private final KeycloakRestTemplate keycloakRestTemplate;
 
-    public LibraryController(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public LibraryController(KeycloakRestTemplate keycloakRestTemplate) {
+        this.keycloakRestTemplate = keycloakRestTemplate;
     }
 
     @RequestMapping("/library-map")
@@ -31,9 +32,26 @@ public class LibraryController {
         return "add-book-detail";
     }
 
+    @RequestMapping({"/issue-book.html"})
+    public String issueBook() {
+        return "issue-book";
+    }
+
+    @RequestMapping({"/submit-book.html"})
+    public String submitBook() {
+        return "submit-book";
+    }
+
     @RequestMapping({"/add-book-copy.html"})
     public String addBookCopy(Model model, @RequestParam String bookId) {
-        model.addAttribute("bid",bookId);
+        BookDetail detail = keycloakRestTemplate.getForObject(
+                "lb://library-service/api/library/bookDetail/" + bookId,
+                BookDetail.class
+        );
+        if (detail != null) {
+            model.addAttribute("title", detail.getTitle());
+        }
+        model.addAttribute("bid", bookId);
         return "add-book-copy";
     }
 

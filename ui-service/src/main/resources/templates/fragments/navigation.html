@@ -25,8 +25,8 @@
         <div class="nav-item-heading">Library</div>
         <div class="nav-item" onclick="loadPageInContentDiv('library/add-book-detail.html')">Add Book detail</div>
         <div class="nav-item">Add copy</div>
-        <div class="nav-item">Issue Book</div>
-        <div class="nav-item">Submit Book</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('library/issue-book.html')">Issue Book</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('library/submit-book.html')">Submit Book</div>
     </div>
 
     <div sec:authorize="hasRole('ADMIN')">

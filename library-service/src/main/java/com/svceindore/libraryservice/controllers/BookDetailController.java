@@ -6,13 +6,11 @@ import com.svceindore.libraryservice.repositories.BookDetailRepository;
 import com.svceindore.libraryservice.repositories.BookRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -35,7 +33,7 @@ public class BookDetailController {
     @RolesAllowed({Roles.ADMIN_LIBRARIAN, Roles.ADMIN_ROLE})
     @PostMapping("/bookDetail")
     public ResponseEntity<?> addBook(@RequestBody BookDetail bookDetail) {
-        logger.info("Add book deatil "+bookDetail.toString());
+        logger.info("Add book deatil " + bookDetail.toString());
         if (bookDetail.getTitle() == null || bookDetail.getTitle().isEmpty()) {
             return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body("Book title required.");
         }
@@ -48,13 +46,23 @@ public class BookDetailController {
     }
 
     @GetMapping("/bookDetail")
-    public List<BookDetail> getBookDetails(){
+    public List<BookDetail> getBookDetails() {
         return bookDetailRepository.findAll();
+    }
+
+    @GetMapping("/bookDetail/{bookId}")
+    public ResponseEntity<?> getBookDetail(@PathVariable String bookId) {
+        Optional<BookDetail> optional = bookDetailRepository.findById(bookId);
+        if (optional.isPresent()){
+            return ResponseEntity.ok(optional.get());
+        }else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
     @GetMapping(path = "/bookDetail?search")
-    public List<BookDetail> searchAndGetBookDetails(){
+    public List<BookDetail> searchAndGetBookDetails() {
         return bookDetailRepository.findAll();
     }
 
