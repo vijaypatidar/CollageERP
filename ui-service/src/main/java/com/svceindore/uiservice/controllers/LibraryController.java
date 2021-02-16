@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by Vijay Patidar
  * Date: 02/02/21
@@ -40,6 +42,16 @@ public class LibraryController {
     @RequestMapping({"/submit-book.html"})
     public String submitBook() {
         return "submit-book";
+    }
+
+    @RequestMapping({"/explore-library-book.html"})
+    public String exploreLibraryBook(HttpServletRequest request) {
+        BookDetail[] books = keycloakRestTemplate.getForObject(
+                "lb://library-service/api/library/bookDetail",
+                BookDetail[].class
+        );
+        request.setAttribute("books",books);
+        return "explore-library-book";
     }
 
     @RequestMapping({"/add-book-copy.html"})

@@ -232,17 +232,19 @@
 
 </div>
 <script>
-    document.querySelectorAll('.rack').forEach(item => {
-        item.addEventListener('click', event => {
-            document.querySelectorAll('.rack').forEach(function (it) {
-                it.classList.remove('bg-success')
-                // $('#' + it.).removeClass('bg-success'/);
+    function setRackClickListener(){
+        document.querySelectorAll('.rack').forEach(item => {
+            item.addEventListener('click', event => {
+                document.querySelectorAll('.rack').forEach(function (it) {
+                    it.classList.remove('bg-success')
+                    // $('#' + it.).removeClass('bg-success'/);
+                })
+                $('#' + event.target.id).addClass('bg-success');
+                if (handleRackIdChange)
+                    handleRackIdChange(event.target.id);
             })
-            $('#' + event.target.id).addClass('bg-success');
-            if (handleRackIdChange)
-                handleRackIdChange(event.target.id);
         })
-    })
+    }
 
     function setSelectedRack(rackId){
         document.querySelectorAll('.rack').forEach(function (it) {

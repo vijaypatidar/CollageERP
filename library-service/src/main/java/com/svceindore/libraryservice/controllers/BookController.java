@@ -98,6 +98,8 @@ public class BookController {
                 //save to history
                 historyRepository.insert(history);
 
+                incrementAvailableBookCountBy(book.getBid(),-1);
+
                 return ResponseEntity.status(HttpStatus.OK).body("Book issued");
             }
         } else {
@@ -131,6 +133,7 @@ public class BookController {
                     history.setFine(fine);
                 }
 
+                incrementAvailableBookCountBy(book.getBid(),1);
                 //saving updated info
                 historyRepository.save(history);
 
@@ -140,6 +143,15 @@ public class BookController {
             }
         } else {
             return ResponseEntity.status(HttpStatus.OK).body("Book not found with this code");
+        }
+    }
+
+    private void incrementAvailableBookCountBy(String bid,int n){
+        Optional<BookDetail> optional = bookDetailRepository.findById(bid);
+        if (optional.isPresent()){
+            BookDetail book = optional.get();
+            book.setAvailableCopies(book.getAvailableCopies()+n);
+            bookDetailRepository.save(book);
         }
     }
 

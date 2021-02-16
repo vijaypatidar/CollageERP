@@ -54,15 +54,18 @@
 
                         <input class="form-control"
                                id="bid"
+                               required
                                name="bid"
                                th:value="${bid}" type="text">
-
+                        <div class="invalid-feedback">
+                            Book Id required
+                        </div>
                     </div>
 
                     <hr class="my-4">
 
                     <button class="btn btn-outline-success" id="btnSubmitBook"
-                            onclick="checkForm('#bookIssueForm')" type="submit">Issue Book
+                            onclick="checkForm('#bookIssueForm')" type="submit">Submit Book
                     </button>
                 </div>
             </form>
