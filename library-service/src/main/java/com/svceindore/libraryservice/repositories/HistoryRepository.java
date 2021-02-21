@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Vijay Patidar
@@ -15,4 +16,6 @@ import java.util.Date;
 @Repository
 public interface HistoryRepository extends MongoRepository<History,String> {
     History findByBidAndSubmittedOn(String bid, Date submittedOn);
+
+    List<History> findByIssuedTo(String issuedTo);
 }

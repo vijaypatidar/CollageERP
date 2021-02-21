@@ -1,6 +1,7 @@
 package com.svceindore.uiservice.controllers;
 
 import com.svceindore.uiservice.model.BookDetail;
+import com.svceindore.uiservice.model.BookHistory;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,6 +66,28 @@ public class LibraryController {
         }
         model.addAttribute("bid", bookId);
         return "add-book-copy";
+    }
+
+    @RequestMapping({"/my-library-history.html"})
+    public String selfTransaction(Model model,@RequestParam String type) {
+        BookHistory[] histories = keycloakRestTemplate.getForObject(
+                "lb://library-service/api/library/history/self/get_" + type,
+                BookHistory[].class
+        );
+        model.addAttribute("type",type);
+        model.addAttribute("histories", histories);
+        return "my-library-transaction-book";
+    }
+
+    @RequestMapping({"/library-history.html"})
+    public String allTransaction(Model model,@RequestParam String type) {
+        BookHistory[] histories = keycloakRestTemplate.getForObject(
+                "lb://library-service/api/library/history/get_" + type,
+                BookHistory[].class
+        );
+        model.addAttribute("type",type);
+        model.addAttribute("histories", histories);
+        return "library-transaction-book";
     }
 
 }

@@ -27,6 +27,8 @@
         <div class="nav-item" onclick="loadPageInContentDiv('library/issue-book.html')" sec:authorize="hasRole('ADMIN')">Issue Book</div>
         <div class="nav-item" onclick="loadPageInContentDiv('library/submit-book.html')" sec:authorize="hasRole('ADMIN')">Submit Book</div>
         <div class="nav-item" onclick="loadPageInContentDiv('library/explore-library-book.html')">Explore</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('library/my-library-history.html?type=issued')">My Transaction</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('library/library-history.html?type=issued')" sec:authorize="hasRole('ADMIN')">Transaction</div>
     </div>
 
     <div sec:authorize="hasRole('ADMIN')">

@@ -47,7 +47,7 @@ public class BookDetailController {
 
     @GetMapping("/bookDetail")
     public List<BookDetail> getBookDetails() {
-        return bookDetailRepository.findAll();
+        return bookDetailRepository.findAllByOrderByTitle();
     }
 
     @GetMapping("/bookDetail/{bookId}")

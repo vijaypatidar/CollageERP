@@ -10,21 +10,21 @@
         <h1 class="h2 my-3">Explore Library</h1>
 
         <div class="col-md-4" th:each="book : ${#request.getAttribute('books')}">
-            <div class="card">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${book.title}">Title</h5>
                     <div class="text-muted">Authors</div>
-                    <ul class="">
-                        <li class="card-text" th:each="author : ${book.authors}" th:text="${author}"></li>
+                    <ul class="list-unstyled">
+                        <li  th:each="author : ${book.authors}" th:text="${author}"></li>
                     </ul>
                     <div class="w-100 my-2"></div>
                     <div class="text-success" th:if="${book.availableCopies}!=0">Available</div>
                     <div class="text-danger" th:if="${book.availableCopies}==0">Unavailable</div>
                     <div class="w-100 my-2"></div>
-                    <button class="btn btn-primary" data-bs-target="#mapModal" data-bs-toggle="modal"
+                    <button class="btn btn-outline-primary" data-bs-target="#mapModal" data-bs-toggle="modal"
                             th:attr="onclick=|setSelectedRack('${book.rackId}')|">Map
                     </button>
-                    <button class="btn btn-primary" sec:authorize="hasRole('ADMIN')"
+                    <button class="btn btn-outline-primary" sec:authorize="hasRole('ADMIN')"
                             th:attr="onclick=|newCopy('${book.id}')|">+
                     </button>
                 </div>
