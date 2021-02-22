@@ -1,7 +1,4 @@
-package com.svceindore.libraryservice.models;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+package com.svceindore.uiservice.model;
 
 import java.util.Date;
 
@@ -10,9 +7,9 @@ import java.util.Date;
  * Date: 29/01/21
  * Time: 10:03 AM
  **/
-@Document
-public class History {
-    @Id
+
+public class BookHistory {
+    private String title;
     private String id;
     private String issuedTo;//username to which book is issued
     private String bid;
@@ -21,19 +18,7 @@ public class History {
     private Date submittedOn;
     private int fine;
 
-    public History() {
-    }
-
-    public History(History history) {
-        this.id=history.id;
-        this.bcid=history.bcid;
-        this.bid=history.bid;
-        this.fine  =history.fine;
-        this.issuedOn=history.issuedOn;
-        this.issuedTo=history.issuedTo;
-        this.submittedOn=history.submittedOn;
-
-
+    public BookHistory() {
     }
 
     public String getId() {
@@ -82,6 +67,14 @@ public class History {
 
     public void setSubmittedOn(Date submittedOn) {
         this.submittedOn = submittedOn;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public int getFine() {

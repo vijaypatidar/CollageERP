@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script>
+    function checkForm(id) {
+        $(id).addClass('was-validated')
+    }
+
+
+    function issueBook() {
+        //disable button
+        $("#btnIssueBook").prop("disabled", true);
+        const bookDetail = document.forms["issueBookForm"];
+
+        let data = {
+            username: bookDetail['username'].value,
+            bid: bookDetail['bid'].value
+        };
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/library/issueBook", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onreadystatechange = function () {
+            if (this.readyState === 4) {
+                $("#btnAddDetail").prop("disabled", false);
+                if (this.status === 201) {
+                    alert(this.responseText);
+                } else {
+                    if (this.status === 403) {
+                        // $(this).prop("disabled",false);
+                        alert("Access denied")
+                    } else if (this.status === 409) {
+                        // $(this).prop("disabled",false);
+                        alert("Book already exits with same copy id");
+                    } else {
+                        alert(this.responseText);
+                    }
+                }
+            }
+        };
+
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+<body>
+<div class="container">
+    <div class="row my-2">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="h2 my-3">Issue Book</h1>
+            <form class="mb-3 needs-validation" id="bookIssueForm" name="issueBookForm"
+                  onsubmit="issueBook();return false;">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label" for="bid">Book Id</label>
+
+                        <input class="form-control"
+                               id="bid"
+                               name="bid"
+                               th:value="${bid}" type="text">
+
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="username">Username</label>
+                        <input class="form-control"
+                               id="username" name="username"
+                               placeholder=""
+                               required type="text">
+                    </div>
+                    <hr class="my-4">
+
+                    <button class="btn btn-outline-success" id="btnIssueBook"
+                            onclick="checkForm('#bookIssueForm')" type="submit">Issue Book
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

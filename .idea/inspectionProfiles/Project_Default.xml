@@ -9,7 +9,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="7">
+          <list size="12">
             <item index="0" class="java.lang.String" itemvalue="th:fragment" />
             <item index="1" class="java.lang.String" itemvalue="th:replace" />
             <item index="2" class="java.lang.String" itemvalue="th:text" />
@@ -17,6 +17,11 @@
             <item index="4" class="java.lang.String" itemvalue="th:id" />
             <item index="5" class="java.lang.String" itemvalue="th:class" />
             <item index="6" class="java.lang.String" itemvalue="sec:authorize" />
+            <item index="7" class="java.lang.String" itemvalue="th:each" />
+            <item index="8" class="java.lang.String" itemvalue="bs-dismiss" />
+            <item index="9" class="java.lang.String" itemvalue="th:value" />
+            <item index="10" class="java.lang.String" itemvalue="th:attr" />
+            <item index="11" class="java.lang.String" itemvalue="th:checked" />
           </list>
         </value>
       </option>
@@ -38,5 +43,6 @@
       </option>
       <option name="myCustomValuesEnabled" value="true" />
     </inspection_tool>
+    <inspection_tool class="SpringJavaInjectionPointsAutowiringInspection" enabled="false" level="ERROR" enabled_by_default="false" />
   </profile>
 </component>

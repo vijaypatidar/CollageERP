@@ -1,5 +1,6 @@
 package com.svceindore.userservice.client;
 
+import com.svceindore.userservice.model.Faculty;
 import com.svceindore.userservice.model.Student;
 import com.svceindore.userservice.model.User;
 import org.keycloak.admin.client.Keycloak;
@@ -50,6 +51,8 @@ public class KeycloakClient {
 
         if (user instanceof Student) {
             userRepresentation.setGroups(Collections.singletonList("Students"));
+        }else if (user instanceof Faculty) {
+            userRepresentation.setGroups(Collections.singletonList("faculties"));
         }
 
         userRepresentation.setAttributes(Collections.singletonMap("origin", Collections.singletonList("keycloak admin client")));

@@ -1,0 +1,71 @@
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+
+<nav class="navbar p-0" th:fragment="header">
+    <script>
+        function logout() {
+            const http = new XMLHttpRequest();
+            http.open('GET', '/auth/logout');
+            http.onreadystatechange = function () {
+                if (this.readyState === 4) {
+                    if (this.status === 200) {
+                        window.location = window.location.origin + "/home.html"
+                    }
+                }
+            };
+            http.send();
+        }
+        function login() {
+            console.log(window.location)
+            window.location = window.location.origin + "/auth/login"
+        }
+    </script>
+    <link href="/css/header.css" rel="stylesheet">
+    <div class="container-fluid">
+        <div class="navbar-brand user-select-none">
+            <a class="text-decoration-none my-logo">ERP</a>
+            <a class="text-decoration-none brand-app-name">CollageERP</a>
+        </div>
+        <div class="d-flex">
+
+            <div sec:authorize="isAuthenticated()">
+                <div class="user-info-name" th:text="${#request.getAttribute('name')}">vijay</div>
+                <div class="btnLogout">
+                    <div data-bs-target="#logoutModal" data-bs-toggle="modal" id="btnLogoutIcon">
+                    </div>
+                </div>
+
+            </div>
+            <div class="user-info-name" onclick="login()" sec:authorize="!isAuthenticated()">
+                Login
+                <div class="btnLogout">
+                    <div class="btnLogout">
+                        <div id="btnLoginIcon"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- logout Modal -->
+    <div aria-hidden="true" class="modal fade" id="logoutModal" tabindex="1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body border-0">
+                    Please choose logout to continue.
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                    <button class="btn btn-danger" onclick="logout()" type="button">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>

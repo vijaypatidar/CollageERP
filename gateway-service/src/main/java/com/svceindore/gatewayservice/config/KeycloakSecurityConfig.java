@@ -33,6 +33,7 @@ public class KeycloakSecurityConfig {
                         "/",
                         "/home",
                         "/js/**",
+                        "/bootstrap/**",
                         "/img/**",
                         "/css/**"
                         ).permitAll()

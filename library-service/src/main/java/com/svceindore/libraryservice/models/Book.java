@@ -1,6 +1,7 @@
 package com.svceindore.libraryservice.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
 public class Book {
     @Id
     private String id;
+    @Indexed
     private String bid;//for getting book detail
     private String issuedTo;//username to which book is issued
     private Date issuedOn;// date when book is issued

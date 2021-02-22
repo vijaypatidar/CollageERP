@@ -4,6 +4,8 @@ import com.svceindore.libraryservice.models.BookDetail;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by Vijay Patidar
  * Date: 29/01/21
@@ -12,5 +14,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookDetailRepository extends MongoRepository<BookDetail,String> {
-
+    List<BookDetail> findAllByOrderByTitle();
 }

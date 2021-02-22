@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <title>Title</title>
+    <script crossorigin="use-credentials" src="/js/jquery.min.js"></script>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .rack {
+            min-height: 25px;
+            padding: 0;
+        }
+
+        .rack:hover {
+            background-color: #e8eaed;
+        }
+
+        .moving-path {
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container-fluid overflow-auto">
+
+    <div class="container shadow p-4 rounded my-5 bg-dark text-light" style="min-width: 780px;max-width: 780px">
+        <h1 class="h4 mb-3" style="text-align: center;">Library Map</h1>
+        <div class="row ">
+            <div class="rack col-1 border" id="rack1"></div>
+            <div class="rack col-1 border" id="rack2"></div>
+            <div class="rack col-1 border" id="rack3"></div>
+            <div class="rack col-1 border" id="rack4"></div>
+            <div class="rack col-1 border" id="rack5"></div>
+            <div class="rack col-1 border" id="rack6"></div>
+            <div class="rack col-1 border" id="rack7"></div>
+            <div class="rack col-1 border" id="rack8"></div>
+            <div class="rack col-1 border" id="rack9"></div>
+            <div class="rack col-1 border" id="rack10"></div>
+            <div class="rack col-1 border" id="rack11"></div>
+            <div class="rack col-1 border" id="rack12"></div>
+        </div>
+        <div class="row">
+            <div class="col-6 px-5">
+                <div class="row moving-path"></div>
+                <div class="row ">
+                    <div class="rack col border" id="rack13"></div>
+                    <div class="rack col border" id="rack14"></div>
+                    <div class="rack col border" id="rack15"></div>
+                    <div class="rack col border" id="rack16"></div>
+                    <div class="rack col border" id="rack17"></div>
+                    <div class="rack col border" id="rack18"></div>
+                </div>
+                <div class="row ">
+                    <div class="rack col border" id="rack19"></div>
+                    <div class="rack col border" id="rack20"></div>
+                    <div class="rack col border" id="rack21"></div>
+                    <div class="rack col border" id="rack22"></div>
+                    <div class="rack col border" id="rack23"></div>
+                    <div class="rack col border" id="rack24"></div>
+                </div>
+                <div class="row moving-path"></div>
+                <div class="row ">
+                    <div class="rack col border" id="rack25"></div>
+                    <div class="rack col border" id="rack26"></div>
+                    <div class="rack col border" id="rack27"></div>
+                    <div class="rack col border" id="rack28"></div>
+                    <div class="rack col border" id="rack29"></div>
+                    <div class="rack col border" id="rack30"></div>
+                </div>
+                <div class="row">
+                    <div class="rack col border" id="rack31"></div>
+                    <div class="rack col border" id="rack32"></div>
+                    <div class="rack col border" id="rack33"></div>
+                    <div class="rack col border" id="rack34"></div>
+                    <div class="rack col border" id="rack35"></div>
+                    <div class="rack col border" id="rack36"></div>
+                </div>
+                <div class="row moving-path"></div>
+                <div class="row ">
+                    <div class="rack col border" id="rack37"></div>
+                    <div class="rack col border" id="rack38"></div>
+                    <div class="rack col border" id="rack39"></div>
+                    <div class="rack col border" id="rack40"></div>
+                    <div class="rack col border" id="rack41"></div>
+                    <div class="rack col border" id="rack42"></div>
+                </div>
+                <div class="row ">
+                    <div class="rack col border" id="rack43"></div>
+                    <div class="rack col border" id="rack44"></div>
+                    <div class="rack col border" id="rack45"></div>
+                    <div class="rack col border" id="rack46"></div>
+                    <div class="rack col border" id="rack47"></div>
+                    <div class="rack col border" id="rack48"></div>
+                </div>
+                <div class="row moving-path"></div>
+                <div class="row ">
+                    <div class="rack col border" id="rack49"></div>
+                    <div class="rack col border" id="rack50"></div>
+                    <div class="rack col border" id="rack51"></div>
+                    <div class="rack col border" id="rack52"></div>
+                    <div class="rack col border" id="rack53"></div>
+                    <div class="rack col border" id="rack54"></div>
+                </div>
+                <div class="row ">
+                    <div class="rack col border" id="rack55"></div>
+                    <div class="rack col border" id="rack56"></div>
+                    <div class="rack col border" id="rack57"></div>
+                    <div class="rack col border" id="rack58"></div>
+                    <div class="rack col border" id="rack59"></div>
+                    <div class="rack col border" id="rack60"></div>
+                </div>
+                <div class="row moving-path"></div>
+                <div class="row ">
+                    <div class="rack col border" id="rack61"></div>
+                    <div class="rack col border" id="rack62"></div>
+                    <div class="rack col border" id="rack63"></div>
+                    <div class="rack col border" id="rack64"></div>
+                    <div class="rack col border" id="rack65"></div>
+                    <div class="rack col border" id="rack66"></div>
+                </div>
+                <div class="row ">
+                    <div class="rack col border" id="rack67"></div>
+                    <div class="rack col border" id="rack68"></div>
+                    <div class="rack col border" id="rack69"></div>
+                    <div class="rack col border" id="rack70"></div>
+                    <div class="rack col border" id="rack71"></div>
+                    <div class="rack col border" id="rack72"></div>
+                </div>
+                <div class="row moving-path"></div>
+                <div class="row ">
+                    <div class="rack col border" id="rack73"></div>
+                    <div class="rack col border" id="rack74"></div>
+                    <div class="rack col border" id="rack75"></div>
+                    <div class="rack col border" id="rack76"></div>
+                    <div class="rack col border" id="rack77"></div>
+                    <div class="rack col border" id="rack78"></div>
+                </div>
+                <div class="row ">
+                    <div class="rack col border" id="rack79"></div>
+                    <div class="rack col border" id="rack80"></div>
+                    <div class="rack col border" id="rack81"></div>
+                    <div class="rack col border" id="rack82"></div>
+                    <div class="rack col border" id="rack83"></div>
+                    <div class="rack col border" id="rack84"></div>
+                </div>
+                <div class="row moving-path"></div>
+
+            </div>
+            <div class="col-6 m-auto">
+                <div class="row">
+                    <div class="col-11 p-5">
+                        <div class="row h-100 border rounded">
+                            <div class="m-auto text-center">reading area</div>
+                        </div>
+                    </div>
+                    <div class="col-1 border">
+                        <div class="row">
+                            <div class="rack col border" id="rack85"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack86"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack87"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack88"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack89"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack90"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack91"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack92"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack93"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack94"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack95"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack96"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack97"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack98"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack99"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack100"></div>
+                        </div>
+                        <div class="row">
+                            <div class="rack col border" id="rack101"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="rack col-1 border" id="rack102"></div>
+            <div class="rack col-1 border" id="rack103"></div>
+            <div class="rack col-1 border" id="rack104"></div>
+            <div class="rack col-1 border" id="rack105"></div>
+            <div class="rack col-1 border" id="rack106"></div>
+            <div class="rack col-1 border" id="rack107"></div>
+            <div class="rack col-1  " style="text-align: center;">GATE</div>
+            <div class="rack col-1 border" id="rack108"></div>
+            <div class="rack col-1 border" id="rack109"></div>
+            <div class="rack col-1 border" id="rack110"></div>
+            <div class="rack col-1 border" id="rack111"></div>
+            <div class="rack col-1 border" id="rack112"></div>
+        </div>
+    </div>
+
+</div>
+<script>
+    function setRackClickListener(){
+        document.querySelectorAll('.rack').forEach(item => {
+            item.addEventListener('click', event => {
+                document.querySelectorAll('.rack').forEach(function (it) {
+                    it.classList.remove('bg-success')
+                    // $('#' + it.).removeClass('bg-success'/);
+                })
+                $('#' + event.target.id).addClass('bg-success');
+                if (handleRackIdChange)
+                    handleRackIdChange(event.target.id);
+            })
+        })
+    }
+
+    function setSelectedRack(rackId){
+        document.querySelectorAll('.rack').forEach(function (it) {
+            it.classList.remove('bg-success')
+        })
+        $('#' + rackId).addClass('bg-success');
+    }
+</script>
+</body>

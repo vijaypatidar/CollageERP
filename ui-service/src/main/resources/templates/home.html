@@ -1,23 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
     <title>Title</title>
     <script crossorigin="use-credentials" src="/js/jquery.min.js"></script>
-    <link rel="stylesheet" href="/css/home.css">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/home.js"></script>
 </head>
 <body>
-<div class="box">
-    <div class="header" th:replace="header"></div>
-    <div class="container" sec:authorize="isAuthenticated()">
-        <div  th:replace="navigation"></div>
-        <div id="content" th:insert="default"></div>
-    </div>
+<div th:class="container-fluid" th:replace="fragments/header::header"></div>
+<div class="container-fluid">
+    <div class="row" sec:authorize="isAuthenticated()">
+        <nav th:replace="fragments/navigation::navigation"></nav>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
-    <div class="container"  sec:authorize="!isAuthenticated()">
+            <div sec:authorize="isAuthenticated()">
+                <div th:replace="default"></div>
+            </div>
+
+        </main>
+    </div>
+    <div class="row my-3" sec:authorize="!isAuthenticated()">
         <div th:replace="access-denied"></div>
     </div>
+
 </div>
+<script src="/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

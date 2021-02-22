@@ -6,12 +6,12 @@ import com.svceindore.libraryservice.repositories.BookDetailRepository;
 import com.svceindore.libraryservice.repositories.BookRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * Created by Vijay Patidar
@@ -19,9 +19,9 @@ import javax.annotation.security.RolesAllowed;
  * Time: 12:11 PM
  **/
 @RestController
-@RequestMapping("/api/library")
 public class BookDetailController {
 
+    private Logger logger = Logger.getLogger(getClass().getCanonicalName());
     private final BookRepository bookRepository;
     private final BookDetailRepository bookDetailRepository;
 
@@ -33,6 +33,7 @@ public class BookDetailController {
     @RolesAllowed({Roles.ADMIN_LIBRARIAN, Roles.ADMIN_ROLE})
     @PostMapping("/bookDetail")
     public ResponseEntity<?> addBook(@RequestBody BookDetail bookDetail) {
+        logger.info("Add book deatil " + bookDetail.toString());
         if (bookDetail.getTitle() == null || bookDetail.getTitle().isEmpty()) {
             return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body("Book title required.");
         }
@@ -41,7 +42,28 @@ public class BookDetailController {
         }
 
         bookDetailRepository.insert(bookDetail);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Book Detail added, id = " + bookDetail.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookDetail.getId());
+    }
+
+    @GetMapping("/bookDetail")
+    public List<BookDetail> getBookDetails() {
+        return bookDetailRepository.findAllByOrderByTitle();
+    }
+
+    @GetMapping("/bookDetail/{bookId}")
+    public ResponseEntity<?> getBookDetail(@PathVariable String bookId) {
+        Optional<BookDetail> optional = bookDetailRepository.findById(bookId);
+        if (optional.isPresent()){
+            return ResponseEntity.ok(optional.get());
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @GetMapping(path = "/bookDetail?search")
+    public List<BookDetail> searchAndGetBookDetails() {
+        return bookDetailRepository.findAll();
     }
 
 }

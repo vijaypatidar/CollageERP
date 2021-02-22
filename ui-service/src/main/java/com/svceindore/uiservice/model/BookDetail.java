@@ -1,7 +1,4 @@
-package com.svceindore.libraryservice.models;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+package com.svceindore.uiservice.model;
 
 import java.util.List;
 
@@ -10,9 +7,7 @@ import java.util.List;
  * Date: 29/01/21
  * Time: 9:46 AM
  **/
-@Document
 public class BookDetail {
-    @Id
     private String id;
     private String title;
     private List<String> authors;
