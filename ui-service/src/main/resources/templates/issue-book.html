@@ -19,21 +19,19 @@
         // send post request to login url
         http.open("POST", "/api/library/issueBook", true);
         http.setRequestHeader("Content-type", "application/json");
-        http.onreadystatechange = function () {
-            if (this.readyState === 4) {
-                $("#btnAddDetail").prop("disabled", false);
-                if (this.status === 201) {
-                    alert(this.responseText);
+        http.onload = function () {
+            $("#btnAddDetail").prop("disabled", false);
+            if (this.status === 201) {
+                alert(this.responseText);
+            } else {
+                if (this.status === 403) {
+                    // $(this).prop("disabled",false);
+                    alert("Access denied")
+                } else if (this.status === 409) {
+                    // $(this).prop("disabled",false);
+                    alert("Book already exits with same copy id");
                 } else {
-                    if (this.status === 403) {
-                        // $(this).prop("disabled",false);
-                        alert("Access denied")
-                    } else if (this.status === 409) {
-                        // $(this).prop("disabled",false);
-                        alert("Book already exits with same copy id");
-                    } else {
-                        alert(this.responseText);
-                    }
+                    alert(this.responseText);
                 }
             }
         };

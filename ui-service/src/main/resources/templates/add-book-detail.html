@@ -25,22 +25,20 @@
         // send post request to login url
         http.open("POST", "/api/library/bookDetail", true);
         http.setRequestHeader("Content-type", "application/json");
-        http.onreadystatechange = function () {
-            if (this.readyState === 4) {
-                if (this.status === 201) {
-                    loadPageInContentDiv("library/add-book-copy.html?bookId="+this.responseText);
-                } else {
-                    $("#btnAddDetail").prop("disabled", false);
-                    if (this.status === 403) {
-                        // $(this).prop("disabled",false);
-                        alert("Access denied")
+        http.onload = function () {
+            if (this.status === 201) {
+                loadPageInContentDiv("library/add-book-copy.html?bookId=" + this.responseText);
+            } else {
+                $("#btnAddDetail").prop("disabled", false);
+                if (this.status === 403) {
+                    // $(this).prop("disabled",false);
+                    alert("Access denied")
 
-                    } else if (this.status === 409) {
-                        // $(this).prop("disabled",false);
-                        alert("Username or email already exists")
-                    } else {
-                        alert(this.responseText);
-                    }
+                } else if (this.status === 409) {
+                    // $(this).prop("disabled",false);
+                    alert("Username or email already exists")
+                } else {
+                    alert(this.responseText);
                 }
             }
         };

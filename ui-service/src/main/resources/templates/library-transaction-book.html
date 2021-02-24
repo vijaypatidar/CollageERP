@@ -27,9 +27,10 @@
         <div class="col-md-4" th:each="history : ${#request.getAttribute('histories')}">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h6 class="card-title" th:text="${history.title}">Title</h6>
+                    <h5 class="card-title" th:text="${history.title}">Title</h5>
                     <div class="card-text" th:text="${'Issued to : '+history.issuedTo}"> </div>
                     <div class="card-text" th:text="${'Issued on : '+#dates.format(history.issuedOn, 'dd-MMM-yyyy')}"> </div>
+                    <div class="card-text" th:if="${history.submittedOn}!=null" th:text="${'Submitted on : '+#dates.format(history.submittedOn, 'dd-MMM-yyyy')}"> </div>
                     <div class="w-100 my-2"></div>
                     <div class="text-danger" th:if="${history.submittedOn}==null">Issued</div>
                     <div class="text-success" th:if="${history.submittedOn}!=null">Submitted</div>
