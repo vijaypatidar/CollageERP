@@ -49,10 +49,15 @@
 </script>
 <body>
 <div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col">
+            <h1 class="h2">New Book Detail</h1>
+        </div>
+    </div>
+
     <div class="row my-2">
-        <div class="col-md-8 offset-md-2">
-            <h1 class="h2 my-3">New Book Detail</h1>
-            <form class="mb-3 needs-validation" id="bookDetailForm" name="bookDetail"
+        <div class="col-12">
+            <form class="needs-validation" id="bookDetailForm" name="bookDetail"
                   onsubmit="addBookDetail();return false;">
                 <div class="row g-2">
                     <div class="col-12">
@@ -101,12 +106,10 @@
                                type="text">
 
                     </div>
-                    <hr class="my-4">
-
-                    <button class="btn btn-outline-success" id="btnAddDetail"
-                            onclick="checkForm('#bookDetailForm')" type="submit">Add Book Detail
-                    </button>
                 </div>
+                <button class="btn btn-outline-success my-4" id="btnAddDetail"
+                        onclick="checkForm('#bookDetailForm')" type="submit">Add Book Detail
+                </button>
             </form>
         </div>
     </div>

@@ -19,20 +19,20 @@
         http.open("POST", "/api/library/submitBook", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-                $("#btnAddDetail").prop("disabled", false);
-                if (this.status === 201) {
-                    alert(this.responseText);
+            $("#btnAddDetail").prop("disabled", false);
+            if (this.status === 201) {
+                alert(this.responseText);
+            } else {
+                if (this.status === 403) {
+                    // $(this).prop("disabled",false);
+                    alert("Access denied")
+                } else if (this.status === 409) {
+                    // $(this).prop("disabled",false);
+                    alert("Book already exits with same copy id");
                 } else {
-                    if (this.status === 403) {
-                        // $(this).prop("disabled",false);
-                        alert("Access denied")
-                    } else if (this.status === 409) {
-                        // $(this).prop("disabled",false);
-                        alert("Book already exits with same copy id");
-                    } else {
-                        alert(this.responseText);
-                    }
+                    alert(this.responseText);
                 }
+            }
         };
 
         http.send(JSON.stringify(data));
@@ -41,10 +41,17 @@
 </script>
 <body>
 <div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col">
+            <h1 class="h2">Book Submission</h1>
+        </div>
+        <div class="col-4">
+            <button class="btn btn-outline-primary float-end" onclick="loadPageInContentDiv('library/submit-book.html')" type="button">Refresh</button>
+        </div>
+    </div>
     <div class="row my-2">
-        <div class="col-md-8 offset-md-2">
-            <h1 class="h2 my-3">Book Submission</h1>
-            <form class="mb-3 needs-validation" name="submitBookForm"
+        <div class="col">
+            <form class="needs-validation" name="submitBookForm"
                   onsubmit="submitBook();return false;">
                 <div class="row g-2">
                     <div class="col-12">
@@ -60,12 +67,10 @@
                         </div>
                     </div>
 
-                    <hr class="my-4">
-
-                    <button class="btn btn-outline-success" id="btnSubmitBook"
-                            onclick="checkForm('#bookIssueForm')" type="submit">Submit Book
-                    </button>
                 </div>
+                <button class="btn btn-outline-success my-4" id="btnSubmitBook"
+                        onclick="checkForm('#bookIssueForm')" type="submit">Submit Book
+                </button>
             </form>
         </div>
     </div>
