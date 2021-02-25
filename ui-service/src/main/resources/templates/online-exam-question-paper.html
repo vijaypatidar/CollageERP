@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<script crossorigin="use-credentials" src="/js/jquery.min.js"></script>
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+<body th:attr="onLoad=|setExamTimer(${endTimeMillisecond})|">
+<div class="container">
+    <div class="row align-items-center my-3 ">
+        <div class="col">
+            <h1 class="h4" th:text="${paperTitle}"></h1>
+        </div>
+        <div class="col-2" th:text="${#request.getAttribute('name')}">
+            00:00:00
+        </div>
+        <div class="col-1 text-danger" id="timeRemaining">
+            00:00:00
+        </div>
+        <div class="col-1" th:text="${time}">
+            2 hour
+        </div>
+    </div>
+    <div class="row my-2 g-2 " th:each="question : ${#request.getAttribute('questions')}">
+        <div class="col-12" >
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-11">
+                            <h3 class="card-title" th:text="${question.question}">Question</h3>
+                        </div>
+                        <div class="col" th:text="${question.mark+' mark'}">
+
+                        </div>
+                    </div>
+                    <div class="input-group my-2" th:each="option : ${question.options}">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text h-100">
+                                <input type="radio" th:attr="name=|${question.id}}|">
+                            </div>
+                        </div>
+                        <input type="text" disabled class="form-control" th:value="${option}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12 col-md-4 ">
+            <button data-bs-target="#confirmSubmission" data-bs-toggle="modal" class="btn btn-outline-primary w-100">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        function setExamTimer(end){
+            const endTime = new Date(parseInt(end));
+            const timeRemaining = document.getElementById("timeRemaining");
+            const timerHandler=function (){
+                let diff=endTime.getTime()-new Date().getTime();
+                if(diff>0){
+                    let endTime = new Date(diff);
+                    timeRemaining.innerText = endTime.toISOString().substr(11, 8);
+                }else{
+                    alert("Exam ended");
+                    clearInterval(timerHandler)
+                }
+            }
+            setInterval(timerHandler,1000);
+        }
+        function submitExam(){
+            alert('exam submitted');
+        }
+    </script>
+
+    <!-- confirm exam submission modal -->
+    <div aria-hidden="true" class="modal fade" id="confirmSubmission" tabindex="1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Are you sure?</h5>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body border-0">
+                    Submit exam
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
+                    <button class="btn btn-danger" data-bs-dismiss="modal" onclick="submitExam()" type="button">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

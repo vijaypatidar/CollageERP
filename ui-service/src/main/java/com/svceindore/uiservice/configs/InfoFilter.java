@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Created by Vijay Patidar
@@ -26,7 +27,7 @@ public class InfoFilter extends GenericFilterBean {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             KeycloakAuthenticationToken keycloakAuthenticationToken = (KeycloakAuthenticationToken) request.getUserPrincipal();
             AccessToken accessToken = keycloakAuthenticationToken.getAccount().getKeycloakSecurityContext().getToken();
-            request.setAttribute("name", accessToken.getGivenName() + " " + accessToken.getFamilyName());
+            request.setAttribute("name", accessToken.getGivenName() + " " + Objects.toString(accessToken.getFamilyName(),""));
         }catch (Exception ignored){
         }
         filterChain.doFilter(servletRequest,servletResponse);

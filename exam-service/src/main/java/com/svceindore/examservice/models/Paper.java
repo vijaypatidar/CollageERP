@@ -25,14 +25,3 @@ public class Paper {
     private int totalMark;
 }
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-class Question{
-    private String question;
-    private String imageUrl;
-    private List<String> options;
-    private int mark;
-
-}
