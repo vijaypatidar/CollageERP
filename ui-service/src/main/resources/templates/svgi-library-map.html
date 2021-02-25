@@ -237,7 +237,6 @@
             item.addEventListener('click', event => {
                 document.querySelectorAll('.rack').forEach(function (it) {
                     it.classList.remove('bg-success')
-                    // $('#' + it.).removeClass('bg-success'/);
                 })
                 $('#' + event.target.id).addClass('bg-success');
                 if (handleRackIdChange)

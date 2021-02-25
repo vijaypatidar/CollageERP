@@ -19,22 +19,20 @@
         // send post request to login url
         http.open("POST", "/api/user/createStudent", true);
         http.setRequestHeader("Content-type", "application/json");
-        http.onreadystatechange = function () {
-            if (this.readyState === 4) {
-                if (this.status === 201) {
-                    alert(this.responseText);
-                } else {
-                    $("#btnCreate").prop("disabled", false);
-                    if (this.status === 403) {
-                        // $(this).prop("disabled",false);
-                        alert("Access denied")
+        http.onload = function () {
+            if (this.status === 201) {
+                alert(this.responseText);
+            } else {
+                $("#btnCreate").prop("disabled", false);
+                if (this.status === 403) {
+                    // $(this).prop("disabled",false);
+                    alert("Access denied")
 
-                    } else if (this.status === 409) {
-                        // $(this).prop("disabled",false);
-                        alert("Username or email already exists")
-                    } else {
-                        alert(this.responseText);
-                    }
+                } else if (this.status === 409) {
+                    // $(this).prop("disabled",false);
+                    alert("Username or email already exists")
+                } else {
+                    alert(this.responseText);
                 }
             }
         };
@@ -133,7 +131,8 @@
                     </div>
                     <hr class="my-4">
 
-                    <button class="btn btn-outline-success" id="btnCreate" onclick="checkForm('#studentRegistrationForm')" type="submit">Continue
+                    <button class="btn btn-outline-success" id="btnCreate"
+                            onclick="checkForm('#studentRegistrationForm')" type="submit">Continue
                         to registration
                     </button>
                 </div>

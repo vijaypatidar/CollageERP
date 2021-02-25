@@ -19,8 +19,7 @@
         // send post request to login url
         http.open("POST", "/api/user/createFaculty", true);
         http.setRequestHeader("Content-type", "application/json");
-        http.onreadystatechange = function () {
-            if (this.readyState === 4) {
+        http.onload = function () {
                 if (this.status === 201) {
                     alert(this.responseText);
                 } else {
@@ -36,8 +35,7 @@
                         alert(this.responseText);
                     }
                 }
-            }
-        };
+            };
         //year=first,brach,batch,semester,rollNumber
         let data = {
             username: username,

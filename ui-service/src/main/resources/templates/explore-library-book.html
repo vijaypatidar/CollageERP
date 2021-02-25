@@ -5,12 +5,21 @@
 </script>
 <body>
 <div class="container">
-
-    <div class="row my-2 g-2">
-        <h1 class="h2 my-3">Explore Library</h1>
+    <div class="row my-3  align-items-center">
+        <div class="col">
+            <h1 class="h2">Explore Library</h1>
+        </div>
+        <div class="col-4">
+            <div class="input-group">
+                <input type="text" name="search" onsubmit="alert(this)" class="form-control" placeholder="Search">
+                <button class="btn btn-outline-primary" type="button">Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="row g-2">
 
         <div class="col-md-4" th:each="book : ${#request.getAttribute('books')}">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${book.title}">Title</h5>
                     <div class="text-muted">Authors</div>
@@ -31,7 +40,7 @@
             </div>
         </div>
     </div>
-
+    <div class="my-4"></div>
 </div>
 <!-- library map modal -->
 <div aria-hidden="true" class="modal fade" id="mapModal" tabindex="1">
