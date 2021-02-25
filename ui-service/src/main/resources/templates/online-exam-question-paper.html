@@ -33,6 +33,9 @@
 
                         </div>
                     </div>
+                    <div class="row" th:if="${question.imageUrl} != null">
+                        <img th:attr="src=|${question.imageUrl}|">
+                    </div>
                     <div class="input-group my-2" th:each="option : ${question.options}">
                         <div class="input-group-prepend">
                             <div class="input-group-text h-100">

@@ -29,7 +29,7 @@ public class OnlineExamController {
         for(int i=1;i<=10;i++){
             questions.add(new Question(i,
                     "What is spring boot.",
-                    null,
+                    "https://my-digital-menu.herokuapp.com/api/file/601ab794d450db196b568390",
                     options,
                     i%2==0?i%3==0?1:2:3
             ));
