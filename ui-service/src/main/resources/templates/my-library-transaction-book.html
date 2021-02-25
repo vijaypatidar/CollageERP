@@ -7,16 +7,22 @@
 <div class="container">
 
     <div class="row my-2 g-2">
-        <h1 class="h2 my-3">My Transactions</h1>
-        <div aria-label="Basic radio toggle button group" class="btn-group" role="group">
-            <input autocomplete="off" class="btn-check" id="btnIssue" name="historyType" onchange="changeHistoryType('issued')" th:checked="${#request.getAttribute('type')} == issued" type="radio">
-            <label class="btn btn-outline-primary" for="btnIssue">Issued</label>
+        <div class="row my-3  align-items-center">
+            <div class="col-6">
+                <h1 class="h2">My Transactions</h1>
+            </div>
+            <div class="col-6">
+                <div aria-label="Basic radio toggle button group" class="btn-group btn-group-sm float-end" role="group">
+                    <input autocomplete="off" class="btn-check" id="btnIssue" name="historyType" onchange="changeHistoryType('issued')" th:checked="${#request.getAttribute('type')} == issued" type="radio">
+                    <label class="btn btn-outline-primary" for="btnIssue">Issued</label>
 
-            <input autocomplete="off" class="btn-check" id="btnSubmit" name="historyType" onchange="changeHistoryType('submitted')" th:checked="${#request.getAttribute('type')} == submitted" type="radio">
-            <label class="btn btn-outline-primary" for="btnSubmit">Submitted</label>
+                    <input autocomplete="off" class="btn-check" id="btnSubmit" name="historyType" onchange="changeHistoryType('submitted')" th:checked="${#request.getAttribute('type')} == submitted" type="radio">
+                    <label class="btn btn-outline-primary" for="btnSubmit">Submitted</label>
 
-            <input autocomplete="off" class="btn-check" id="btnAll" name="historyType" onchange="changeHistoryType('all')" th:checked="${#request.getAttribute('type')} == all" type="radio">
-            <label class="btn btn-outline-primary" for="btnAll">All</label>
+                    <input autocomplete="off" class="btn-check" id="btnAll" name="historyType" onchange="changeHistoryType('all')" th:checked="${#request.getAttribute('type')} == all" type="radio">
+                    <label class="btn btn-outline-primary" for="btnAll">All</label>
+                </div>
+            </div>
         </div>
         <script>
             function changeHistoryType(type)
@@ -24,9 +30,11 @@
                 loadPageInContentDiv('library/my-library-history.html?type='+type)
             }
         </script>
+    </div>
 
-        <div class="col-md-4 " th:each="history : ${#request.getAttribute('histories')}">
-            <div class="card shadow-sm">
+    <div class="row my-2 g-2">
+        <div class="col-md-4" th:each="history : ${#request.getAttribute('histories')}">
+            <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${history.title}">Title</h5>
                     <div class="card-text" th:text="${'Issued on : '+#dates.format(history.issuedOn, 'dd-MMM-yyyy')}"> </div>

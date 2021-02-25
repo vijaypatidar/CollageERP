@@ -3,8 +3,6 @@
 <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" th:fragment="navigation">
     <link href="/css/navigation.css" rel="stylesheet">
 
-    <div class="nav-item-heading">Home</div>
-
     <div class="nav-item-heading">Exam</div>
     <div class="nav-item" sec:authorize="hasRole('USER')">Time table</div>
     <div class="nav-item" sec:authorize="hasRole('ADMIN')">Create Exam</div>
