@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Time: 3:22 PM
  **/
 @RestController
-@RolesAllowed({Roles.ADMIN_LIBRARIAN})
+@RolesAllowed({Roles.ROLE_LIBRARIAN})
 @RequestMapping("/history")
 public class HistoryController {
     private final HistoryRepository historyRepository;

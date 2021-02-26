@@ -33,7 +33,7 @@
                     <button class="btn btn-outline-primary" data-bs-target="#mapModal" data-bs-toggle="modal"
                             th:attr="onclick=|setSelectedRack('${book.rackId}')|">Map
                     </button>
-                    <button class="btn btn-outline-primary" sec:authorize="hasRole('ADMIN')"
+                    <button class="btn btn-outline-primary" sec:authorize="hasRole('LIBRARIAN')"
                             th:attr="onclick=|newCopy('${book.id}')|">+
                     </button>
                 </div>

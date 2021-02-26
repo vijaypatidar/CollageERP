@@ -30,7 +30,7 @@ public class BookDetailController {
         this.bookDetailRepository = bookDetailRepository;
     }
 
-    @RolesAllowed({Roles.ADMIN_LIBRARIAN})
+    @RolesAllowed({Roles.ROLE_LIBRARIAN})
     @PostMapping("/bookDetail")
     public ResponseEntity<?> addBook(@RequestBody BookDetail bookDetail) {
         logger.info("Add book deatil " + bookDetail.toString());
