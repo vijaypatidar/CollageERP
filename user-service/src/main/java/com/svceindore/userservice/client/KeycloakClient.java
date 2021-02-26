@@ -4,6 +4,7 @@ import com.svceindore.userservice.model.Faculty;
 import com.svceindore.userservice.model.Student;
 import com.svceindore.userservice.model.User;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RefreshScope
