@@ -28,8 +28,8 @@ public class OnlineExamController {
 
         for(int i=1;i<=10;i++){
             questions.add(new Question(i,
-                    "What is spring boot.",
-                    "https://my-digital-menu.herokuapp.com/api/file/601ab794d450db196b568390",
+                    "What is spring boot."+i,
+                    null,
                     options,
                     i%2==0?i%3==0?1:2:3
             ));
@@ -38,7 +38,7 @@ public class OnlineExamController {
         model.addAttribute("paperTitle", "MST-1");
         model.addAttribute("questions", questions);
         model.addAttribute("time","2 Hours");
-        model.addAttribute("endTimeMillisecond","1614269432832");
+        model.addAttribute("endTimeMillisecond","1614869432832");
         return "online-exam-question-paper";
     }
 }

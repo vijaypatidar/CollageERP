@@ -39,6 +39,12 @@
         http.send(JSON.stringify(data));
         return false;
     }
+
+    function usernameChangeHandler(usernameInput){
+        let username=usernameInput.value;
+        //change profile pic
+        document.getElementById("selectedUserImg").src="/api/user/photos/profile/"+username
+    }
 </script>
 <body>
 <div class="container">
@@ -47,34 +53,53 @@
             <h1 class="h2">Issue Book</h1>
         </div>
         <div class="col-4">
-            <button class="btn btn-outline-primary float-end" onclick="loadPageInContentDiv('library/issue-book.html')" type="button">Refresh</button>
+            <button class="btn btn-outline-primary float-end" onclick="loadPageInContentDiv('library/issue-book.html')"
+                    type="button">Refresh
+            </button>
         </div>
     </div>
     <div class="row my-2">
         <div class="col">
             <form class="needs-validation" id="bookIssueForm" name="issueBookForm"
                   onsubmit="issueBook();return false;">
-                <div class="row g-2">
-                    <div class="col-12">
-                        <label class="form-label" for="bid">Book Id</label>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label" for="username">Username</label>
+                                <input class="form-control"
+                                       id="username" name="username"
+                                       placeholder=""
+                                       required type="text" onchange="usernameChangeHandler(this)">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="bid">Book Id</label>
 
-                        <input class="form-control"
-                               id="bid"
-                               name="bid"
-                               th:value="${bid}" type="text">
+                                <input class="form-control"
+                                       id="bid"
+                                       name="bid"
+                                       th:value="${bid}" type="text">
 
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-success my-4" id="btnIssueBook"
+                                onclick="checkForm('#bookIssueForm')" type="submit">Issue Book
+                        </button>
                     </div>
-                    <div class="col-12">
-                        <label class="form-label" for="username">Username</label>
-                        <input class="form-control"
-                               id="username" name="username"
-                               placeholder=""
-                               required type="text">
+                    <div class="col-4">
+                        <h4 class="h5">User Information</h4>
+                        <div class="card rounded shadow-sm h-100 text-center p-2 ">
+                            <div class="row">
+                                <div class="col">
+                                    <img style="height: 200px;width: 200px;" class="card-img-top shadow-sm rounded-circle" id="selectedUserImg" alt="#">
+                                </div>
+                            </div>
+
+                            <div class="card-title my-2 px-2">Vijay Patidar</div>
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-outline-success my-4" id="btnIssueBook"
-                        onclick="checkForm('#bookIssueForm')" type="submit">Issue Book
-                </button>
+
             </form>
         </div>
     </div>

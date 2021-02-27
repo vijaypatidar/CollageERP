@@ -41,7 +41,7 @@ public class BookController {
         this.historyRepository = historyRepository;
     }
 
-    @RolesAllowed({Roles.ADMIN_LIBRARIAN, Roles.ADMIN_ROLE})
+    @RolesAllowed({Roles.ROLE_LIBRARIAN})
     @PostMapping("/bookCopy")
     public ResponseEntity<?> addBookCopy(@RequestBody Book book) {
 
@@ -75,7 +75,7 @@ public class BookController {
         }
     }
 
-    @RolesAllowed({Roles.ADMIN_LIBRARIAN, Roles.ADMIN_ROLE})
+    @RolesAllowed({Roles.ROLE_LIBRARIAN})
     @PostMapping("/issueBook")
     public ResponseEntity<?> issueBook(@RequestBody BookIssueRequest bookIssueRequest) {
         String bid = bookIssueRequest.getBid();
@@ -107,7 +107,7 @@ public class BookController {
         }
     }
 
-    @RolesAllowed({Roles.ADMIN_LIBRARIAN, Roles.ADMIN_ROLE})
+    @RolesAllowed({Roles.ROLE_LIBRARIAN})
     @PostMapping("/submitBook")
     public ResponseEntity<?> submitBook(@RequestBody BookIssueRequest bookIssueRequest) {
         String bid = bookIssueRequest.getBid();

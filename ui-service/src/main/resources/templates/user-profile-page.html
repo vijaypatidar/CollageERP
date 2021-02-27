@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <meta charset="utf-8">
+
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <script crossorigin="use-credentials" src="/js/jquery.min.js"></script>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <div class="row my-3">
+        <h2 class="h2">Profile</h2>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <form class="needs-validation" name="profilePicForm"
+                  onsubmit="uploadProfilePic();return false;">
+                <div class="row align-items-center">
+                    <div class="col-4 border-end">
+                        <img id="profileImg" style="border-radius: 50%;"
+                             height="250px"
+                             width="250px"
+                             class="shadow-sm"
+                             th:src="${'/api/user/photos/profile/'+username}" alt="#">
+
+                    </div>
+                    <div class="col-4 offset-1">
+                        <div class="row g-2">
+                            <input type="file" name="file" id="profileFile" onchange="previewProfile()"
+                                   class="form-control">
+                            <button type="submit" class="btn btn-outline-success">Upload Picture</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function uploadProfilePic() {
+            let data = new FormData();
+            data.append("file", document.getElementById("profileFile").files[0]);
+            let http = new XMLHttpRequest();
+            http.open("POST", "/api/user/photos/profile/update");
+            http.onload = function () {
+                alert(http.responseText)
+            }
+            http.send(data);
+            return false;
+        }
+
+        function previewProfile() {
+            let oFReader = new FileReader();
+            oFReader.readAsDataURL(document.getElementById("profileFile").files[0]);
+            oFReader.onload = function (oFREvent) {
+                document.getElementById("profileImg").src = oFREvent.target.result;
+            };
+        }
+    </script>
+</div>
+</body>
+</html>

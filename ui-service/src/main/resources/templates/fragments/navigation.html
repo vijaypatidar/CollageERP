@@ -1,6 +1,6 @@
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" th:fragment="navigation">
+<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar pb-3" th:fragment="navigation">
     <link href="/css/navigation.css" rel="stylesheet">
 
     <div class="nav-item-heading">Exam</div>
@@ -21,12 +21,12 @@
     </div>
     <div>
         <div class="nav-item-heading">Library</div>
-        <div class="nav-item" onclick="loadPageInContentDiv('library/add-book-detail.html')" sec:authorize="hasRole('ADMIN')">Add Book detail</div>
-        <div class="nav-item" onclick="loadPageInContentDiv('library/issue-book.html')" sec:authorize="hasRole('ADMIN')">Issue Book</div>
-        <div class="nav-item" onclick="loadPageInContentDiv('library/submit-book.html')" sec:authorize="hasRole('ADMIN')">Submit Book</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('library/add-book-detail.html')" sec:authorize="hasRole('LIBRARIAN')">Add Book detail</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('library/issue-book.html')" sec:authorize="hasRole('LIBRARIAN')">Issue Book</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('library/submit-book.html')" sec:authorize="hasRole('LIBRARIAN')">Submit Book</div>
         <div class="nav-item" onclick="loadPageInContentDiv('library/explore-library-book.html')">Explore</div>
         <div class="nav-item" onclick="loadPageInContentDiv('library/my-library-history.html?type=issued')">My Transaction</div>
-        <div class="nav-item" onclick="loadPageInContentDiv('library/library-history.html?type=issued')" sec:authorize="hasRole('ADMIN')">Transaction</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('library/library-history.html?type=issued')" sec:authorize="hasRole('LIBRARIAN')">Transaction</div>
     </div>
 
     <div sec:authorize="hasRole('ADMIN')">
@@ -36,7 +36,7 @@
     </div>
 
 
-    <div class="nav-item-heading" sec:authorize="hasRole('USER')">My Profile</div>
+    <div class="nav-item-heading" onclick="loadPageInContentDiv('profile/my-profile.html')">My Profile</div>
 
 </nav>
 

@@ -1,5 +1,14 @@
 package com.svceindore.userservice.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
 public class Student extends User {
     private String course;
     private String branch;

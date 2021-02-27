@@ -1,5 +1,9 @@
 package com.svceindore.libraryservice.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,6 +15,10 @@ import java.util.Date;
  * Date: 29/01/21
  * Time: 9:59 AM
  **/
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Document
 public class Book {
     @Id
@@ -20,35 +28,4 @@ public class Book {
     private String issuedTo;//username to which book is issued
     private Date issuedOn;// date when book is issued
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getBid() {
-        return bid;
-    }
-
-    public void setBid(String bid) {
-        this.bid = bid;
-    }
-
-    public String getIssuedTo() {
-        return issuedTo;
-    }
-
-    public void setIssuedTo(String issuedTo) {
-        this.issuedTo = issuedTo;
-    }
-
-    public Date getIssuedOn() {
-        return issuedOn;
-    }
-
-    public void setIssuedOn(Date issuedOn) {
-        this.issuedOn = issuedOn;
-    }
 }

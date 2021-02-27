@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  **/
 @Component
 public class DataUtils {
-    private String[] states = new String[]{
+    private final String[] states = new String[]{
             "Andhra Pradesh",
             "Arunachal Pradesh",
             "Assam",
@@ -48,7 +48,7 @@ public class DataUtils {
             "Puducherry"
     };
 
-    private String[] countries = new String[]{
+    private final String[] countries = new String[]{
             "India",
             "Nepal",
             "America",

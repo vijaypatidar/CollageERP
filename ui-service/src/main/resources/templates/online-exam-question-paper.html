@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="row my-2 g-2 " th:each="question : ${#request.getAttribute('questions')}">
-        <div class="col-12" >
+        <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="row align-items-center">
@@ -39,10 +39,13 @@
                     <div class="input-group my-2" th:each="option : ${question.options}">
                         <div class="input-group-prepend">
                             <div class="input-group-text h-100">
-                                <input type="radio" th:attr="name=|${question.id}}|">
+                                <label>
+                                    <input type="radio" th:value="${option}" th:attr="name=|${question.id}}|">
+                                </label>
                             </div>
                         </div>
-                        <input type="text" disabled class="form-control" th:value="${option}">
+                        <span type="text" class="form-control shadow-none" th:text="${option}">
+                        </span>
                     </div>
                 </div>
             </div>
@@ -51,27 +54,30 @@
 
     <div class="row my-3">
         <div class="col-12 col-md-4 ">
-            <button data-bs-target="#confirmSubmission" data-bs-toggle="modal" class="btn btn-outline-primary w-100">Submit</button>
+            <button data-bs-target="#confirmSubmission" data-bs-toggle="modal" class="btn btn-outline-primary w-100">
+                Submit
+            </button>
         </div>
     </div>
 
     <script>
-        function setExamTimer(end){
+        function setExamTimer(end) {
             const endTime = new Date(parseInt(end));
             const timeRemaining = document.getElementById("timeRemaining");
-            const timerHandler=function (){
-                let diff=endTime.getTime()-new Date().getTime();
-                if(diff>0){
+            const timerHandler = function () {
+                let diff = endTime.getTime() - new Date().getTime();
+                if (diff > 0) {
                     let endTime = new Date(diff);
                     timeRemaining.innerText = endTime.toISOString().substr(11, 8);
-                }else{
+                } else {
                     alert("Exam ended");
                     clearInterval(timerHandler)
                 }
             }
-            setInterval(timerHandler,1000);
+            setInterval(timerHandler, 1000);
         }
-        function submitExam(){
+
+        function submitExam() {
             alert('exam submitted');
         }
     </script>
@@ -89,7 +95,8 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button>
-                    <button class="btn btn-danger" data-bs-dismiss="modal" onclick="submitExam()" type="button">Submit</button>
+                    <button class="btn btn-danger" data-bs-dismiss="modal" onclick="submitExam()" type="button">Submit
+                    </button>
                 </div>
             </div>
         </div>
