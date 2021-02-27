@@ -10,6 +10,7 @@ Microservice architecture based ERP solution for collage, for better scalability
 * UI service
 * Exam service
 * Library service
+* Course service
 * And coming more soon.
 
 
