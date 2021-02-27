@@ -2,7 +2,7 @@
   "id": "CollageERP",
   "realm": "CollageERP",
   "displayName": "Collage ERP",
-  "notBefore": 1611142202,
+  "notBefore": 1611480430,
   "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 0,
   "accessTokenLifespan": 300,
@@ -27,11 +27,11 @@
   "sslRequired": "external",
   "registrationAllowed": false,
   "registrationEmailAsUsername": false,
-  "rememberMe": false,
+  "rememberMe": true,
   "verifyEmail": false,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
-  "resetPasswordAllowed": false,
+  "resetPasswordAllowed": true,
   "editUsernameAllowed": false,
   "bruteForceProtected": false,
   "permanentLockout": false,
@@ -60,6 +60,29 @@
         "attributes": {}
       },
       {
+        "id": "8b4c8e93-9540-4d8f-ab86-2a74ff400110",
+        "name": "FACULTY",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "CollageERP",
+        "attributes": {}
+      },
+      {
+        "id": "b17440a4-ed17-431e-b317-887894876245",
+        "name": "LIBRARIAN",
+        "composite": true,
+        "composites": {
+          "client": {
+            "collage-erp-web": [
+              "LIBRARIAN"
+            ]
+          }
+        },
+        "clientRole": false,
+        "containerId": "CollageERP",
+        "attributes": {}
+      },
+      {
         "id": "b6bda1b6-2736-4665-9a2d-e284dd97b626",
         "name": "offline_access",
         "description": "${role_offline-access}",
@@ -73,6 +96,21 @@
         "name": "uma_authorization",
         "description": "${role_uma_authorization}",
         "composite": false,
+        "clientRole": false,
+        "containerId": "CollageERP",
+        "attributes": {}
+      },
+      {
+        "id": "3601abb2-3330-47ed-99c7-9aa8c8233bae",
+        "name": "STUDENT",
+        "composite": true,
+        "composites": {
+          "client": {
+            "collage-erp-web": [
+              "STUDENT"
+            ]
+          }
+        },
         "clientRole": false,
         "containerId": "CollageERP",
         "attributes": {}
@@ -293,6 +331,22 @@
       ],
       "collage-erp-web": [
         {
+          "id": "8fcd9545-2e68-4c72-886a-7eb5da181d47",
+          "name": "LIBRARIAN",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "4b37a43c-0a27-4e16-a963-7410a421a2c1",
+          "attributes": {}
+        },
+        {
+          "id": "e0a313ac-c17f-41f2-b5a2-82198414c7cb",
+          "name": "STUDENT",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "4b37a43c-0a27-4e16-a963-7410a421a2c1",
+          "attributes": {}
+        },
+        {
           "id": "d67d24f7-ddc2-4ff4-850d-d4b4d5331889",
           "name": "ADMIN",
           "composite": true,
@@ -321,6 +375,21 @@
             "client": {
               "collage-erp-web": [
                 "USER"
+              ]
+            }
+          },
+          "clientRole": true,
+          "containerId": "4b37a43c-0a27-4e16-a963-7410a421a2c1",
+          "attributes": {}
+        },
+        {
+          "id": "3215c0b4-ab1c-458a-b34e-52a04bdb9f3a",
+          "name": "FACULTY",
+          "composite": true,
+          "composites": {
+            "client": {
+              "collage-erp-web": [
+                "FACULTY"
               ]
             }
           },
@@ -426,11 +495,28 @@
   },
   "groups": [
     {
+      "id": "0bfbb45c-1686-4560-bf62-79455fe75e1c",
+      "name": "Faculties",
+      "path": "/Faculties",
+      "attributes": {},
+      "realmRoles": [
+        "FACULTY"
+      ],
+      "clientRoles": {
+        "collage-erp-web": [
+          "FACULTY"
+        ]
+      },
+      "subGroups": []
+    },
+    {
       "id": "551ebd8f-bb48-4b34-b0f4-55243b255b5b",
       "name": "Students",
       "path": "/Students",
       "attributes": {},
-      "realmRoles": [],
+      "realmRoles": [
+        "STUDENT"
+      ],
       "clientRoles": {
         "collage-erp-web": [
           "USER"
@@ -682,6 +768,7 @@
     {
       "id": "4b37a43c-0a27-4e16-a963-7410a421a2c1",
       "clientId": "collage-erp-web",
+      "rootUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
@@ -697,7 +784,7 @@
       "bearerOnly": false,
       "consentRequired": false,
       "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
+      "implicitFlowEnabled": true,
       "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": false,
       "publicClient": true,
@@ -718,7 +805,7 @@
         "saml.client.signature": "false",
         "tls.client.certificate.bound.access.tokens": "false",
         "saml.authnstatement": "false",
-        "display.on.consent.screen": "false",
+        "display.on.consent.screen": "true",
         "saml.onetimeuse.condition": "false"
       },
       "authenticationFlowBindingOverrides": {},
@@ -950,6 +1037,7 @@
           "consentRequired": false,
           "config": {
             "multivalued": "true",
+            "userinfo.token.claim": "true",
             "user.attribute": "foo",
             "id.token.claim": "true",
             "access.token.claim": "true",
@@ -1349,7 +1437,17 @@
     "xXSSProtection": "1; mode=block",
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
-  "smtpServer": {},
+  "smtpServer": {
+    "password": "**********",
+    "starttls": "false",
+    "auth": "true",
+    "port": "465",
+    "host": "smtp.gmail.com",
+    "from": "it17.vijaypatidar@svceindore.ac.in",
+    "fromDisplayName": "Admin",
+    "ssl": "true",
+    "user": "it17.vijaypatidar@svceindore.ac.in"
+  },
   "loginTheme": "keycloak",
   "accountTheme": "keycloak.v2",
   "eventsEnabled": false,
@@ -1371,14 +1469,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
+            "saml-role-list-mapper",
+            "saml-user-attribute-mapper",
             "oidc-full-name-mapper",
             "oidc-sha256-pairwise-sub-mapper",
-            "saml-user-property-mapper",
-            "saml-user-attribute-mapper",
             "oidc-address-mapper",
-            "saml-role-list-mapper",
-            "oidc-usermodel-attribute-mapper",
-            "oidc-usermodel-property-mapper"
+            "oidc-usermodel-property-mapper",
+            "saml-user-property-mapper",
+            "oidc-usermodel-attribute-mapper"
           ]
         }
       },
@@ -1414,14 +1512,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
+            "oidc-full-name-mapper",
+            "oidc-usermodel-property-mapper",
             "oidc-sha256-pairwise-sub-mapper",
             "saml-user-property-mapper",
-            "oidc-address-mapper",
-            "saml-role-list-mapper",
-            "saml-user-attribute-mapper",
-            "oidc-full-name-mapper",
             "oidc-usermodel-attribute-mapper",
-            "oidc-usermodel-property-mapper"
+            "saml-user-attribute-mapper",
+            "oidc-address-mapper",
+            "saml-role-list-mapper"
           ]
         }
       },
@@ -1514,7 +1612,7 @@
   ],
   "authenticationFlows": [
     {
-      "id": "dd99673a-1d8f-4de8-a3d3-36de895591a8",
+      "id": "e7cf059d-9d10-42c7-9bf7-bf59c4ec55f6",
       "alias": "Account verification options",
       "description": "Method with which to verity the existing account",
       "providerId": "basic-flow",
@@ -1538,7 +1636,7 @@
       ]
     },
     {
-      "id": "ef0b03aa-67f5-4d7b-ad04-3247d1989bdd",
+      "id": "383f3c04-df98-4aac-ad91-9a5f5e9f2f10",
       "alias": "Authentication Options",
       "description": "Authentication options.",
       "providerId": "basic-flow",
@@ -1569,7 +1667,7 @@
       ]
     },
     {
-      "id": "0b32a9b0-df5b-4f92-b3c6-301a822af722",
+      "id": "79d3339d-b4a7-427e-ae72-f4551a1f1ea1",
       "alias": "Browser - Conditional OTP",
       "description": "Flow to determine if the OTP is required for the authentication",
       "providerId": "basic-flow",
@@ -1593,7 +1691,7 @@
       ]
     },
     {
-      "id": "5af67af9-b632-46ff-8c6b-fd6922c5b2f3",
+      "id": "1704e9f2-bbaf-4d26-ac05-eff725ba4ee8",
       "alias": "Direct Grant - Conditional OTP",
       "description": "Flow to determine if the OTP is required for the authentication",
       "providerId": "basic-flow",
@@ -1617,7 +1715,7 @@
       ]
     },
     {
-      "id": "32f756df-ed73-4cf7-8bda-3ec19b34e0c5",
+      "id": "64dd346d-cf00-49ec-955c-aa43b8a4e114",
       "alias": "First broker login - Conditional OTP",
       "description": "Flow to determine if the OTP is required for the authentication",
       "providerId": "basic-flow",
@@ -1641,7 +1739,7 @@
       ]
     },
     {
-      "id": "eb955b45-583f-4b40-83d5-a14133b79a19",
+      "id": "5135a989-301b-45c5-a181-226ac4db0c91",
       "alias": "Handle Existing Account",
       "description": "Handle what to do if there is existing account with same email/username like authenticated identity provider",
       "providerId": "basic-flow",
@@ -1665,7 +1763,7 @@
       ]
     },
     {
-      "id": "a962e335-5f51-4575-adab-7acaf22afa59",
+      "id": "445f0250-e120-40e0-93bf-906ddbb9aabb",
       "alias": "Reset - Conditional OTP",
       "description": "Flow to determine if the OTP should be reset or not. Set to REQUIRED to force.",
       "providerId": "basic-flow",
@@ -1689,7 +1787,7 @@
       ]
     },
     {
-      "id": "c2524086-9787-45f0-8bd3-514586a16132",
+      "id": "9e0b4f32-1760-4473-9459-208793e66e03",
       "alias": "User creation or linking",
       "description": "Flow for the existing/non-existing user alternatives",
       "providerId": "basic-flow",
@@ -1714,7 +1812,7 @@
       ]
     },
     {
-      "id": "1974088b-6eb0-445d-958f-d0d9d2cbbac4",
+      "id": "35cef348-b5ce-4787-9681-3775466ed1f9",
       "alias": "Verify Existing Account by Re-authentication",
       "description": "Reauthentication of existing account",
       "providerId": "basic-flow",
@@ -1738,7 +1836,7 @@
       ]
     },
     {
-      "id": "57958b89-3dd4-43a8-8042-ce30b05ab319",
+      "id": "e01bc1a3-9582-4baa-b80f-54967655af17",
       "alias": "browser",
       "description": "browser based authentication",
       "providerId": "basic-flow",
@@ -1776,7 +1874,7 @@
       ]
     },
     {
-      "id": "0fbc6b14-3ed3-4440-8836-70d65428bd99",
+      "id": "850fbe41-96ef-480d-9644-024dc601c136",
       "alias": "clients",
       "description": "Base authentication for clients",
       "providerId": "client-flow",
@@ -1814,7 +1912,7 @@
       ]
     },
     {
-      "id": "ac3604de-8c16-43b7-833a-5960142dbdc7",
+      "id": "4223137a-b345-4b03-ae1d-8ddc09f1bb68",
       "alias": "direct grant",
       "description": "OpenID Connect Resource Owner Grant",
       "providerId": "basic-flow",
@@ -1845,7 +1943,7 @@
       ]
     },
     {
-      "id": "62161048-673c-40eb-8e11-f38ede403f75",
+      "id": "92f4689a-af5e-483f-8702-ff90747aa3f1",
       "alias": "docker auth",
       "description": "Used by Docker clients to authenticate against the IDP",
       "providerId": "basic-flow",
@@ -1862,7 +1960,7 @@
       ]
     },
     {
-      "id": "c0e527de-b483-4618-b387-1f6ba81ee71b",
+      "id": "0ad40c02-7ba8-4805-a635-6ee88d75dd13",
       "alias": "first broker login",
       "description": "Actions taken after first broker login with identity provider account, which is not yet linked to any Keycloak account",
       "providerId": "basic-flow",
@@ -1887,7 +1985,7 @@
       ]
     },
     {
-      "id": "0ddb7759-514d-4a1c-a33d-7b8353a41428",
+      "id": "225f2753-1600-4be1-8862-a86378d25b90",
       "alias": "forms",
       "description": "Username, password, otp and other auth forms.",
       "providerId": "basic-flow",
@@ -1911,7 +2009,7 @@
       ]
     },
     {
-      "id": "e9281edd-bfd7-4691-84e0-1e53a17ec40d",
+      "id": "7e9676fc-034f-4d03-8c0d-56090eaa1ad4",
       "alias": "http challenge",
       "description": "An authentication flow based on challenge-response HTTP Authentication Schemes",
       "providerId": "basic-flow",
@@ -1935,7 +2033,7 @@
       ]
     },
     {
-      "id": "7566ad05-95d2-418a-8d9c-60d2ae4cf6e2",
+      "id": "ca455066-473f-4249-a658-2bdacb9b85c5",
       "alias": "registration",
       "description": "registration flow",
       "providerId": "basic-flow",
@@ -1953,7 +2051,7 @@
       ]
     },
     {
-      "id": "85f7c600-1469-412f-840c-214ac05221bc",
+      "id": "649e9d00-c695-4d23-8fdc-21c3d4018c78",
       "alias": "registration form",
       "description": "registration form",
       "providerId": "form-flow",
@@ -1991,7 +2089,7 @@
       ]
     },
     {
-      "id": "d28ebd99-2aed-48c7-a752-449fc30113c6",
+      "id": "3ac72cdb-c8e2-4bd3-a8f5-fc627a25cca2",
       "alias": "reset credentials",
       "description": "Reset credentials for a user if they forgot their password or something",
       "providerId": "basic-flow",
@@ -2029,7 +2127,7 @@
       ]
     },
     {
-      "id": "b3f9d89f-0f5c-4592-8499-a1eb7a153bc1",
+      "id": "590176b2-9809-461b-9a16-96089fda9a34",
       "alias": "saml ecp",
       "description": "SAML ECP Profile Authentication Flow",
       "providerId": "basic-flow",
@@ -2048,14 +2146,14 @@
   ],
   "authenticatorConfig": [
     {
-      "id": "b5fd2860-7b68-41d7-bae2-8483618591bf",
+      "id": "b9cc8a21-f999-4462-84dd-20dfe437cf9d",
       "alias": "create unique user config",
       "config": {
         "require.password.update.after.registration": "false"
       }
     },
     {
-      "id": "6c352a3b-fcae-425f-93c4-31fae0b369bc",
+      "id": "4d82987e-d7fc-470d-9393-812664e2a3b6",
       "alias": "review profile config",
       "config": {
         "update.profile.on.first.login": "missing"
@@ -2140,5 +2238,5 @@
     "clientOfflineSessionIdleTimeout": "0"
   },
   "keycloakVersion": "12.0.1",
-  "userManagedAccessAllowed": false
+  "userManagedAccessAllowed": true
 }

@@ -1,3 +1,4 @@
+PROJECT_HOST_ADDRESS: ${AUTH_ROOT_URL:http://172.18.0.1}
 spring:
   application:
     name: gateway-service
@@ -7,7 +8,7 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: ${AUTH_ROOT_URL:http://localhost:8180}/auth/realms/CollageERP
+            issuer-uri: ${PROJECT_HOST_ADDRESS}:8180/auth/realms/CollageERP
             user-name-attribute: preferred_username
         registration:
           keycloak:

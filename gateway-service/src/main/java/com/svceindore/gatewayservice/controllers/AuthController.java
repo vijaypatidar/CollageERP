@@ -20,9 +20,8 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Controller
 public class AuthController {
 
-    @Value("${PROJECT_ROOT_URL:http://localhost:8080}")
+    @Value("${PROJECT_HOST_ADDRESS}:8080")
     private String PROJECT_ROOT;
-
 
     @Bean
     RouterFunction<ServerResponse> routerFunction() {
