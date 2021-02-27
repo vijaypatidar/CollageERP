@@ -1,6 +1,6 @@
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
-<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" th:fragment="navigation">
+<nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar pb-3" th:fragment="navigation">
     <link href="/css/navigation.css" rel="stylesheet">
 
     <div class="nav-item-heading">Exam</div>
@@ -36,7 +36,7 @@
     </div>
 
 
-    <div class="nav-item-heading" sec:authorize="hasRole('USER')">My Profile</div>
+    <div class="nav-item-heading" onclick="loadPageInContentDiv('profile/my-profile.html')">My Profile</div>
 
 </nav>
 

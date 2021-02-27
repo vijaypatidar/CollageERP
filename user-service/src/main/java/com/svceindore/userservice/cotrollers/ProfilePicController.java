@@ -3,7 +3,9 @@ package com.svceindore.userservice.cotrollers;
 import com.svceindore.userservice.ProfilePicRepository;
 import com.svceindore.userservice.configs.Roles;
 import com.svceindore.userservice.model.ProfilePicture;
+import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.bson.types.Binary;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,14 +44,17 @@ public class ProfilePicController {
     }
 
     @PostMapping("/profile/update")
-    public String updateSelfProfile(@RequestParam("file") MultipartFile file, Principal principal) throws IOException {
-
+    public ResponseEntity<String> updateSelfProfile(@RequestParam("file") MultipartFile file, Principal principal) throws IOException {
+        String contentType = file.getContentType();
+        if (contentType==null||!contentType.startsWith("image/")){
+            return ResponseEntity.badRequest().body("Invalid content type");
+        }
         ProfilePicture picture = new ProfilePicture();
         picture.setImage(new Binary(file.getBytes()));
         picture.setId(principal.getName());
         profilePicRepository.save(picture);
 
-        return "Profile picture uploaded";
+        return ResponseEntity.ok("Profile picture uploaded");
     }
 
     @PermitAll
