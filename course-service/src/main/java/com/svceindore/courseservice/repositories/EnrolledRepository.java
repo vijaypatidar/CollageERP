@@ -1,6 +1,5 @@
 package com.svceindore.courseservice.repositories;
 
-import com.svceindore.courseservice.models.Course;
 import com.svceindore.courseservice.models.Enrolled;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
