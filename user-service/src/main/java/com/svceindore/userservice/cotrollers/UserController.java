@@ -5,6 +5,7 @@ import com.svceindore.userservice.configs.Roles;
 import com.svceindore.userservice.model.Faculty;
 import com.svceindore.userservice.model.Student;
 import com.svceindore.userservice.model.User;
+import net.minidev.json.JSONObject;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessToken;
 import org.springframework.http.HttpStatus;
@@ -31,25 +32,46 @@ public class UserController {
     @RolesAllowed({Roles.ADMIN_ROLE})
     @PostMapping("/createStudent")
     public ResponseEntity<String> createStudent(@RequestBody Student student) {
-        logger.info("Create student account request "+student.toString());
+        logger.info("Create student account request " + student.toString());
+        JSONObject response = new JSONObject();
         Response re = keycloakClient.createUser(student);
         if (re.getStatus() == 201) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("user account created successfully");
+            response.appendField("status", true);
+            response.appendField("message", "User account created successfully.");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response.toString());
         } else if (re.getStatus() == 409) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("user already exist for this username or email.");
+            response.appendField("status", false);
+            response.appendField("message", "User already exist for this username or email.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response.toString());
+        }else if (re.getStatus()==403){
+            response.appendField("status", false);
+            response.appendField("message", "Internal access denied.");
+            return ResponseEntity.ok(response.toString());
         }
+
         return null;
     }
+
     @RolesAllowed({Roles.ADMIN_ROLE})
     @PostMapping("/createFaculty")
     public ResponseEntity<String> createFaculty(@RequestBody Faculty faculty) {
-        logger.info("Create faculty account request "+faculty.toString());
+        logger.info("Create faculty account request " + faculty.toString());
         Response re = keycloakClient.createUser(faculty);
+        JSONObject response = new JSONObject();
         if (re.getStatus() == 201) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("user account created successfully");
+            response.appendField("status", true);
+            response.appendField("message", "User account created successfully.");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response.toString());
         } else if (re.getStatus() == 409) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("user already exist for this username or email.");
+            response.appendField("status", false);
+            response.appendField("message", "User already exist for this username or email.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response.toString());
+        }else if (re.getStatus()==403){
+            response.appendField("status", false);
+            response.appendField("message", "Internal access denied.");
+            return ResponseEntity.ok(response.toString());
         }
+
         return null;
     }
 

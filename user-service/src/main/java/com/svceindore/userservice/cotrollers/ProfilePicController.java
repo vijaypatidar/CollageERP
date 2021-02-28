@@ -3,8 +3,10 @@ package com.svceindore.userservice.cotrollers;
 import com.svceindore.userservice.ProfilePicRepository;
 import com.svceindore.userservice.configs.Roles;
 import com.svceindore.userservice.model.ProfilePicture;
+import net.minidev.json.JSONObject;
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.bson.types.Binary;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,28 +35,42 @@ public class ProfilePicController {
 
     @RolesAllowed(Roles.ADMIN_ROLE)
     @PostMapping("/profile/update/{username}")
-    public String updateUserProfile(@RequestParam("file") MultipartFile file, @PathVariable String username) throws IOException {
+    public ResponseEntity<?> updateUserProfile(@RequestParam("file") MultipartFile file, @PathVariable String username) throws IOException {
 
-        ProfilePicture picture = new ProfilePicture();
-        picture.setImage(new Binary(file.getBytes()));
-        picture.setId(username);
-        profilePicRepository.save(picture);
-
-        return "Profile picture uploaded";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            ProfilePicture picture = new ProfilePicture();
+            picture.setImage(new Binary(file.getBytes()));
+            picture.setId(username);
+            profilePicRepository.save(picture);
+            jsonObject.appendField("status",true);
+            jsonObject.appendField("message","Profile picture updated successfully.");
+        }catch (Exception e){
+            jsonObject.appendField("status",false);
+            jsonObject.appendField("message","Unable to update profile");
+        }
+        return ResponseEntity.ok(jsonObject.toJSONString());
     }
 
     @PostMapping("/profile/update")
     public ResponseEntity<String> updateSelfProfile(@RequestParam("file") MultipartFile file, Principal principal) throws IOException {
-        String contentType = file.getContentType();
-        if (contentType==null||!contentType.startsWith("image/")){
-            return ResponseEntity.badRequest().body("Invalid content type");
+        JSONObject jsonObject = new JSONObject();
+        try {
+            String contentType = file.getContentType();
+            if (contentType==null||!contentType.startsWith("image/")){
+                return ResponseEntity.badRequest().body("Invalid content type");
+            }
+            ProfilePicture picture = new ProfilePicture();
+            picture.setImage(new Binary(file.getBytes()));
+            picture.setId(principal.getName());
+            profilePicRepository.save(picture);
+            jsonObject.appendField("status",true);
+            jsonObject.appendField("message","Profile picture uploaded successfully.");
+        }catch (Exception e){
+            jsonObject.appendField("status",false);
+            jsonObject.appendField("message","Unable to upload profile");
         }
-        ProfilePicture picture = new ProfilePicture();
-        picture.setImage(new Binary(file.getBytes()));
-        picture.setId(principal.getName());
-        profilePicRepository.save(picture);
-
-        return ResponseEntity.ok("Profile picture uploaded");
+        return ResponseEntity.ok(jsonObject.toJSONString());
     }
 
     @PermitAll
@@ -70,6 +86,7 @@ public class ProfilePicController {
             outputStream.flush();
             outputStream.close();
         } catch (IOException e) {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
             e.printStackTrace();
         }
     }
