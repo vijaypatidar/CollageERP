@@ -41,21 +41,30 @@ public class BranchController {
             return ResponseEntity.ok(res);
         }
 
-        if (branch.getCourseId()!=null&&courseRepository.findById(branch.getCourseId()).isPresent()){
+        if (branch.getCourseId() != null && courseRepository.findById(branch.getCourseId()).isPresent()) {
             res.accumulate("status", true);
             res.accumulate("message", "New branch added.");
             res.accumulate("id", branch.getId());
             branchRepository.insert(branch);
             return ResponseEntity.status(HttpStatus.CREATED).body(res.toString());
-        }else {
-            res.accumulate("status",false);
-            res.accumulate("message","Course not found with courseId="+branch.getCourseId());
+        } else {
+            res.accumulate("status", false);
+            res.accumulate("message", "Course not found with courseId=" + branch.getCourseId());
             return ResponseEntity.ok(res.toString());
         }
     }
 
-    @GetMapping("/getBranchList")
-    public List<Branch> getBranchList() {
-        return branchRepository.findAll();
+    @DeleteMapping("/deleteBranch/{branchId}")
+    public ResponseEntity<?> deleteBranch(@PathVariable String branchId) throws JSONException {
+        branchRepository.deleteById(branchId);
+        JSONObject response = new JSONObject();
+        response.accumulate("status", true);
+        response.accumulate("message", "Branch deleted with id=" + branchId);
+        return ResponseEntity.ok(response.toString());
+    }
+
+    @GetMapping("/getBranchList/{courseId}")
+    public List<Branch> getBranchList(@PathVariable String courseId) {
+        return branchRepository.findAllByCourseId(courseId);
     }
 }
