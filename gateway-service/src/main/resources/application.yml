@@ -31,6 +31,11 @@ spring:
           predicates:
             - Path=/api/library/**
 
+        - id: course-service
+          uri: lb://COURSE-SERVICE
+          predicates:
+            - Path=/api/course/**
+
         - id: user-interface-service
           uri: lb://UI-SERVICE
           predicates:
