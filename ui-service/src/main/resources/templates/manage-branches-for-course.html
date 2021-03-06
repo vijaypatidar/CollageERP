@@ -8,21 +8,19 @@
 <div class="container">
     <div class="row my-3  align-items-center">
         <div class="col-6">
-            <h2 class="h2">Course management</h2>
+            <h2 class="h2" th:text="${courseName+'('+courseId+')'}">Course management</h2>
         </div>
     </div>
 
     <div class="row my-3  align-items-center">
-        <div class="col-6">
-            <button class="btn btn-outline-success" onclick="loadPageInContentDiv('courses/add-course.html')">ADD
+        <div class="col-12">
+            <button class="btn btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/add-branch.html?courseId=${courseId}')|">Add Branch
             </button>
+            <button class="btn btn-outline-danger" th:attr="onclick=|deleteCourse('${courseId}')|" sec:authorize="hasRole('ADMIN')">Delete course</button>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-12">
-            <h6 class="h6">Available courses</h6>
-        </div>
         <div class="col-12">
             <table class="table table-bordered rounded shadow-sm">
                 <thead class="table-dark">
@@ -34,25 +32,26 @@
                         NAME
                     </th>
                     <th>
-                        Duration
+                        HOD
                     </th>
                     <th>
-                        FEE
+                        Contact
                     </th>
                     <th>
-                        ACTIONS
+                        Action
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="align-middle" th:each="course : ${#request.getAttribute('courses')}">
-                    <td th:text="${course.id}"></td>
-                    <td th:text="${course.name}"></td>
-                    <td th:text="${course.duration+' year' }"></td>
-                    <td th:text="${course.totalFee}"></td>
+                <tr class="align-middle" th:each="branch : ${#request.getAttribute('branches')}">
+                    <td th:text="${branch.id}"></td>
+                    <td th:text="${branch.name}"></td>
+                    <td th:text="${branch.hodUsername}"></td>
+                    <td th:text="${branch.hodContact}"></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/manage-branches-for-course.html?courseId=${course.id}')|">Manage</button>
-                        </td>
+                        <button class="btn btn-sm btn-outline-danger" th:attr="onclick=|deleteBranch('${branch.id}')|" sec:authorize="hasRole('ADMIN')">Delete</button>
+                        <button class="btn btn-sm btn-outline-secondary" th:attr="onclick=|alert('${branch.id}')|">Update</button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -61,13 +60,12 @@
 </div>
 
 <script>
-    function deleteCourse(id){
+    function deleteBranch(id){
         const http = new XMLHttpRequest();
-        http.open("DELETE","/api/course/removeCourse/"+id);
+        http.open("DELETE","/api/course/deleteBranch/"+id);
         http.onload = function (){
             if (http.status===200){
                 alert(JSON.parse(http.responseText).message);
-                loadPageInContentDiv("courses/manage-courses.html");
             }
         };
         http.send();

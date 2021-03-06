@@ -10,29 +10,25 @@
         const branchForm = document.forms["branchForm"];
 
         let data = {
+            id: branchForm['id'].value,
             name: branchForm['name'].value,
-            duration: branchForm['duration'].value,
-            totalFee: branchForm['totalFee'].value
+            courseId: branchForm['courseId'].value,
+            hodUsername: branchForm['hodUsername'].value,
+            hodContact: branchForm['hodContact'].value
         };
 
         const http = new XMLHttpRequest();
         // send post request to login url
-        http.open("POST", "/api/course/addNewCourse", true);
+        http.open("POST", "/api/course/addNewBranch", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            if (this.status === 201) {
-                alert(this.responseText);
-            } else {
-                if (this.status === 403) {
-                    // $(this).prop("disabled",false);
-                    alert("Access denied")
 
-                } else if (this.status === 409) {
-                    // $(this).prop("disabled",false);
-                    alert("Username or email already exists")
-                } else {
-                    alert(this.responseText);
-                }
+            if (this.status === 403) {
+                // $(this).prop("disabled",false);
+                alert("Access denied")
+
+            } else {
+                alert(JSON.parse(this.responseText).message);
             }
         };
 
@@ -54,12 +50,12 @@
                   onsubmit="addBranch();return false;">
                 <div class="row g-2">
                     <div class="col-12">
-                        <label class="form-label" for="courseId">Branch Id</label>
+                        <label class="form-label" for="courseId">Course Id</label>
                         <input class="form-control"
                                id="courseId"
-                               name="id"
+                               name="courseId"
                                required
-                               disabled
+                               readonly
                                th:value="${courseId}"
                                type="text">
                         <div class="invalid-feedback">
@@ -67,11 +63,11 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <label class="form-label" for="courseName">Branch Name</label>
+                        <label class="form-label" for="courseName">Course Name</label>
                         <input class="form-control"
                                id="courseName"
-                               name="name"
-                               disabled
+                               name="courseName"
+                               readonly
                                required
                                th:value="${courseName}"
                                type="text">
@@ -103,20 +99,23 @@
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label" for="duration">Course duration<span
-                                class="text-muted">(In years)</span></label>
-                        <input class="form-control" id="duration" type="number">
+                        <label class="form-label" for="hodUsername">HOD username</label>
+                        <input class="form-control" name="hodUsername" required id="hodUsername" type="text">
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label" for="totalFee">Course fee<span
-                                class="text-muted">(In Rupee)</span></label>
-                        <input class="form-control" id="totalFee" type="number">
+                        <label class="form-label" for="hodContact">Dept. Contact</label>
+                        <input class="form-control"
+                               required id="hodContact"
+                               name="hodContact" type="tel">
+                        <div class="invalid-feedback">
+                            Valid contact number require
+                        </div>
                     </div>
 
                 </div>
                 <button class="btn btn-outline-success my-4" id="btnAddDetail"
-                        onclick="checkForm('#branchForm')" type="submit">Add Course
+                        onclick="checkForm('#branchForm')" type="submit">Add Branch
                 </button>
             </form>
         </div>

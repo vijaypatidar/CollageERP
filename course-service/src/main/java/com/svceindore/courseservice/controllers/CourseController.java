@@ -34,7 +34,7 @@ public class CourseController {
         if (course.getName() == null || course.getName().isEmpty()) {
             res.accumulate("status", false);
             res.accumulate("message", "course name required!");
-            return ResponseEntity.ok(res);
+            return ResponseEntity.ok(res.toString());
         }
 
         if (course.getDuration() <= 0) {
@@ -76,13 +76,13 @@ public class CourseController {
         if (course.getId() == null || course.getId().isEmpty()) {
             res.accumulate("status", false);
             res.accumulate("message", "Valid course id required for updating course.");
-            return ResponseEntity.ok(res);
+            return ResponseEntity.ok(res.toString());
         }
 
         if (course.getName() == null || course.getName().isEmpty()) {
             res.accumulate("status", false);
             res.accumulate("message", "course name required!");
-            return ResponseEntity.ok(res);
+            return ResponseEntity.ok(res.toString());
         }
 
         if (course.getDuration() <= 0) {

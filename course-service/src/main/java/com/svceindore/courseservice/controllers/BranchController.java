@@ -33,19 +33,25 @@ public class BranchController {
 
     @RolesAllowed(Roles.ROLE_ADMIN)
     @PostMapping("/addNewBranch")
-    public ResponseEntity<?> createCourse(@RequestBody Branch branch) throws JSONException {
+    public ResponseEntity<?> createBranch(@RequestBody Branch branch) throws JSONException {
         JSONObject res = new JSONObject();
         if (branch.getName() == null || branch.getName().isEmpty()) {
             res.accumulate("status", false);
             res.accumulate("message", "Branch name required!");
-            return ResponseEntity.ok(res);
+            return ResponseEntity.ok(res.toString());
+        }
+
+        if (branchRepository.findById(branch.getId()).isPresent()){
+            res.accumulate("status", false);
+            res.accumulate("message", "Branch already exists with same id. id="+branch.getId());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
         }
 
         if (branch.getCourseId() != null && courseRepository.findById(branch.getCourseId()).isPresent()) {
             res.accumulate("status", true);
             res.accumulate("message", "New branch added.");
             res.accumulate("id", branch.getId());
-            branchRepository.insert(branch);
+            branchRepository.save(branch);
             return ResponseEntity.status(HttpStatus.CREATED).body(res.toString());
         } else {
             res.accumulate("status", false);
