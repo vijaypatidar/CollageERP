@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script>
+    function checkForm(id) {
+        $(id).addClass('was-validated')
+    }
+
+    function addBranch() {
+        //disable button
+        const branchForm = document.forms["branchForm"];
+
+        let data = {
+            name: branchForm['name'].value,
+            duration: branchForm['duration'].value,
+            totalFee: branchForm['totalFee'].value
+        };
+
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/course/addNewCourse", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            if (this.status === 201) {
+                alert(this.responseText);
+            } else {
+                if (this.status === 403) {
+                    // $(this).prop("disabled",false);
+                    alert("Access denied")
+
+                } else if (this.status === 409) {
+                    // $(this).prop("disabled",false);
+                    alert("Username or email already exists")
+                } else {
+                    alert(this.responseText);
+                }
+            }
+        };
+
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col">
+            <h1 class="h2">New Branch</h1>
+        </div>
+    </div>
+
+    <div class="row my-2">
+        <div class="col-12">
+            <form class="needs-validation" id="branchForm" name="branchForm"
+                  onsubmit="addBranch();return false;">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label" for="courseId">Branch Id</label>
+                        <input class="form-control"
+                               id="courseId"
+                               name="id"
+                               required
+                               disabled
+                               th:value="${courseId}"
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="courseName">Branch Name</label>
+                        <input class="form-control"
+                               id="courseName"
+                               name="name"
+                               disabled
+                               required
+                               th:value="${courseName}"
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="branchId">Branch Id</label>
+                        <input class="form-control"
+                               id="branchId"
+                               name="id"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="branchName">Branch Name</label>
+                        <input class="form-control"
+                               id="branchName"
+                               name="name"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="duration">Course duration<span
+                                class="text-muted">(In years)</span></label>
+                        <input class="form-control" id="duration" type="number">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="totalFee">Course fee<span
+                                class="text-muted">(In Rupee)</span></label>
+                        <input class="form-control" id="totalFee" type="number">
+                    </div>
+
+                </div>
+                <button class="btn btn-outline-success my-4" id="btnAddDetail"
+                        onclick="checkForm('#branchForm')" type="submit">Add Course
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -48,10 +48,23 @@ public class CourseController {
             return ResponseEntity.ok(res.toString());
         }
 
+        if (course.getId()==null||course.getId().isEmpty()) {
+            res.accumulate("status", false);
+            res.accumulate("message", "Course id required.");
+            return ResponseEntity.ok(res.toString());
+        }
+
+        if (courseRepository.findById(course.getId()).isPresent()){
+            res.accumulate("status", false);
+            res.accumulate("message", "Course already exists with same id. id="+course.getId());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
+        }
+
+        courseRepository.save(course);
+
         res.accumulate("status", true);
         res.accumulate("message", "New course added.");
         res.accumulate("id", course.getId());
-        courseRepository.insert(course);
         return ResponseEntity.status(HttpStatus.CREATED).body(res.toString());
     }
 
@@ -101,6 +114,7 @@ public class CourseController {
     @RolesAllowed(Roles.ROLE_ADMIN)
     @DeleteMapping("/removeCourse/{courseId}")
     public ResponseEntity<?> deleteCourse(@PathVariable String courseId) throws JSONException {
+        System.out.println("DELETE COURSE "+courseId);
         JSONObject response = new JSONObject();
         courseRepository.deleteById(courseId);
         response.accumulate("status",true);
@@ -108,6 +122,10 @@ public class CourseController {
         return ResponseEntity.ok(response.toString());
     }
 
+    @GetMapping("/courseInfo/{courseId}")
+    public Course getCourseInfo(@PathVariable String courseId){
+        return courseRepository.findById(courseId).get();
+    }
 
     @GetMapping("/getCourseList")
     public List<Course> getCourseList() {
