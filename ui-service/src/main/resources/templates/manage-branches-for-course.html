@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2" th:text="${courseName+'('+courseId+')'}">Course management</h2>
+        </div>
+    </div>
+
+    <div class="row my-3  align-items-center" sec:authorize="hasRole('ADMIN')">
+        <div class="col-12">
+            <button class="btn btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/add-branch.html?courseId=${courseId}')|">Add Branch
+            </button>
+            <button class="btn btn-outline-info" th:attr="onclick=|loadPageInContentDiv('courses/update-course-detail.html?courseId=${courseId}')|">Update</button>
+            <button class="btn btn-outline-danger" th:attr="onclick=|deleteCourse('${courseId}')|">Delete</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered rounded shadow-sm">
+                <thead class="table-dark">
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        HOD
+                    </th>
+                    <th>
+                        Contact
+                    </th>
+                    <th sec:authorize="hasRole('ADMIN')">
+                        Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="align-middle" th:each="branch : ${#request.getAttribute('branches')}">
+                    <td th:text="${branch.id}"></td>
+                    <td th:text="${branch.name}"></td>
+                    <td th:text="${branch.hodUsername}"></td>
+                    <td th:text="${branch.hodContact}"></td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <button class="btn btn-sm btn-outline-danger" th:attr="onclick=|deleteBranch('${branch.id}')|">Delete</button>
+                        <button class="btn btn-sm btn-outline-secondary" th:attr="onclick=|alert('${branch.id}')|">Update</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteBranch(id){
+        const http = new XMLHttpRequest();
+        http.open("DELETE","/api/course/deleteBranch/"+id);
+        http.onload = function (){
+            if (http.status===200){
+                alert(JSON.parse(http.responseText).message);
+            }
+        };
+        http.send();
+    }
+</script>
+</body>
+</html>

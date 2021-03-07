@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script>
+    function checkForm(id) {
+        $(id).addClass('was-validated')
+    }
+
+    function addBranch() {
+        //disable button
+        const branchForm = document.forms["branchForm"];
+
+        let data = {
+            id: branchForm['id'].value,
+            name: branchForm['name'].value,
+            courseId: branchForm['courseId'].value,
+            hodUsername: branchForm['hodUsername'].value,
+            hodContact: branchForm['hodContact'].value
+        };
+
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/course/addNewBranch", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+
+            if (this.status === 403) {
+                // $(this).prop("disabled",false);
+                alert("Access denied")
+
+            } else {
+                alert(JSON.parse(this.responseText).message);
+            }
+        };
+
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col">
+            <h1 class="h2">New Branch</h1>
+        </div>
+    </div>
+
+    <div class="row my-2">
+        <div class="col-12">
+            <form class="needs-validation" id="branchForm" name="branchForm"
+                  onsubmit="addBranch();return false;">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label" for="courseId">Course Id</label>
+                        <input class="form-control"
+                               id="courseId"
+                               name="courseId"
+                               required
+                               readonly
+                               th:value="${courseId}"
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="courseName">Course Name</label>
+                        <input class="form-control"
+                               id="courseName"
+                               name="courseName"
+                               readonly
+                               required
+                               th:value="${courseName}"
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="branchId">Branch Id</label>
+                        <input class="form-control"
+                               id="branchId"
+                               name="id"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="branchName">Branch Name</label>
+                        <input class="form-control"
+                               id="branchName"
+                               name="name"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Book title is required.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="hodUsername">HOD username</label>
+                        <input class="form-control" name="hodUsername" required id="hodUsername" type="text">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="hodContact">Dept. Contact</label>
+                        <input class="form-control"
+                               required id="hodContact"
+                               name="hodContact" type="tel">
+                        <div class="invalid-feedback">
+                            Valid contact number require
+                        </div>
+                    </div>
+
+                </div>
+                <button class="btn btn-outline-success my-4" id="btnAddDetail"
+                        onclick="checkForm('#branchForm')" type="submit">Add Branch
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

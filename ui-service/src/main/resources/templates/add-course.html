@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script>
+    function checkForm(id) {
+        $(id).addClass('was-validated')
+    }
+
+    function addCourse() {
+        //disable button
+        const courseForm = document.forms["courseForm"];
+
+        let data = {
+            id: courseForm['id'].value,
+            name: courseForm['name'].value,
+            duration: courseForm['duration'].value,
+            totalFee: courseForm['totalFee'].value
+        };
+
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/course/addNewCourse", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            if (this.status === 403) {
+                // $(this).prop("disabled",false);
+                alert("Access denied")
+            }
+            alert(JSON.parse(http.responseText).message);
+
+        };
+
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col">
+            <h1 class="h2">New Course</h1>
+        </div>
+    </div>
+
+    <div class="row my-2">
+        <div class="col-12">
+            <form class="needs-validation" id="courseForm" name="courseForm"
+                  onsubmit="addCourse();return false;">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label" for="courseId">Course ID</label>
+                        <input class="form-control"
+                               id="courseId"
+                               name="id"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Course ID is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="courseName">Course Name</label>
+                        <input class="form-control"
+                               id="courseName"
+                               name="name"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Course name is required.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="duration">Course duration<span
+                                class="text-muted">(In years)</span></label>
+                        <input class="form-control" required id="duration" type="number">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="totalFee">Course fee<span
+                                class="text-muted">(In Rupee)</span></label>
+                        <input class="form-control" required id="totalFee" type="number">
+                    </div>
+
+                </div>
+                <button class="btn btn-outline-success my-4" id="btnAddDetail"
+                        onclick="checkForm('#courseForm')" type="submit">Add Course
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

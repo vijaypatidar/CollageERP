@@ -6,21 +6,23 @@ spring:
       discovery:
         enabled: true
         service-id: config-service
-    data:
-      mongodb:
-        host: ${MONGO_DB_HOST_URL:127.0.0.1}
-        port: ${MONGO_DB_HOST_PORT:27017}
-        authentication-database: admin
-        database: library
-        username: ${MONGO_DB_ROOT_USERNAME:admin}
-        password: ${MONGO_DB_ROOT_PASSWORD:root}
+  data:
+    mongodb:
+      host: ${MONGO_DB_HOST_URL:127.0.0.1}
+      port: ${MONGO_DB_HOST_PORT:27017}
+      authentication-database: admin
+      database: course
+      username: ${MONGO_DB_ROOT_USERNAME:admin}
+      password: ${MONGO_DB_ROOT_PASSWORD:root}
 
-  eureka:
-    instance:
-      prefer-ip-address: true
+eureka:
+  instance:
+    prefer-ip-address: true
 
-  keycloak:
-    bearer-only: true
+keycloak:
+  bearer-only: true
 server:
   port: 4001
+  servlet:
+    context-path: "/api/course"
 

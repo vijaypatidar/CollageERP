@@ -1,4 +1,4 @@
-PROJECT_HOST_ADDRESS: ${AUTH_ROOT_URL:http://172.18.0.1}
+PROJECT_HOST_ADDRESS: ${AUTH_ROOT_URL:http://localhost}
 spring:
   application:
     name: gateway-service
@@ -30,6 +30,11 @@ spring:
           uri: lb://LIBRARY-SERVICE
           predicates:
             - Path=/api/library/**
+
+        - id: course-service
+          uri: lb://COURSE-SERVICE
+          predicates:
+            - Path=/api/course/**
 
         - id: user-interface-service
           uri: lb://UI-SERVICE

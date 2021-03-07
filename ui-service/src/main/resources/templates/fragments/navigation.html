@@ -9,6 +9,10 @@
     <div class="nav-item">Declare Result</div>
     <div class="nav-item">View Result</div>
 
+    <div class="nav-item-heading">Courses</div>
+    <div class="nav-item" onclick="loadPageInContentDiv('courses/manage-courses.html')">Manage</div>
+    <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/enrolled-student-detail.html')">Enrolled Student</div>
+
     <div class="nav-item-heading">Schedule</div>
     <div class="nav-item">Time table</div>
     <div class="nav-item" sec:authorize="hasRole('ADMIN')">Manage</div>

@@ -22,7 +22,7 @@ public class Branch {
     private String id;
     private String name;
     private String courseId;
-    private String hodName;
+    private String hodUsername;
     private String hodContact;
 
 
