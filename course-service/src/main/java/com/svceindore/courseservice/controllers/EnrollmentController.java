@@ -1,5 +1,6 @@
 package com.svceindore.courseservice.controllers;
 
+import com.svceindore.courseservice.configs.Roles;
 import com.svceindore.courseservice.models.Enrolled;
 import com.svceindore.courseservice.repositories.BranchRepository;
 import com.svceindore.courseservice.repositories.CourseRepository;
@@ -8,9 +9,12 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.security.RolesAllowed;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Vijay Patidar
@@ -29,6 +33,7 @@ public class EnrollmentController {
         this.enrolledRepository = enrolledRepository;
     }
 
+    @RolesAllowed(Roles.ROLE_ADMIN)
     @PostMapping("/enrollStudent")
     public ResponseEntity<?> enrollStudent(@RequestBody Enrolled enrolled) throws JSONException {
         System.out.println(enrolled);
@@ -38,6 +43,7 @@ public class EnrollmentController {
 
             if (enrolled.getBranchId() != null && branchRepository.findById(enrolled.getBranchId()).isPresent()) {
 
+                enrolled.setEnrollmentDate(new Date());
                 enrolledRepository.insert(enrolled);
                 res.accumulate("status",true);
                 res.accumulate("message","Enrolled successfully");
@@ -55,4 +61,31 @@ public class EnrollmentController {
             return ResponseEntity.ok(res.toString());
         }
     }
+
+    @RolesAllowed(Roles.ROLE_ADMIN)
+    @GetMapping("/enrolledStudents")
+    public List<Enrolled> getEnrolledStudents(@RequestParam(required = false,defaultValue = "") String courseId,
+                                              @RequestParam(required = false,defaultValue = "") String branchId){
+        if (courseId.isEmpty()){
+            return enrolledRepository.findAll();
+        }else {
+            if (branchId.isEmpty()){
+                return enrolledRepository.findAllByCourseId(courseId);
+            }else {
+                return enrolledRepository.findAllByCourseIdAndBranchId(courseId,branchId);
+            }
+        }
+    }
+
+    @RolesAllowed(Roles.ROLE_ADMIN)
+    @GetMapping("/enrollDetail/{enrollId}")
+    public ResponseEntity<?> getEnrollInfo(@PathVariable String enrollId){
+        Optional<Enrolled> optional = enrolledRepository.findById(enrollId);
+        if (optional.isPresent()){
+            return ResponseEntity.ok(optional.get());
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 }

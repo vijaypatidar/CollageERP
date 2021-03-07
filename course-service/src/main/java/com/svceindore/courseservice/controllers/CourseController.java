@@ -69,7 +69,7 @@ public class CourseController {
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
-    @PostMapping("/updateCourse")
+    @PutMapping("/updateCourse")
     public ResponseEntity<?> updateCourse(@RequestBody Course course) throws JSONException {
         JSONObject res = new JSONObject();
 
@@ -102,7 +102,7 @@ public class CourseController {
             res.accumulate("status", true);
             res.accumulate("message", "Course detail updated.");
             res.accumulate("id", course.getId());
-            courseRepository.insert(course);
+            courseRepository.save(course);
             return ResponseEntity.status(HttpStatus.CREATED).body(res.toString());
         } else {
             res.accumulate("status", false);

@@ -60,6 +60,7 @@ public class BranchController {
         }
     }
 
+    @RolesAllowed(Roles.ROLE_ADMIN)
     @DeleteMapping("/deleteBranch/{branchId}")
     public ResponseEntity<?> deleteBranch(@PathVariable String branchId) throws JSONException {
         branchRepository.deleteById(branchId);

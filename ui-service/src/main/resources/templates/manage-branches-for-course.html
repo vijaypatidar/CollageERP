@@ -12,11 +12,12 @@
         </div>
     </div>
 
-    <div class="row my-3  align-items-center">
+    <div class="row my-3  align-items-center" sec:authorize="hasRole('ADMIN')">
         <div class="col-12">
             <button class="btn btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/add-branch.html?courseId=${courseId}')|">Add Branch
             </button>
-            <button class="btn btn-outline-danger" th:attr="onclick=|deleteCourse('${courseId}')|" sec:authorize="hasRole('ADMIN')">Delete course</button>
+            <button class="btn btn-outline-info" th:attr="onclick=|loadPageInContentDiv('courses/update-course-detail.html?courseId=${courseId}')|">Update</button>
+            <button class="btn btn-outline-danger" th:attr="onclick=|deleteCourse('${courseId}')|">Delete</button>
         </div>
     </div>
 
@@ -29,7 +30,7 @@
                         ID
                     </th>
                     <th>
-                        NAME
+                        Name
                     </th>
                     <th>
                         HOD
@@ -37,7 +38,7 @@
                     <th>
                         Contact
                     </th>
-                    <th>
+                    <th sec:authorize="hasRole('ADMIN')">
                         Action
                     </th>
                 </tr>
@@ -48,8 +49,8 @@
                     <td th:text="${branch.name}"></td>
                     <td th:text="${branch.hodUsername}"></td>
                     <td th:text="${branch.hodContact}"></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-danger" th:attr="onclick=|deleteBranch('${branch.id}')|" sec:authorize="hasRole('ADMIN')">Delete</button>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <button class="btn btn-sm btn-outline-danger" th:attr="onclick=|deleteBranch('${branch.id}')|">Delete</button>
                         <button class="btn btn-sm btn-outline-secondary" th:attr="onclick=|alert('${branch.id}')|">Update</button>
                     </td>
                 </tr>

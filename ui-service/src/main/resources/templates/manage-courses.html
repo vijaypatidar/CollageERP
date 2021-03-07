@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="row my-3  align-items-center">
+    <div class="row my-3  align-items-center" sec:authorize="hasRole('ADMIN')">
         <div class="col-6">
             <button class="btn btn-outline-success" onclick="loadPageInContentDiv('courses/add-course.html')">ADD
             </button>
@@ -51,8 +51,17 @@
                     <td th:text="${course.duration+' year' }"></td>
                     <td th:text="${course.totalFee}"></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/manage-branches-for-course.html?courseId=${course.id}')|">Manage</button>
-                        </td>
+                        <button class="btn btn-sm btn-outline-success"
+                                sec:authorize="hasRole('ADMIN')"
+                                th:attr="onclick=|loadPageInContentDiv('courses/manage-branches-for-course.html?courseId=${course.id}')|">
+                            Manage
+                        </button>
+                            <button class="btn btn-sm btn-outline-success"
+                                    sec:authorize="!hasRole('ADMIN')"
+                                th:attr="onclick=|loadPageInContentDiv('courses/manage-branches-for-course.html?courseId=${course.id}')|">
+                            View
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -61,11 +70,11 @@
 </div>
 
 <script>
-    function deleteCourse(id){
+    function deleteCourse(id) {
         const http = new XMLHttpRequest();
-        http.open("DELETE","/api/course/removeCourse/"+id);
-        http.onload = function (){
-            if (http.status===200){
+        http.open("DELETE", "/api/course/removeCourse/" + id);
+        http.onload = function () {
+            if (http.status === 200) {
                 alert(JSON.parse(http.responseText).message);
                 loadPageInContentDiv("courses/manage-courses.html");
             }
