@@ -21,7 +21,7 @@
         <div class="nav-item-heading">Students</div>
         <div class="nav-item" onclick="loadPageInContentDiv('student/create-student-account.html')">New Student</div>
         <div class="nav-item">Manage Student</div>
-        <div class="nav-item">Reset Password</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('user/reset-user-password.html')">Reset Password</div>
     </div>
     <div>
         <div class="nav-item-heading">Library</div>
@@ -37,10 +37,11 @@
         <div class="nav-item-heading" sec:authorize="hasRole('ADMIN')">Faculties</div>
         <div class="nav-item" onclick="loadPageInContentDiv('faculty/create-faculty-account.html')">New Faculty</div>
         <div class="nav-item">Manage Faculty</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('user/reset-user-password.html')">Reset Password</div>
     </div>
 
 
-    <div class="nav-item-heading" onclick="loadPageInContentDiv('profile/my-profile.html')">My Profile</div>
+    <div class="nav-item-heading" onclick="loadPageInContentDiv('user/my-profile.html')">My Profile</div>
 
 </nav>
 

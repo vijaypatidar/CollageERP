@@ -5,6 +5,7 @@ import com.svceindore.userservice.model.Student;
 import com.svceindore.userservice.model.User;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,6 +75,37 @@ public class KeycloakClient {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void resetPassword(String username, String newPassword){
+        List<UserRepresentation> search = keycloak.realm(realm).users().search(username, true);
+        if (!search.isEmpty()){
+
+            //setting new password
+            CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
+            credentialRepresentation.setTemporary(false);
+            credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
+            credentialRepresentation.setValue(newPassword);
+
+            UserResource userResource = keycloak.realm(realm).users().get(search.get(0).getId());
+            userResource.resetPassword(credentialRepresentation);
+
+        }
+    }
+
+    public User getUser(String username){
+        List<UserRepresentation> search = keycloak.realm(realm).users().search(username, true);
+        if (search.isEmpty()){
+            return null;
+        }else {
+            UserRepresentation userRepresentation = search.get(0);
+            return new User(
+                    userRepresentation.getUsername(),
+                    userRepresentation.getEmail(),
+                    userRepresentation.getFirstName(),
+                    userRepresentation.getLastName()
+            );
+        }
     }
 
 }
