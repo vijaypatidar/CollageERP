@@ -4,21 +4,11 @@
 
 <nav class="navbar p-0" th:fragment="header">
     <script>
-        function logout() {
-            const http = new XMLHttpRequest();
-            http.open('GET', '/auth/logout');
-            http.onreadystatechange = function () {
-                if (this.readyState === 4) {
-                    if (this.status === 200) {
-                        window.location = window.location.origin + "/home.html"
-                    }
-                }
-            };
-            http.send();
-        }
         function login() {
-            console.log(window.location)
-            window.location = window.location.origin + "/auth/login"
+            window.location = window.location.origin + "/auth/login";
+        }
+        function logout() {
+            window.location = window.location.origin + "/auth/logout";
         }
     </script>
     <link href="/css/header.css" rel="stylesheet">
