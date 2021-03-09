@@ -20,19 +20,20 @@
         http.open("POST", "/api/library/issueBook", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            $("#btnAddDetail").prop("disabled", false);
-            if (this.status === 201) {
-                alert(this.responseText);
-            } else {
-                if (this.status === 403) {
-                    // $(this).prop("disabled",false);
-                    alert("Access denied")
-                } else if (this.status === 409) {
-                    // $(this).prop("disabled",false);
-                    alert("Book already exits with same copy id");
-                } else {
-                    alert(this.responseText);
+            $("#btnIssueBook").prop("disabled", false);
+            if (http.status!==403){
+                let res = JSON.parse(this.responseText);
+                if (res.status){
+                    $("#alertSuccess").show();
+                    $("#alertFail").hide();
+                    document.getElementById('successMessage').innerText = res.message;
+                }else {
+                    $("#alertSuccess").hide();
+                    $("#alertFail").show();
+                    document.getElementById('errorMessage').innerText = res.message;
                 }
+            }else {
+                alert(this.responseText)
             }
         };
 
@@ -73,6 +74,14 @@
                   onsubmit="issueBook();return false;">
                 <div class="row">
                     <div class="col-8">
+                        <div class="alert alert-success" style="display: none" id="alertSuccess" role="alert">
+                            <strong>Success!</strong> <span id="successMessage"></span>
+                        </div>
+                        <div class="alert alert-danger" style="display: none" id="alertFail" role="alert">
+                            <strong>Failed!</strong> <span id="errorMessage"></span>
+                        </div>
+                    </div>
+                    <div class="col-8">
                         <div class="row g-2">
                             <div class="col-12">
                                 <label class="form-label" for="username">Username</label>
@@ -87,6 +96,7 @@
                                 <input class="form-control"
                                        id="bid"
                                        name="bid"
+                                       required
                                        th:value="${bid}" type="text">
 
                             </div>

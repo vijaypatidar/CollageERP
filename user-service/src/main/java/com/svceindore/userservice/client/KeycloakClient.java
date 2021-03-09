@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
@@ -77,7 +78,7 @@ public class KeycloakClient {
         return null;
     }
 
-    public void resetPassword(String username, String newPassword){
+    public void resetPassword(String username, String newPassword) throws NotFoundException{
         List<UserRepresentation> search = keycloak.realm(realm).users().search(username, true);
         if (!search.isEmpty()){
 
@@ -90,13 +91,15 @@ public class KeycloakClient {
             UserResource userResource = keycloak.realm(realm).users().get(search.get(0).getId());
             userResource.resetPassword(credentialRepresentation);
 
+        }else {
+            throw new NotFoundException("User not found with username = "+username);
         }
     }
 
-    public User getUser(String username){
+    public User getUser(String username) throws NotFoundException{
         List<UserRepresentation> search = keycloak.realm(realm).users().search(username, true);
         if (search.isEmpty()){
-            return null;
+            throw new NotFoundException("User not found with username = "+username);
         }else {
             UserRepresentation userRepresentation = search.get(0);
             return new User(

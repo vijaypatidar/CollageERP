@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.security.Principal;
 import java.util.Set;
@@ -109,9 +110,14 @@ public class UserController {
             res.appendField("status", false);
             res.appendField("message", "password required");
         } else {
-            keycloakClient.resetPassword(resetPassword.getUsername(), resetPassword.getPassword());
-            res.appendField("status", true);
-            res.appendField("message", "Password changed successfully.");
+            try {
+                keycloakClient.resetPassword(resetPassword.getUsername(), resetPassword.getPassword());
+                res.appendField("status", true);
+                res.appendField("message", "Password changed successfully.");
+            }catch (NotFoundException e){
+                res.appendField("status", false);
+                res.appendField("message", "User not found.");
+            }
         }
 
         return ResponseEntity.ok(res.toString());

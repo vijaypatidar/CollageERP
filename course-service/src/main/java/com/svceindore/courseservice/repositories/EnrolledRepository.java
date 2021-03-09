@@ -14,4 +14,6 @@ public interface EnrolledRepository extends MongoRepository<Enrolled,String> {
     List<Enrolled> findAllByCourseId(String courseId);
 
     List<Enrolled> findAllByCourseIdAndBranchId(String courseId, String branchId);
+
+    List<Enrolled> findAllByCourseIdAndBranchIdAndStudentUsername(String courseId, String branchId, String studentUsername);
 }

@@ -20,6 +20,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ExamDetail {
     @Id
     private String id;
+    private String examGroupId;
+    private String courseId;
+    private String branchId;
+    private int batchYear;
     private boolean onlineMode;
     private boolean resultDeclared;
     private int totalMark;

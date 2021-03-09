@@ -24,19 +24,20 @@
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
                 $("#btnAddDetail").prop("disabled", false);
-                if (this.status === 201) {
-                    alert(this.responseText);
-                } else {
-                    if (this.status === 403) {
-                        // $(this).prop("disabled",false);
-                        alert("Access denied")
-                    } else if (this.status === 409) {
-                        // $(this).prop("disabled",false);
-                        alert("Book already exits with same copy id");
-                    } else {
-                        alert(this.responseText);
-                    }
+            if (http.status!==403){
+                let res = JSON.parse(this.responseText);
+                if (res.status){
+                    $("#alertSuccess").show();
+                    $("#alertFail").hide();
+                    document.getElementById('successMessage').innerText = res.message;
+                }else {
+                    $("#alertSuccess").hide();
+                    $("#alertFail").show();
+                    document.getElementById('errorMessage').innerText = res.message;
                 }
+            }else {
+                alert(this.responseText)
+            }
         };
 
         http.send(JSON.stringify(data));
@@ -45,8 +46,17 @@
 <body>
 <div class="container">
     <div class="row my-2">
-        <div class="col-md-8 offset-md-2">
-            <h1 class="h2 my-3">Add Book copy</h1>
+        <h1 class="h2 my-3">Add Book copy</h1>
+        <div class="col-12">
+            <div class="alert alert-success" style="display: none" id="alertSuccess" role="alert">
+                <strong>Success!</strong> <span id="successMessage"></span>
+            </div>
+            <div class="alert alert-danger" style="display: none" id="alertFail" role="alert">
+                <strong>Failed!</strong> <span id="errorMessage"></span>
+            </div>
+        </div>
+
+        <div class="col-12">
             <form class="mb-3 needs-validation" id="bookDetailForm" name="bookDetail"
                   onsubmit="addBookCopy();return false;">
                 <div class="row g-2">

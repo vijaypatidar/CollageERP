@@ -8,6 +8,7 @@ import com.svceindore.libraryservice.models.wrappers.BookIssueRequest;
 import com.svceindore.libraryservice.repositories.BookDetailRepository;
 import com.svceindore.libraryservice.repositories.BookRepository;
 import com.svceindore.libraryservice.repositories.HistoryRepository;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,19 +45,23 @@ public class BookController {
     @RolesAllowed({Roles.ROLE_LIBRARIAN})
     @PostMapping("/bookCopy")
     public ResponseEntity<?> addBookCopy(@RequestBody Book book) {
-
+        JSONObject response = new JSONObject();
+        response.appendField("status", false);
         if (book.getBid() == null || book.getBid().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body("Book id(bid) required.");
+            response.appendField("message", "Book id(bid) required.");
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(response.toString());
         }
 
         //check for valid id
         if (book.getId() == null || book.getId().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body("Book id required.");
+            response.appendField("message", "Book id required.");
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(response.toString());
         }
 
         //check if book with this id already exists
         if (bookRepository.findById(book.getId()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Book already exits with id = " + book.getId());
+            response.appendField("message", "Book already exits with id = " + book.getId());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response.toString());
         }
 
 
@@ -69,21 +74,27 @@ public class BookController {
             bookDetail.setAvailableCopies(bookDetail.getAvailableCopies() + 1);
             bookRepository.save(book);
             bookDetailRepository.save(bookDetail);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Book copy added, id = " + book.getId());
+            response.appendField("status", true);
+            response.appendField("message", "Book copy added, id = " + book.getId());
+            response.appendField("id",book.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response.toString());
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body("Unable add book, invalid bid");
+            response.appendField("message", "Unable add book, invalid bid");
+            return ResponseEntity.status(HttpStatus.OK).body(response.toString());
         }
     }
 
     @RolesAllowed({Roles.ROLE_LIBRARIAN})
     @PostMapping("/issueBook")
     public ResponseEntity<?> issueBook(@RequestBody BookIssueRequest bookIssueRequest) {
+        JSONObject response = new JSONObject();
+        response.appendField("stauts", false);
         String bid = bookIssueRequest.getBid();
         Optional<Book> bookOptional = bookRepository.findById(bid);
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
             if (book.getIssuedTo() != null && !book.getIssuedTo().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.OK).body("Book already issued to " + book.getIssuedTo());
+                response.appendField("message", "Book already issued to " + book.getIssuedTo());
             } else {
                 book.setIssuedTo(bookIssueRequest.getUsername());
                 book.setIssuedOn(new Date());
@@ -98,22 +109,29 @@ public class BookController {
                 //save to history
                 historyRepository.insert(history);
 
-                incrementAvailableBookCountBy(book.getBid(),-1);
+                incrementAvailableBookCountBy(book.getBid(), -1);
 
-                return ResponseEntity.status(HttpStatus.OK).body("Book issued");
+                response.appendField("status", true);
+                response.appendField("message", "Book issued to " + bookIssueRequest.getUsername());
             }
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body("Book not found with this code");
+            response.appendField("message", "Book not found with this code");
         }
+        return ResponseEntity.status(HttpStatus.OK).body(response.toString());
     }
 
     @RolesAllowed({Roles.ROLE_LIBRARIAN})
     @PostMapping("/submitBook")
     public ResponseEntity<?> submitBook(@RequestBody BookIssueRequest bookIssueRequest) {
+        JSONObject res = new JSONObject();
+        res.appendField("status", false);
+
         String bid = bookIssueRequest.getBid();
-        if (bid==null||bid.isEmpty()){
-            return ResponseEntity.ok().body("Book id required.");
+        if (bid == null || bid.isEmpty()) {
+            res.appendField("message","Book id required.");
+            return ResponseEntity.ok().body(res.toString());
         }
+
         Optional<Book> bookOptional = bookRepository.findById(bid);
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
@@ -126,32 +144,36 @@ public class BookController {
                 //calculate fine and update history
                 history.setSubmittedOn(new Date());
                 long divideBy = 86400000;//24*60*60*1000
-                int days = (int) ((history.getSubmittedOn().getTime() - history.getIssuedOn().getTime()) /divideBy);
+                int days = (int) ((history.getSubmittedOn().getTime() - history.getIssuedOn().getTime()) / divideBy);
 
-                if (days>bookIssuedForDays){
-                    int fine = finePerDay*(days-bookIssuedForDays);
+                if (days > bookIssuedForDays) {
+                    int fine = finePerDay * (days - bookIssuedForDays);
                     history.setFine(fine);
                 }
 
-                incrementAvailableBookCountBy(book.getBid(),1);
+                incrementAvailableBookCountBy(book.getBid(), 1);
                 //saving updated info
                 historyRepository.save(history);
 
-                return ResponseEntity.status(HttpStatus.OK).body("Book submitted");
+                res.appendField("status",true);
+                res.appendField("message","Book submitted successfully.");
+                return ResponseEntity.status(HttpStatus.OK).body(res.toString());
             } else {
-                return ResponseEntity.status(HttpStatus.OK).body("Book is not issued.");
+                res.appendField("message","Book is not issued.");
+                return ResponseEntity.status(HttpStatus.OK).body(res.toString());
             }
         } else {
-            return ResponseEntity.status(HttpStatus.OK).body("Book not found with this code");
+            res.appendField("message","Book not found with this code");
+            return ResponseEntity.status(HttpStatus.OK).body(res.toString());
         }
     }
 
 
-    private void incrementAvailableBookCountBy(String bid,int n){
+    private void incrementAvailableBookCountBy(String bid, int n) {
         Optional<BookDetail> optional = bookDetailRepository.findById(bid);
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             BookDetail book = optional.get();
-            book.setAvailableCopies(book.getAvailableCopies()+n);
+            book.setAvailableCopies(book.getAvailableCopies() + n);
             bookDetailRepository.save(book);
         }
     }

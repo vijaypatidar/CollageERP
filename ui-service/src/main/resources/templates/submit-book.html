@@ -19,19 +19,20 @@
         http.open("POST", "/api/library/submitBook", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            $("#btnAddDetail").prop("disabled", false);
-            if (this.status === 201) {
-                alert(this.responseText);
-            } else {
-                if (this.status === 403) {
-                    // $(this).prop("disabled",false);
-                    alert("Access denied")
-                } else if (this.status === 409) {
-                    // $(this).prop("disabled",false);
-                    alert("Book already exits with same copy id");
-                } else {
-                    alert(this.responseText);
+            $("#btnSubmitBook").prop("disabled", false);
+            if (http.status!==403){
+                let res = JSON.parse(this.responseText);
+                if (res.status){
+                    $("#alertSuccess").show();
+                    $("#alertFail").hide();
+                    document.getElementById('successMessage').innerText = res.message;
+                }else {
+                    $("#alertSuccess").hide();
+                    $("#alertFail").show();
+                    document.getElementById('errorMessage').innerText = res.message;
                 }
+            }else {
+                alert(this.responseText)
             }
         };
 
@@ -54,6 +55,15 @@
             <form class="needs-validation" name="submitBookForm"
                   onsubmit="submitBook();return false;">
                 <div class="row g-2">
+                    <div class="col-12">
+                        <div class="alert alert-success" style="display: none" id="alertSuccess" role="alert">
+                            <strong>Success!</strong> <span id="successMessage"></span>
+                        </div>
+                        <div class="alert alert-danger" style="display: none" id="alertFail" role="alert">
+                            <strong>Failed!</strong> <span id="errorMessage"></span>
+                        </div>
+                    </div>
+
                     <div class="col-12">
                         <label class="form-label" for="bid">Book Id</label>
 

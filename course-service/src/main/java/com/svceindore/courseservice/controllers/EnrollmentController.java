@@ -2,9 +2,11 @@ package com.svceindore.courseservice.controllers;
 
 import com.svceindore.courseservice.configs.Roles;
 import com.svceindore.courseservice.models.Enrolled;
+import com.svceindore.courseservice.models.User;
 import com.svceindore.courseservice.repositories.BranchRepository;
 import com.svceindore.courseservice.repositories.CourseRepository;
 import com.svceindore.courseservice.repositories.EnrolledRepository;
+import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -26,11 +28,12 @@ public class EnrollmentController {
     private final CourseRepository courseRepository;
     private final BranchRepository branchRepository;
     private final EnrolledRepository enrolledRepository;
-
-    public EnrollmentController(CourseRepository courseRepository, BranchRepository branchRepository, EnrolledRepository enrolledRepository) {
+    private final KeycloakRestTemplate restTemplate;
+    public EnrollmentController(CourseRepository courseRepository, BranchRepository branchRepository, EnrolledRepository enrolledRepository, KeycloakRestTemplate restTemplate) {
         this.courseRepository = courseRepository;
         this.branchRepository = branchRepository;
         this.enrolledRepository = enrolledRepository;
+        this.restTemplate = restTemplate;
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
@@ -39,15 +42,36 @@ public class EnrollmentController {
         System.out.println(enrolled);
         JSONObject res = new JSONObject();
 
+
         if (enrolled.getCourseId() != null && courseRepository.findById(enrolled.getCourseId()).isPresent()) {
 
             if (enrolled.getBranchId() != null && branchRepository.findById(enrolled.getBranchId()).isPresent()) {
+                //checking for previous record for duplicate
+                List<Enrolled> enrolls = enrolledRepository.findAllByCourseIdAndBranchIdAndStudentUsername(
+                        enrolled.getCourseId(),
+                        enrolled.getBranchId(),
+                        enrolled.getStudentUsername()
+                );
 
-                enrolled.setEnrollmentDate(new Date());
-                enrolledRepository.insert(enrolled);
-                res.accumulate("status",true);
-                res.accumulate("message","Enrolled successfully");
-                res.accumulate("id",enrolled.getId());
+                if (!enrolls.isEmpty()) {
+                    res.accumulate("status",false);
+                    res.accumulate("message","Already enrolled in this course.");
+                    res.accumulate("id",enrolls.get(0).getId());
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
+                }
+                ResponseEntity<User> entity = restTemplate.getForEntity("lb://user-service/api/user/profile/" + enrolled.getStudentUsername(), User.class);
+                User u = entity.getBody();
+                if (entity.getStatusCodeValue()==200&&u!=null){
+                    enrolled.setStudentName(u.getFirstName()+" "+u.getLastName());
+                    enrolled.setEnrollmentDate(new Date());
+                    enrolledRepository.insert(enrolled);
+                    res.accumulate("status",true);
+                    res.accumulate("message","Enrolled successfully");
+                    res.accumulate("id",enrolled.getId());
+                }else {
+                    res.accumulate("status",false);
+                    res.accumulate("message","Invalid studentUsername");
+                }
                 return ResponseEntity.ok(res.toString());
             }else {
                 res.accumulate("status", false);

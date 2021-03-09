@@ -29,6 +29,7 @@ public class Enrolled {
     @Indexed
     private String branchId;
     private String studentUsername;
+    private String studentName;
     private Date enrollmentDate;
 
     @Override

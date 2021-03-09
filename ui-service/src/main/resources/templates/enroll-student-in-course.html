@@ -18,7 +18,20 @@
         http.open("POST","/api/course/enrollStudent");
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function (){
-            alert(http.responseText)
+            if (http.status!==403){
+                let res = JSON.parse(this.responseText);
+                if (res.status){
+                    $("#alertSuccess").show();
+                    $("#alertFail").hide();
+                    document.getElementById('successMessage').innerText = res.message;
+                }else {
+                    $("#alertSuccess").hide();
+                    $("#alertFail").show();
+                    document.getElementById('errorMessage').innerText = res.message;
+                }
+            }else {
+                alert(this.responseText)
+            }
         };
         http.send(JSON.stringify(data));
         return false;
@@ -48,9 +61,16 @@
             <form class="mb-3 needs-validation" id="courseEnrollmentForm" name="enrollStudentForm"
                   onsubmit="return enrollStudent();">
                 <div class="row g-2">
-
                     <div class="col-12">
-                        <label class="form-label" for="username">Username</label>
+                        <div class="alert alert-success" style="display: none" id="alertSuccess" role="alert">
+                            <strong>Success!</strong> <span id="successMessage"></span>
+                        </div>
+                        <div class="alert alert-danger" style="display: none" id="alertFail" role="alert">
+                            <strong>Failed!</strong> <span id="errorMessage"></span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="username">Student Username</label>
                         <div class="input-group">
                             <span class="input-group-text">@</span>
                             <input class="form-control rounded-end" id="username" name="studentUsername" th:value="${studentUsername}" placeholder="Username"
@@ -90,8 +110,7 @@
                     <hr class="my-4">
 
                     <button class="btn btn-outline-success" id="btnCreate"
-                            onclick="checkForm('#enrollStudentForm')" type="submit">Continue
-                        to registration
+                            onclick="checkForm('#enrollStudentForm')" type="submit">Enroll Student
                     </button>
                 </div>
             </form>

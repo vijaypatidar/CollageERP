@@ -73,7 +73,7 @@ public class CoursesController {
     }
 
     @GetMapping("enroll-student-in-course.html")
-    public String enrollStudent(Model model,@RequestParam String studentUsername){
+    public String enrollStudent(Model model,@RequestParam(required = false,defaultValue = "") String studentUsername){
         ResponseEntity<Course[]> entity = restTemplate.getForEntity("lb://course-service/api/course/getCourseList", Course[].class);
         model.addAttribute("studentUsername",studentUsername);
         model.addAttribute("courses",entity.getBody());

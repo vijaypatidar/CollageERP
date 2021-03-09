@@ -27,7 +27,9 @@
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
             if (this.status === 201) {
-                loadPageInContentDiv("library/add-book-copy.html?bookId=" + this.responseText);
+                let res = JSON.parse(this.responseText);
+                console.log(res)
+                loadPageInContentDiv("library/add-book-copy.html?bookId=" + res.id);
             } else {
                 $("#btnAddDetail").prop("disabled", false);
                 if (this.status === 403) {
