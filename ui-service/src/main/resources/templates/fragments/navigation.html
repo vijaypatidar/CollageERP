@@ -14,7 +14,7 @@
     <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/enroll-student-in-course.html')">Enroll student</div>
     <div class="nav-item" sec:authorize="!hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/manage-courses.html')">Explore</div>
     <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/enrolled-student-detail.html')">Enrolled Student</div>
-
+    <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/manage-session.html')">Sessions</div>
     <div class="nav-item-heading">Schedule</div>
     <div class="nav-item">Time table</div>
     <div class="nav-item" sec:authorize="hasRole('ADMIN')">Manage</div>

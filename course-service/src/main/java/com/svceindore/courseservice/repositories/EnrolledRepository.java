@@ -11,9 +11,13 @@ import java.util.List;
  * Time: 5:00 PM
  **/
 public interface EnrolledRepository extends MongoRepository<Enrolled,String> {
+    List<Enrolled> findAllBySessionId(String sessionId);
     List<Enrolled> findAllByCourseId(String courseId);
+    List<Enrolled> findAllByCourseIdAndSessionId(String courseId, String sessionId);
 
     List<Enrolled> findAllByCourseIdAndBranchId(String courseId, String branchId);
+
+    List<Enrolled> findAllByCourseIdAndBranchIdAndSessionId(String courseId, String branchId, String sessionId);
 
     List<Enrolled> findAllByCourseIdAndBranchIdAndStudentUsername(String courseId, String branchId, String studentUsername);
 }

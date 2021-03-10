@@ -21,18 +21,18 @@
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
             $("#btnIssueBook").prop("disabled", false);
-            if (http.status!==403){
+            if (http.status !== 403) {
                 let res = JSON.parse(this.responseText);
-                if (res.status){
+                if (res.status) {
                     $("#alertSuccess").show();
                     $("#alertFail").hide();
                     document.getElementById('successMessage').innerText = res.message;
-                }else {
+                } else {
                     $("#alertSuccess").hide();
                     $("#alertFail").show();
                     document.getElementById('errorMessage').innerText = res.message;
                 }
-            }else {
+            } else {
                 alert(this.responseText)
             }
         };
@@ -41,19 +41,12 @@
         return false;
     }
 
-    function usernameChangeHandler(usernameInput){
-        let username=usernameInput.value;
-        //change profile pic
-        document.getElementById("selectedUserImg").src="/api/user/photos/profile/"+username
-
-        const http = new XMLHttpRequest();
-        http.open("GET", "/api/user/profile/"+username, true);
-        http.setRequestHeader("Content-type", "application/json");
-        http.onload = function () {
-            let data = JSON.parse(this.responseText);
-            document.getElementById("issuerName").innerText=`${data.firstName} ${data.lastName}`
-        };
-        http.send();
+    function usernameChangeHandler(username) {
+        loadUserInformation(username,function (data) {
+            //change profile pic
+            document.getElementById("selectedUserImg").src = "/api/user/photos/profile/" + username
+            document.getElementById("issuerName").innerText=`${data.firstName} ${data.lastName}`;
+        });
     }
 </script>
 <body>
@@ -88,7 +81,7 @@
                                 <input class="form-control"
                                        id="username" name="username"
                                        placeholder=""
-                                       required type="text" onchange="usernameChangeHandler(this)">
+                                       required type="text" onchange="usernameChangeHandler(this.value)">
                             </div>
                             <div class="col-12">
                                 <label class="form-label" for="bid">Book Id</label>
@@ -110,7 +103,8 @@
                         <div class="card rounded shadow-sm text-center p-2 ">
                             <div class="row">
                                 <div class="col">
-                                    <img style="height: 200px;width: 200px;" class="card-img-top shadow-sm rounded-circle" id="selectedUserImg" alt="#">
+                                    <img style="height: 200px;width: 200px;"
+                                         class="card-img-top shadow-sm rounded-circle" id="selectedUserImg" alt="#">
                                 </div>
                             </div>
 

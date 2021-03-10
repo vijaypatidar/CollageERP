@@ -1,5 +1,6 @@
 package com.svceindore.uiservice.controllers;
 
+import com.svceindore.uiservice.model.course.Session;
 import com.svceindore.uiservice.model.course.Branch;
 import com.svceindore.uiservice.model.course.Course;
 import com.svceindore.uiservice.model.course.Enrolled;
@@ -10,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * Created by Vijay Patidar
@@ -42,61 +42,81 @@ public class CoursesController {
     }
 
     @GetMapping("/update-course-detail.html")
-    public String getUpdateCoursePage(@RequestParam String courseId,Model model) {
+    public String getUpdateCoursePage(@RequestParam String courseId, Model model) {
         ResponseEntity<Course> entity = restTemplate.getForEntity("lb://course-service/api/course/courseInfo/" + courseId, Course.class);
-        model.addAttribute("course",entity.getBody());
+        model.addAttribute("course", entity.getBody());
         return "update-course-detail";
     }
 
     @GetMapping("/add-branch.html")
-    public String getAddBranchPage(@RequestParam String courseId,Model model) {
+    public String getAddBranchPage(@RequestParam String courseId, Model model) {
         ResponseEntity<Course> entity = restTemplate.getForEntity("lb://course-service/api/course/courseInfo/" + courseId, Course.class);
-        if (entity.getStatusCode().value()==200){
-            model.addAttribute("courseId",courseId);
-            model.addAttribute("courseName",entity.getBody().getName());
+        if (entity.getStatusCode().value() == 200) {
+            model.addAttribute("courseId", courseId);
+            model.addAttribute("courseName", entity.getBody().getName());
         }
         return "add-branch";
     }
 
     @GetMapping("/manage-branches-for-course.html")
-    public String getManageBranchForCoursePage(@RequestParam String courseId,Model model) {
+    public String getManageBranchForCoursePage(@RequestParam String courseId, Model model) {
         ResponseEntity<Course> entity = restTemplate.getForEntity("lb://course-service/api/course/courseInfo/" + courseId, Course.class);
-        if (entity.getStatusCode().value()==200){
+        if (entity.getStatusCode().value() == 200) {
             ResponseEntity<Branch[]> entity1 = restTemplate.getForEntity("lb://course-service/api/course/getBranchList/" + courseId, Branch[].class);
-            if (entity1.getStatusCode().value()==200){
-                model.addAttribute("courseId",courseId);
-                model.addAttribute("courseName",entity.getBody().getName());
-                model.addAttribute("branches",entity1.getBody());
+            if (entity1.getStatusCode().value() == 200) {
+                model.addAttribute("courseId", courseId);
+                model.addAttribute("courseName", entity.getBody().getName());
+                model.addAttribute("branches", entity1.getBody());
             }
         }
         return "manage-branches-for-course";
     }
 
     @GetMapping("enroll-student-in-course.html")
-    public String enrollStudent(Model model,@RequestParam(required = false,defaultValue = "") String studentUsername){
+    public String enrollStudent(Model model, @RequestParam(required = false, defaultValue = "") String studentUsername) {
         ResponseEntity<Course[]> entity = restTemplate.getForEntity("lb://course-service/api/course/getCourseList", Course[].class);
-        model.addAttribute("studentUsername",studentUsername);
-        model.addAttribute("courses",entity.getBody());
+        ResponseEntity<Session[]> entity1 = restTemplate.getForEntity("lb://course-service/api/course/session", Session[].class);
+        model.addAttribute("studentUsername", studentUsername);
+        model.addAttribute("courses", entity.getBody());
+        model.addAttribute("sessions", entity1.getBody());
         return "enroll-student-in-course";
     }
 
     @GetMapping("enrolled-student-detail.html")
-    public String enrolledStudentsDetail(Model model,@RequestParam(required = false ,defaultValue = "") String courseId,
-                                         @RequestParam(required = false,defaultValue = "") String branchId){
-        System.out.println(courseId+" "+branchId);
+    public String enrolledStudentsDetail(Model model, @RequestParam(required = false, defaultValue = "") String courseId,
+                                         @RequestParam(required = false, defaultValue = "") String branchId,
+                                         @RequestParam(required = false, defaultValue = "") String sessionId) {
+        System.out.println(courseId + " " + branchId);
         ResponseEntity<Course[]> entity = restTemplate.getForEntity("lb://course-service/api/course/getCourseList", Course[].class);
-        ResponseEntity<Enrolled[]> entity1 = restTemplate.getForEntity("lb://course-service/api/course/enrolledStudents?courseId="+courseId+"&branchId="+branchId, Enrolled[].class);
-        model.addAttribute("courseId",courseId);
-        model.addAttribute("branchId",branchId);
-        model.addAttribute("courses",entity.getBody());
-        model.addAttribute("enrolls",entity1.getBody());
+        ResponseEntity<Enrolled[]> entity1 = restTemplate.getForEntity("lb://course-service/api/course/enrolledStudents?courseId=" + courseId + "&branchId=" + branchId + "&sessionId=" + sessionId, Enrolled[].class);
+        ResponseEntity<Session[]> entity2 = restTemplate.getForEntity("lb://course-service/api/course/session", Session[].class);
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("branchId", branchId);
+        model.addAttribute("sessionId", sessionId);
+        model.addAttribute("courses", entity.getBody());
+        model.addAttribute("enrolls", entity1.getBody());
+        model.addAttribute("sessions", entity2.getBody());
 
 
-        if (!courseId.isEmpty()){
-            model.addAttribute("branches",restTemplate.getForEntity("lb://course-service/api/course/getBranchList/"+courseId,Branch[].class).getBody());
+        if (!courseId.isEmpty()) {
+            model.addAttribute("branches", restTemplate.getForEntity("lb://course-service/api/course/getBranchList/" + courseId, Branch[].class).getBody());
         }
 
         return "enrolled-student-detail";
+    }
+
+    @GetMapping("/manage-session.html")
+    public String getManageSessionPage(Model model) {
+        ResponseEntity<Session[]> entity = restTemplate.getForEntity("lb://course-service/api/course/session", Session[].class);
+        if (entity.getStatusCode().value() == 200) {
+            model.addAttribute("sessions", entity.getBody());
+        }
+        return "manage-session";
+    }
+
+    @GetMapping("/add-session.html")
+    public String getAddSessionPage() {
+        return "add-new-session";
     }
 
 }

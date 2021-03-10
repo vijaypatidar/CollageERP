@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2">Sessions</h2>
+        </div>
+    </div>
+
+    <div class="row my-3  align-items-center" sec:authorize="hasRole('ADMIN')">
+        <div class="col-6">
+            <button class="btn btn-outline-success" onclick="loadPageInContentDiv('courses/add-session.html')">ADD
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h6 class="h6">Available session</h6>
+        </div>
+        <div class="col-12">
+            <table class="table table-bordered rounded shadow-sm">
+                <thead class="table-dark">
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        NAME
+                    </th>
+                    <th>
+                        Year
+                    </th>
+                    <th>
+                        Current
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="align-middle" th:each="ses : ${#request.getAttribute('sessions')}">
+                    <td th:text="${ses.id}"></td>
+                    <td th:text="${ses.name}"></td>
+                    <td th:text="${ses.year}"></td>
+                    <td th:if="${ses.currentSession}" class="text-success">Yes</td>
+                    <td th:if="${!ses.currentSession}" class="text-danger">No</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

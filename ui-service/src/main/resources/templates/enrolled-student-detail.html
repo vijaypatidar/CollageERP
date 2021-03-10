@@ -24,8 +24,10 @@
             </select>
         </div>
         <div class="col-md-3">
-            <select class="form-select">
-                <option value="">Select year</option>
+            <select class="form-select" id="sessionSelection">
+                <option value="">Select session</option>
+                <option th:each="s : ${#request.getAttribute('sessions')}" th:value="${s.id}" th:selected="${s.id==sessionId}" th:text="${s.name}">
+                </option>
             </select>
         </div>
         <div class="col-md-3">
@@ -89,15 +91,10 @@
 
     function fetchList(){
         let courseSelection = document.getElementById("courseSelection").value;
+        let branchSelection = document.getElementById("branchSelection").value;
+        let sessionSelection = document.getElementById("sessionSelection").value;
         let url = "courses/enrolled-student-detail.html?"
-        if (courseSelection!==""){
-            url+="courseId="+courseSelection;
-            let branchSelection = document.getElementById("branchSelection").value;
-            if (branchSelection!==""){
-                url+="&";
-                url+="branchId="+branchSelection;
-            }
-        }
+        url+="courseId="+courseSelection+"&branchId="+branchSelection+"&sessionId="+sessionSelection;
         loadPageInContentDiv(url)
     }
 </script>

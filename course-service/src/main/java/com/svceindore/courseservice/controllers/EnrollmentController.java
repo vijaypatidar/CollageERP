@@ -29,6 +29,7 @@ public class EnrollmentController {
     private final BranchRepository branchRepository;
     private final EnrolledRepository enrolledRepository;
     private final KeycloakRestTemplate restTemplate;
+
     public EnrollmentController(CourseRepository courseRepository, BranchRepository branchRepository, EnrolledRepository enrolledRepository, KeycloakRestTemplate restTemplate) {
         this.courseRepository = courseRepository;
         this.branchRepository = branchRepository;
@@ -54,26 +55,27 @@ public class EnrollmentController {
                 );
 
                 if (!enrolls.isEmpty()) {
-                    res.accumulate("status",false);
-                    res.accumulate("message","Already enrolled in this course.");
-                    res.accumulate("id",enrolls.get(0).getId());
+                    res.accumulate("status", false);
+                    res.accumulate("message", "Already enrolled in this course.");
+                    res.accumulate("id", enrolls.get(0).getId());
                     return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
                 }
+
                 ResponseEntity<User> entity = restTemplate.getForEntity("lb://user-service/api/user/profile/" + enrolled.getStudentUsername(), User.class);
                 User u = entity.getBody();
-                if (entity.getStatusCodeValue()==200&&u!=null){
-                    enrolled.setStudentName(u.getFirstName()+" "+u.getLastName());
+                if (entity.getStatusCodeValue() == 200 && u != null) {
+                    enrolled.setStudentName(u.getFirstName() + " " + u.getLastName());
                     enrolled.setEnrollmentDate(new Date());
                     enrolledRepository.insert(enrolled);
-                    res.accumulate("status",true);
-                    res.accumulate("message","Enrolled successfully");
-                    res.accumulate("id",enrolled.getId());
-                }else {
-                    res.accumulate("status",false);
-                    res.accumulate("message","Invalid studentUsername");
+                    res.accumulate("status", true);
+                    res.accumulate("message", "Enrolled successfully");
+                    res.accumulate("id", enrolled.getId());
+                } else {
+                    res.accumulate("status", false);
+                    res.accumulate("message", "Invalid studentUsername");
                 }
                 return ResponseEntity.ok(res.toString());
-            }else {
+            } else {
                 res.accumulate("status", false);
                 res.accumulate("message", "Branch not found with id=" + enrolled.getBranchId());
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
@@ -88,26 +90,39 @@ public class EnrollmentController {
 
     @RolesAllowed(Roles.ROLE_ADMIN)
     @GetMapping("/enrolledStudents")
-    public List<Enrolled> getEnrolledStudents(@RequestParam(required = false,defaultValue = "") String courseId,
-                                              @RequestParam(required = false,defaultValue = "") String branchId){
-        if (courseId.isEmpty()){
-            return enrolledRepository.findAll();
-        }else {
-            if (branchId.isEmpty()){
-                return enrolledRepository.findAllByCourseId(courseId);
-            }else {
-                return enrolledRepository.findAllByCourseIdAndBranchId(courseId,branchId);
+    public List<Enrolled> getEnrolledStudents(@RequestParam(required = false, defaultValue = "") String courseId,
+                                              @RequestParam(required = false, defaultValue = "") String branchId,
+                                              @RequestParam(required = false, defaultValue = "") String sessionId) {
+        if (sessionId.isEmpty()) {
+            if (courseId.isEmpty()) {
+                return enrolledRepository.findAll();
+            } else {
+                if (branchId.isEmpty()) {
+                    return enrolledRepository.findAllByCourseId(courseId);
+                } else {
+                    return enrolledRepository.findAllByCourseIdAndBranchId(courseId, branchId);
+                }
+            }
+        } else {
+            if (courseId.isEmpty()) {
+                return enrolledRepository.findAllBySessionId(sessionId);
+            } else {
+                if (branchId.isEmpty()) {
+                    return enrolledRepository.findAllByCourseIdAndSessionId(courseId, sessionId);
+                } else {
+                    return enrolledRepository.findAllByCourseIdAndBranchIdAndSessionId(courseId, branchId, sessionId);
+                }
             }
         }
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
     @GetMapping("/enrollDetail/{enrollId}")
-    public ResponseEntity<?> getEnrollInfo(@PathVariable String enrollId){
+    public ResponseEntity<?> getEnrollInfo(@PathVariable String enrollId) {
         Optional<Enrolled> optional = enrolledRepository.findById(enrollId);
-        if (optional.isPresent()){
+        if (optional.isPresent()) {
             return ResponseEntity.ok(optional.get());
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

@@ -56,7 +56,7 @@ public class KeycloakClient {
         if (user instanceof Student) {
             userRepresentation.setGroups(Collections.singletonList("Students"));
         }else if (user instanceof Faculty) {
-            userRepresentation.setGroups(Collections.singletonList("faculties"));
+            userRepresentation.setGroups(Collections.singletonList("Faculties"));
         }
 
         userRepresentation.setAttributes(Collections.singletonMap("origin", Collections.singletonList("keycloak admin client")));
