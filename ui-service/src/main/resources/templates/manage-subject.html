@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2" th:text="${'Subjects('+courseId+')'}"></h2>
+        </div>
+    </div>
+
+    <div class="row my-3  align-items-center" sec:authorize="hasRole('ADMIN')">
+        <div class="col-6">
+            <button class="btn btn-outline-success"
+                    sec:authorize="hasRole('ADMIN')"
+                    th:attr="onclick=|loadPageInContentDiv('courses/add-subject-in-course.html?courseId=${courseId}')|">ADD
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h6 class="h6">Available subjects</h6>
+        </div>
+        <div class="col-12">
+            <table class="table table-bordered rounded shadow-sm">
+                <thead class="table-dark">
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Course ID
+                    </th>
+                    <th>
+                        ACTIONS
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="align-middle" th:each="subject : ${#request.getAttribute('subjects')}">
+                    <td th:text="${subject.id}"></td>
+                    <td th:text="${subject.name}"></td>
+                    <td th:text="${subject.courseId}"></td>
+                    <td>
+                        <button class="btn btn-outline-danger"
+                            th:attr="onclick=|deleteSubject('${subject.id}','${subject.courseId}')|">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteSubject(id,courseId) {
+        const http = new XMLHttpRequest();
+        http.open("DELETE", "/api/course/subject/" + id);
+        http.onload = function () {
+            if (http.status === 200) {
+                loadPageInContentDiv("courses/manage-subject.html?courseId="+courseId);
+            }
+        };
+        http.send();
+    }
+</script>
+</body>
+</html>

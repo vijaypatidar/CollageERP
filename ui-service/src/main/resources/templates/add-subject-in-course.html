@@ -1,36 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
-     function addNewSession() {
-        $("#btnAddSession").prop("disabled", true);
-
-        const form = document.forms["sessionDetail"];
+    function addSubject() {
+        //disable button
+        const courseForm = document.forms["subjectForm"];
 
         let data = {
-            name: form['name'].value,
-            year: form['year'].value,
-            currentSession: form['currentSession'].checked
+            name: courseForm['name'].value,
+            id: courseForm['subjectCode'].value,
+            courseId: courseForm['courseId'].value
         };
 
         const http = new XMLHttpRequest();
         // send post request to login url
-        http.open("POST", "/api/course/session", true);
+        http.open("POST", "/api/course/subject", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            $("#btnAddSession").prop("disabled", false);
-            if (http.status !== 403) {
-                let res = JSON.parse(this.responseText);
+            if (http.status === 403) {
+                alert(http.responseText)
+            } else {
+                let res = JSON.parse(http.responseText);
+                console.log(res);
                 if (res.status) {
                     $("#alertSuccess").show();
                     $("#alertFail").hide();
-                    document.getElementById('successMessage').innerText = res.message;
+                    document.getElementById("successMessage").innerText = res.message;
                 } else {
                     $("#alertSuccess").hide();
                     $("#alertFail").show();
-                    document.getElementById('errorMessage').innerText = res.message;
+                    document.getElementById("errorMessage").innerText = res.message;
                 }
-            } else {
-                alert(this.responseText)
             }
         };
 
@@ -42,7 +41,7 @@
 <div class="container">
     <div class="row my-3  align-items-center">
         <div class="col">
-            <h1 class="h2">New Session</h1>
+            <h1 class="h2">New Subject</h1>
         </div>
     </div>
 
@@ -57,58 +56,54 @@
         </div>
 
         <div class="col-12">
-            <form class="needs-validation" id="sessionForm" name="sessionDetail"
-                  onsubmit="addNewSession();return false;">
+            <form class="needs-validation" id="subjectForm" name="subjectForm"
+                  onsubmit="addSubject();return false;">
                 <div class="row g-2">
                     <div class="col-12">
-                        <label class="form-label" for="name">Session Name</label>
+                        <label class="form-label" for="courseId">Course ID</label>
+                        <input class="form-control"
+                               id="courseId"
+                               name="courseId"
+                               required
+                               readonly
+                               th:value="${course.id}"
+                               type="text">
+                        <div class="invalid-feedback">
+                            Course ID is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="name">Subject Name</label>
                         <input class="form-control"
                                id="name"
                                name="name"
                                required
                                type="text">
                         <div class="invalid-feedback">
-                            Session name is required.
+                            Subject name is required.
                         </div>
                     </div>
-
                     <div class="col-12">
-                        <label class="form-label" for="year">Session starting year.</label>
-
+                        <label class="form-label" for="subjectCode">Subject Code</label>
                         <input class="form-control"
-                               id="year"
-                               name="year"
-                               placeholder="Year of session starting"
+                               id="subjectCode"
+                               name="subjectCode"
                                required
-                               type="number">
+                               type="text">
                         <div class="invalid-feedback">
-                            Year required!
+                            Subject Code is required.
                         </div>
-
                     </div>
 
-                    <div class="col-12">
-
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   id="currentSession"
-                                   name="currentSession"
-                                   type="checkbox">
-                            <label class="form-check-label" for="currentSession">These is current session</label>
-
-                        </div>
-
-                    </div>
 
                 </div>
-                <button class="btn btn-outline-success my-4" id="btnAddSession"
-                        onclick="checkForm('#sessionForm')" type="submit">Add Session
+                <button class="btn btn-outline-success my-4" id="btnAddSubject"
+                        onclick="checkForm('#subjectForm')" type="submit">Add Subject
                 </button>
             </form>
         </div>
     </div>
 
 </div>
-
 </body>
 </html>

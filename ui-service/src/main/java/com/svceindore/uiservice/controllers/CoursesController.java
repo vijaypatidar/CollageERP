@@ -1,9 +1,6 @@
 package com.svceindore.uiservice.controllers;
 
-import com.svceindore.uiservice.model.course.Session;
-import com.svceindore.uiservice.model.course.Branch;
-import com.svceindore.uiservice.model.course.Course;
-import com.svceindore.uiservice.model.course.Enrolled;
+import com.svceindore.uiservice.model.course.*;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.logging.Logger;
 
 /**
  * Created by Vijay Patidar
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/courses")
 public class CoursesController {
 
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final KeycloakRestTemplate restTemplate;
 
     public CoursesController(KeycloakRestTemplate restTemplate) {
@@ -70,6 +70,26 @@ public class CoursesController {
             }
         }
         return "manage-branches-for-course";
+    }
+
+    @GetMapping("manage-subject.html")
+    public String manageSubjectForCourse(@RequestParam String courseId, Model model) {
+        ResponseEntity<Subject[]> entity = restTemplate.getForEntity("lb://course-service/api/course/subject?courseId=" + courseId, Subject[].class);
+        if (entity.getStatusCode().value() == 200) {
+            model.addAttribute("courseId", courseId);
+            model.addAttribute("subjects", entity.getBody());
+        }
+        return "manage-subject";
+    }
+
+    @GetMapping("add-subject-in-course.html")
+    public String addSubjectInCourse(@RequestParam String courseId, Model model) {
+        logger.info("Add subject courseId = "+courseId);
+        ResponseEntity<Course> entity = restTemplate.getForEntity("lb://course-service/api/course/courseInfo/" + courseId, Course.class);
+        if (entity.getStatusCode().value() == 200) {
+            model.addAttribute("course", entity.getBody());
+        }
+        return "add-subject-in-course";
     }
 
     @GetMapping("enroll-student-in-course.html")

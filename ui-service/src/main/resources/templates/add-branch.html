@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
+
 
     function addBranch() {
         //disable button
@@ -28,7 +26,16 @@
                 alert("Access denied")
 
             } else {
-                alert(JSON.parse(this.responseText).message);
+                let res = JSON.parse(this.responseText);
+                if (res.status){
+                    $("#successAlert").show();
+                    $("#errorAlert").hide();
+                    document.getElementById("successMessage").innerText = res.message;
+                }else {
+                    $("#successAlert").hide();
+                    $("#errorAlert").show();
+                    document.getElementById("errorMessage").innerText = res.message;
+                }
             }
         };
 
@@ -45,6 +52,14 @@
     </div>
 
     <div class="row my-2">
+        <div class="col-12">
+            <div class="alert alert-danger" id="errorAlert" style="display: none">
+                <strong>Failed!</strong><span id="errorMessage"></span>
+            </div>
+            <div class="alert alert-success" id="successAlert" style="display: none">
+                <strong>Success!</strong><span id="successMessage"></span>
+            </div>
+        </div>
         <div class="col-12">
             <form class="needs-validation" id="branchForm" name="branchForm"
                   onsubmit="addBranch();return false;">

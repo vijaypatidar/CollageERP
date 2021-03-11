@@ -66,6 +66,7 @@ public class EnrollmentController {
                 if (entity.getStatusCodeValue() == 200 && u != null) {
                     enrolled.setStudentName(u.getFirstName() + " " + u.getLastName());
                     enrolled.setEnrollmentDate(new Date());
+                    enrolled.setCurrentSemester(1);
                     enrolledRepository.insert(enrolled);
                     res.accumulate("status", true);
                     res.accumulate("message", "Enrolled successfully");

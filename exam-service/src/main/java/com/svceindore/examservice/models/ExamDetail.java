@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 /**
  * Created by Vijay Patidar
  * Date: 23/02/21
@@ -20,12 +22,30 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class ExamDetail {
     @Id
     private String id;
-    private String examGroupId;
+//    private String examGroupId;
     private String courseId;
     private String branchId;
-    private int batchYear;
+    private String title;
+    private String subjectId;
+    private int semester;
+    private int duration;
+    private Date scheduledOn;
     private boolean onlineMode;
     private boolean resultDeclared;
     private int totalMark;
 
+    @Override
+    public String toString() {
+        return "ExamDetail{" +
+                "id='" + id + '\'' +
+                ", courseId='" + courseId + '\'' +
+                ", branchId='" + branchId + '\'' +
+                ", semester=" + semester +
+                ", duration=" + duration +
+                ", scheduledOn=" + scheduledOn.toString() +
+                ", onlineMode=" + onlineMode +
+                ", resultDeclared=" + resultDeclared +
+                ", totalMark=" + totalMark +
+                '}';
+    }
 }

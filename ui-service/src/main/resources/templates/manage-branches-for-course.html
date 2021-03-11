@@ -18,6 +18,7 @@
             </button>
             <button class="btn btn-outline-info" th:attr="onclick=|loadPageInContentDiv('courses/update-course-detail.html?courseId=${courseId}')|">Update</button>
             <button class="btn btn-outline-danger" th:attr="onclick=|deleteCourse('${courseId}')|">Delete</button>
+            <button class="btn btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/manage-subject.html?courseId=${courseId}')|">Subjects</button>
         </div>
     </div>
 

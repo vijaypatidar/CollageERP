@@ -2,6 +2,10 @@ function loadPageInContentDiv(url) {
     $("#content").load(window.location.origin + "/" + url);
 }
 
+function checkForm(id) {
+    $(id).addClass('was-validated')
+}
+
 function loadUserInformation(username, callback) {
 
     const http = new XMLHttpRequest();
@@ -33,6 +37,16 @@ function loadBranchList(courseId, callback) {
     http.send();
 }
 
+function loadBranchListOptions(courseId,callback){
+    loadBranchList(courseId, function (branches) {
+        let options = "<option value=''>Select branch</option>";
+        branches.forEach(function (value) {
+            options += "<option value='" + value.id + "'>" + value.name + "</option>"
+        });
+        if (callback)callback(options);
+    });
+}
+
 function loadSessionList( callback) {
     const http = new XMLHttpRequest();
     http.open("GET", "/api/course/session");
@@ -40,4 +54,34 @@ function loadSessionList( callback) {
         if (callback) callback(JSON.parse(http.responseText));
     }
     http.send();
+}
+
+
+function loadSessionListOptions(callback){
+    loadSessionList(function (sessions) {
+        let options = "<option value=''>Select session</option>";
+        sessions.forEach(function (value) {
+            options += "<option value='" + value.id + "'>" + value.name + "</option>"
+        });
+        if (callback)callback(options);
+    });
+}
+
+function loadSubjectList(courseId, callback) {
+    const http = new XMLHttpRequest();
+    http.open("GET", "/api/course/subject?courseId="+courseId);
+    http.onload = function () {
+        if (callback) callback(JSON.parse(http.responseText));
+    }
+    http.send();
+}
+
+function loadSubjectListOptions(courseId,callback){
+    loadSubjectList(courseId,function (sessions) {
+        let options = "<option value=''>Select subject</option>";
+        sessions.forEach(function (value) {
+            options += "<option value='" + value.id + "'>" + value.name + "</option>"
+        });
+        if (callback)callback(options);
+    });
 }

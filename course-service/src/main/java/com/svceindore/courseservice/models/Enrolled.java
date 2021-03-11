@@ -33,6 +33,7 @@ public class Enrolled {
     private String studentUsername;
     private String studentName;
     private Date enrollmentDate;
+    private int currentSemester;
 
     @Override
     public String toString() {

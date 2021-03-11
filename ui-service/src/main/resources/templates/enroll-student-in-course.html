@@ -2,10 +2,6 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
 
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
-
     function enrollStudent() {
         const enrollStudentForm = document.forms['enrollStudentForm'];
 
@@ -41,12 +37,7 @@
     function loadBranches(courseId) {
         const branchSelection = document.getElementById("branchOptions");
         branchSelection.innerHTML = "<option value=''>Select branch</option>";
-
-        loadBranchList(courseId, function (data) {
-            let options = "<option value=''>Select branch</option>";
-            data.forEach(function (value) {
-                options += "<option value='" + value.id + "'>" + value.name + "</option>";
-            });
+        loadBranchListOptions(courseId, function (options) {
             branchSelection.innerHTML = options;
         });
     }

@@ -58,6 +58,14 @@ public class CourseSessionController {
             return ResponseEntity.ok(res.toString());
         }
 
+        if (session.isCurrentSession()){
+            sessionRepository.findAllByCurrentSession(true)
+                    .forEach(session1 -> {
+                        session1.setCurrentSession(false);
+                        sessionRepository.save(session1);
+                    });
+        }
+
         sessionRepository.save(session);
 
         res.accumulate("status", true);
