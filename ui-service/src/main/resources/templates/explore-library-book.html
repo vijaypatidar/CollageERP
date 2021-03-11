@@ -10,10 +10,12 @@
             <h1 class="h2">Explore Library</h1>
         </div>
         <div class="col-4">
-            <div class="input-group">
-                <input type="text" th:value="${query}" id="search" class="form-control" placeholder="Search">
-                <button class="btn btn-outline-primary" onclick="searchBook()" type="button">Search</button>
-            </div>
+            <form>
+                <div class="input-group">
+                    <input type="text" th:value="${query}" name="search" id="search" class="form-control" placeholder="Search">
+                    <button class="btn btn-outline-primary" onclick="return searchBook();" type="submit">Search</button>
+                </div>
+            </form>
         </div>
     </div>
     <div class="row g-2">
@@ -61,6 +63,7 @@
     function searchBook(){
         let data = document.getElementById("search").value;
         loadPageInContentDiv("library/explore-library-book.html?query="+data);
+        return false;
     }
 </script>
 </body>

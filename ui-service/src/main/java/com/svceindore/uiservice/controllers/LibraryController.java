@@ -47,7 +47,7 @@ public class LibraryController {
     }
 
     @RequestMapping({"/explore-library-book.html"})
-    public String exploreLibraryBook(HttpServletRequest request,@RequestParam(required = false) String query) {
+    public String exploreLibraryBook(HttpServletRequest request,@RequestParam(required = false,defaultValue = "") String query) {
         System.out.println(query);
         BookDetail[] books = keycloakRestTemplate.getForObject(
                 "lb://library-service/api/library/bookDetail?query="+query.toLowerCase(),
