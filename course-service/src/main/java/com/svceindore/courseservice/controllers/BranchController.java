@@ -32,7 +32,7 @@ public class BranchController {
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
-    @PostMapping("/addNewBranch")
+    @PostMapping("/branch")
     public ResponseEntity<?> createBranch(@RequestBody Branch branch) throws JSONException {
         JSONObject res = new JSONObject();
         if (branch.getName() == null || branch.getName().isEmpty()) {
@@ -61,7 +61,38 @@ public class BranchController {
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
-    @DeleteMapping("/deleteBranch/{branchId}")
+    @PutMapping("/branch")
+    public ResponseEntity<?> updateBranch(@RequestBody Branch branch) throws JSONException {
+        JSONObject res = new JSONObject();
+
+        if (branch.getName() == null || branch.getName().isEmpty()) {
+            res.accumulate("status", false);
+            res.accumulate("message", "Branch name required!");
+            return ResponseEntity.ok(res.toString());
+        }
+
+
+        if (!branchRepository.findById(branch.getId()).isPresent()){
+            res.accumulate("status", false);
+            res.accumulate("message", "Branch not found with branchId = "+branch.getId());
+            return ResponseEntity.ok(res.toString());
+        }
+
+        if (branch.getCourseId() != null && courseRepository.findById(branch.getCourseId()).isPresent()) {
+            res.accumulate("status", true);
+            res.accumulate("message", "Branch updated successfully.");
+            res.accumulate("id", branch.getId());
+            branchRepository.save(branch);
+            return ResponseEntity.status(HttpStatus.CREATED).body(res.toString());
+        } else {
+            res.accumulate("status", false);
+            res.accumulate("message", "Course not found with courseId=" + branch.getCourseId());
+            return ResponseEntity.ok(res.toString());
+        }
+    }
+
+    @RolesAllowed(Roles.ROLE_ADMIN)
+    @DeleteMapping("/branch/{branchId}")
     public ResponseEntity<?> deleteBranch(@PathVariable String branchId) throws JSONException {
         branchRepository.deleteById(branchId);
         JSONObject response = new JSONObject();
@@ -73,5 +104,10 @@ public class BranchController {
     @GetMapping("/getBranchList/{courseId}")
     public List<Branch> getBranchList(@PathVariable String courseId) {
         return branchRepository.findAllByCourseId(courseId);
+    }
+
+    @GetMapping("/branch/{id}")
+    public Branch getBranchById(@PathVariable String id){
+        return branchRepository.findById(id).get();
     }
 }

@@ -85,3 +85,19 @@ function loadSubjectListOptions(courseId,callback){
         if (callback)callback(options);
     });
 }
+
+function defaultResponseHandler(data,status){
+    if (status === 403) {
+        alert("Access denied")
+    } else {
+        if (data.status){
+            $("#successAlert").show();
+            $("#errorAlert").hide();
+            document.getElementById("successMessage").innerText = data.message;
+        }else {
+            $("#successAlert").hide();
+            $("#errorAlert").show();
+            document.getElementById("errorMessage").innerText = data.message;
+        }
+    }
+}

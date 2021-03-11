@@ -11,8 +11,8 @@
         </div>
         <div class="col-4">
             <div class="input-group">
-                <input type="text" name="search" onsubmit="alert(this)" class="form-control" placeholder="Search">
-                <button class="btn btn-outline-primary" type="button">Search</button>
+                <input type="text" th:value="${query}" id="search" class="form-control" placeholder="Search">
+                <button class="btn btn-outline-primary" onclick="searchBook()" type="button">Search</button>
             </div>
         </div>
     </div>
@@ -57,6 +57,10 @@
 <script>
     function newCopy(bid) {
         loadPageInContentDiv("library/add-book-copy.html?bookId=" + bid)
+    }
+    function searchBook(){
+        let data = document.getElementById("search").value;
+        loadPageInContentDiv("library/explore-library-book.html?query="+data);
     }
 </script>
 </body>

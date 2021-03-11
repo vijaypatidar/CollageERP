@@ -58,6 +58,16 @@ public class CoursesController {
         return "add-branch";
     }
 
+    @GetMapping("/update-branch.html")
+    public String getUpdateBranchPage(@RequestParam String branchId, Model model) {
+        Branch branch = restTemplate.getForEntity("lb://course-service/api/course/branch/"+branchId,Branch.class).getBody();
+        Course course = restTemplate.getForEntity("lb://course-service/api/course/courseInfo/" + branch.getCourseId(), Course.class).getBody();
+        model.addAttribute("courseId", branch.getCourseId());
+        model.addAttribute("courseName", course.getName());
+        model.addAttribute("branch",branch);
+        return "update-branch";
+    }
+
     @GetMapping("/manage-branches-for-course.html")
     public String getManageBranchForCoursePage(@RequestParam String courseId, Model model) {
         ResponseEntity<Course> entity = restTemplate.getForEntity("lb://course-service/api/course/courseInfo/" + courseId, Course.class);

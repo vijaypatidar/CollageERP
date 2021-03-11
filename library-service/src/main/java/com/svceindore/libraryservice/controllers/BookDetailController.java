@@ -10,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Created by Vijay Patidar
@@ -55,8 +57,19 @@ public class BookDetailController {
     }
 
     @GetMapping("/bookDetail")
-    public List<BookDetail> getBookDetails() {
-        return bookDetailRepository.findAllByOrderByTitle();
+    public List<BookDetail> getBookDetails(@RequestParam(required = false,defaultValue = "") String query) {
+        List<BookDetail> bookDetails = bookDetailRepository.findAllByOrderByTitle();
+        if (!query.isEmpty()){
+            List<BookDetail> matched = new ArrayList<>();
+            bookDetails.forEach(bookDetail -> {
+                if (bookDetail.getTitle().toLowerCase().contains(query)||
+                        bookDetail.getAuthors().toString().toLowerCase().contains(query)){
+                    matched.add(bookDetail);
+                }
+            });
+            return matched;
+        }
+        return bookDetails;
     }
 
     @GetMapping("/bookDetail/{bookId}")

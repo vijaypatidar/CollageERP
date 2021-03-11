@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * Created by Vijay Patidar
@@ -46,12 +47,14 @@ public class LibraryController {
     }
 
     @RequestMapping({"/explore-library-book.html"})
-    public String exploreLibraryBook(HttpServletRequest request) {
+    public String exploreLibraryBook(HttpServletRequest request,@RequestParam(required = false) String query) {
+        System.out.println(query);
         BookDetail[] books = keycloakRestTemplate.getForObject(
-                "lb://library-service/api/library/bookDetail",
+                "lb://library-service/api/library/bookDetail?query="+query.toLowerCase(),
                 BookDetail[].class
         );
         request.setAttribute("books",books);
+        request.setAttribute("query",query);
         return "explore-library-book";
     }
 

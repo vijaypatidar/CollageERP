@@ -3,7 +3,7 @@
 <script>
 
 
-    function addBranch() {
+    function updateBranch() {
         //disable button
         const branchForm = document.forms["branchForm"];
 
@@ -17,13 +17,13 @@
 
         const http = new XMLHttpRequest();
         // send post request to login url
-        http.open("POST", "/api/course/branch", true);
+        http.open("PUT", "/api/course/branch", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            defaultResponseHandler(JSON.parse(http.responseText),http.status);
+            defaultResponseHandler(JSON.parse(http.responseText), http.status);
         };
-
         http.send(JSON.stringify(data));
+
         return false;
     }
 </script>
@@ -31,7 +31,7 @@
 <div class="container">
     <div class="row my-3  align-items-center">
         <div class="col">
-            <h1 class="h2">New Branch</h1>
+            <h1 class="h2">Update Branch</h1>
         </div>
     </div>
 
@@ -41,7 +41,7 @@
 
         <div class="col-12">
             <form class="needs-validation" id="branchForm" name="branchForm"
-                  onsubmit="addBranch();return false;">
+                  onsubmit="updateBranch();return false;">
                 <div class="row g-2">
                     <div class="col-12">
                         <label class="form-label" for="courseId">Course Id</label>
@@ -69,32 +69,37 @@
                                id="branchId"
                                name="id"
                                required
+                               readonly
+                               th:value="${branch.id}"
                                type="text">
-                        <div class="invalid-feedback">
-                            Branch id is required.
-                        </div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="branchName">Branch Name</label>
                         <input class="form-control"
                                id="branchName"
                                name="name"
+                               th:value="${branch.name}"
                                required
                                type="text">
                         <div class="invalid-feedback">
-                            Branch name is required.
+                            Book title is required.
                         </div>
                     </div>
 
                     <div class="col-12">
                         <label class="form-label" for="hodUsername">HOD username</label>
-                        <input class="form-control" name="hodUsername" required id="hodUsername" type="text">
+                        <input class="form-control" name="hodUsername"
+                               th:value="${branch.hodUsername}" required id="hodUsername" type="text">
+                        <div class="invalid-feedback">
+                            HOD Username require
+                        </div>
                     </div>
 
                     <div class="col-12">
                         <label class="form-label" for="hodContact">Dept. Contact</label>
                         <input class="form-control"
                                required id="hodContact"
+                               th:value="${branch.hodContact}"
                                name="hodContact" type="tel">
                         <div class="invalid-feedback">
                             Valid contact number require
@@ -103,7 +108,7 @@
 
                 </div>
                 <button class="btn btn-outline-success my-4" id="btnAddDetail"
-                        onclick="checkForm('#branchForm')" type="submit">Add Branch
+                        onclick="checkForm('#branchForm')" type="submit">Update
                 </button>
             </form>
         </div>
