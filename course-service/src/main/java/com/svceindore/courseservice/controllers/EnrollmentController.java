@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -115,6 +116,11 @@ public class EnrollmentController {
                 }
             }
         }
+    }
+
+    @GetMapping("/self-enrolls")
+    public List<Enrolled> getSelfEnrolls(Principal principal) {
+        return enrolledRepository.findAllByStudentUsername(principal.getName());
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)

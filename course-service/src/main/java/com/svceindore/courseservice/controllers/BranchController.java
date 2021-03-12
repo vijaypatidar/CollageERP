@@ -2,9 +2,10 @@ package com.svceindore.courseservice.controllers;
 
 import com.svceindore.courseservice.configs.Roles;
 import com.svceindore.courseservice.models.Branch;
-import com.svceindore.courseservice.models.Course;
+import com.svceindore.courseservice.models.Enrolled;
 import com.svceindore.courseservice.repositories.BranchRepository;
 import com.svceindore.courseservice.repositories.CourseRepository;
+import com.svceindore.courseservice.repositories.EnrolledRepository;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Vijay Patidar
@@ -25,10 +27,12 @@ public class BranchController {
 
     private final BranchRepository branchRepository;
     private final CourseRepository courseRepository;
+    private final EnrolledRepository enrolledRepository;
 
-    public BranchController(BranchRepository branchRepository, CourseRepository courseRepository) {
+    public BranchController(BranchRepository branchRepository, CourseRepository courseRepository, EnrolledRepository enrolledRepository) {
         this.branchRepository = branchRepository;
         this.courseRepository = courseRepository;
+        this.enrolledRepository = enrolledRepository;
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
@@ -89,6 +93,15 @@ public class BranchController {
             res.accumulate("message", "Course not found with courseId=" + branch.getCourseId());
             return ResponseEntity.ok(res.toString());
         }
+    }
+
+    @GetMapping("/enrolled/branch")
+    public List<Branch> getBranchForEnrolledCourses(Principal principal) throws JSONException {
+        List<Branch> res = new ArrayList<>();
+        enrolledRepository.findAllByStudentUsername(principal.getName()).forEach(enrolled -> {
+            res.add(branchRepository.findById(enrolled.getBranchId()).get());
+        });
+        return res;
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)

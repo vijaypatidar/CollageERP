@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <body>
 
 <div class="container">
     <div class="row my-3">
         <div class="col-12">
-            <h1 class="h2">Organise Exam</h1>
+            <h1 class="h2">Edit Exam detail</h1>
             <form class="mb-3 needs-validation" id="createExamForm" name="createExamForm"
                   onsubmit="return createExam();">
 
@@ -20,14 +20,19 @@
                     </div>
 
                     <div class="col-12">
+                        <label class="form-label" for="id">Exam id</label>
+                        <input class="form-control" required id="id" th:value="${examDetail.id}" name="id" type="text" readonly>
+                    </div>
+
+                    <div class="col-12">
                         <label class="form-label" for="title">Exam title</label>
-                        <input class="form-control" required id="title" name="title" type="tel">
+                        <input class="form-control" required id="title" name="title" th:value="${examDetail.title}" type="text">
                     </div>
 
 
                     <div class="col-12">
                         <label class="form-label" for="totalMark">Total marks</label>
-                        <input class="form-control" required id="totalMark" name="totalMark" type="number">
+                        <input class="form-control" required id="totalMark" th:value="${examDetail.totalMark}" name="totalMark" type="number">
                     </div>
 
                     <div class="col-md-6">
@@ -36,7 +41,7 @@
                                 onchange="loadBranchesAndSubject(this.value)">
                             <option value="">Choose course</option>
                             <option th:each="course : ${#request.getAttribute('courses')}" th:value="${course.id}"
-                                    th:text="${course.name}">
+                                   th:selected="${examDetail.courseId==course.id}" th:text="${course.name}">
                             </option>
                         </select>
                     </div>
@@ -46,7 +51,7 @@
                         <select class="form-select" name="branchId" required id="branchSelection">
                             <option value="">Select branch</option>
                             <option th:each="branch : ${#request.getAttribute('branches')}" th:value="${branch.id}"
-                                    th:text="${branch.name}">
+                                    th:selected="${examDetail.branchId==branch.id}"   th:text="${branch.name}">
                             </option>
                         </select>
                     </div>
@@ -56,7 +61,7 @@
                         <select class="form-select" name="sessionId" required id="sessionSelection">
                             <option value="">Select session</option>
                             <option th:each="s : ${#request.getAttribute('sessions')}" th:value="${s.id}"
-                                    th:text="${s.name}">
+                                    th:selected="${examDetail.sessionId==s.id}"  th:text="${s.name}">
                             </option>
                         </select>
                     </div>
@@ -66,7 +71,7 @@
                         <select class="form-select" required name="semester" id="semesterSelection">
                             <option value="">Select semester</option>
                             <option th:each="semester : ${#request.getAttribute('semesters')}" th:value="${semester.id}"
-                                    th:text="${semester.name}">
+                                    th:selected="${examDetail.semester==semester.id}"  th:text="${semester.name}">
                             </option>
                         </select>
                     </div>
@@ -75,17 +80,20 @@
                         <label for="subjectSelection">Select Subject</label>
                         <select class="form-select" name="subjectId" required id="subjectSelection">
                             <option value="">Choose subject</option>
+                            <option th:each="subject : ${#request.getAttribute('subjects')}" th:value="${subject.id}"
+                                    th:selected="${examDetail.subjectId==subject.id}"  th:text="${subject.name}">
+                            </option>
                         </select>
                     </div>
 
                     <div class="col-12">
                         <label class="form-label" for="scheduledOn">Schedule On</label>
-                        <input class="form-control" required id="scheduledOn" name="scheduledOn" type="datetime-local">
+                        <input class="form-control" required id="scheduledOn" th:value="${examDetail.scheduledOn.toLocaleString()}" name="scheduledOn" type="datetime-local">
                     </div>
 
                     <div class="col-12">
                         <label class="form-label" for="duration">Duration<span class="text-muted">(In minutes)</span></label>
-                        <input class="form-control" required id="duration" name="duration" type="number">
+                        <input class="form-control" required id="duration" th:value="${examDetail.duration}" name="duration" type="number">
                     </div>
 
                     <div class="col-12">
@@ -101,7 +109,7 @@
                     <hr class="my-4">
 
                     <button class="btn btn-outline-success" id="btnCreate"
-                            onclick="checkForm('#createExamForm')" type="submit">Create Exam
+                            onclick="checkForm('#createExamForm')" type="submit">Update
                     </button>
                 </div>
             </form>
@@ -134,6 +142,7 @@
         const form = document.forms['createExamForm'];
 
         let data = {
+            id: form['id'].value,
             title: form['title'].value,
             courseId: form['courseId'].value,
             subjectId: form['subjectId'].value,
@@ -147,7 +156,7 @@
         };
         console.log(data);
         let http = new XMLHttpRequest();
-        http.open("POST", "/api/exam/exam");
+        http.open("PUT", "/api/exam/exam");
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
             if (http.status === 403) {

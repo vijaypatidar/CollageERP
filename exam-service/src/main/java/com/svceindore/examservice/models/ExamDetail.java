@@ -25,6 +25,7 @@ public class ExamDetail {
 //    private String examGroupId;
     private String courseId;
     private String branchId;
+    private String sessionId;
     private String title;
     private String subjectId;
     private int semester;
@@ -40,9 +41,12 @@ public class ExamDetail {
                 "id='" + id + '\'' +
                 ", courseId='" + courseId + '\'' +
                 ", branchId='" + branchId + '\'' +
+                ", sessionId='" + sessionId + '\'' +
+                ", title='" + title + '\'' +
+                ", subjectId='" + subjectId + '\'' +
                 ", semester=" + semester +
                 ", duration=" + duration +
-                ", scheduledOn=" + scheduledOn.toString() +
+                ", scheduledOn=" + scheduledOn +
                 ", onlineMode=" + onlineMode +
                 ", resultDeclared=" + resultDeclared +
                 ", totalMark=" + totalMark +

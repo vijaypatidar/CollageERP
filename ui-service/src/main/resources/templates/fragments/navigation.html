@@ -4,7 +4,8 @@
     <link href="/css/navigation.css" rel="stylesheet">
 
     <div class="nav-item-heading">Exam</div>
-    <div class="nav-item" sec:authorize="hasRole('USER')">Time table</div>
+    <div class="nav-item" sec:authorize="hasRole('STUDENT')" onclick="loadPageInContentDiv('exams/view-exam-for-enrolled-courses.html')">Time table</div>
+    <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('exams/view-all-exams.html')">View Exams</div>
     <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('exams/create-new-exam.html')">Create Exam</div>
     <div class="nav-item">Declare Result</div>
     <div class="nav-item">View Result</div>

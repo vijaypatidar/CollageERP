@@ -88,7 +88,7 @@ public class BookController {
     @PostMapping("/issueBook")
     public ResponseEntity<?> issueBook(@RequestBody BookIssueRequest bookIssueRequest) {
         JSONObject response = new JSONObject();
-        response.appendField("stauts", false);
+        response.appendField("status", false);
         String bid = bookIssueRequest.getBid();
         Optional<Book> bookOptional = bookRepository.findById(bid);
         if (bookOptional.isPresent()) {

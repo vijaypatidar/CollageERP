@@ -62,7 +62,7 @@
     }
     function searchBook(){
         let data = document.getElementById("search").value;
-        loadPageInContentDiv("library/explore-library-book.html?query="+data);
+        loadPageInContentDiv("library/explore-library-book.html?query="+encodeURIComponent(data.trim()));
         return false;
     }
 </script>

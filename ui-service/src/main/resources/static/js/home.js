@@ -80,7 +80,7 @@ function loadSubjectListOptions(courseId,callback){
     loadSubjectList(courseId,function (sessions) {
         let options = "<option value=''>Select subject</option>";
         sessions.forEach(function (value) {
-            options += "<option value='" + value.id + "'>" + value.name + "</option>"
+            options += "<option value='" + value.id + "'>" + `${value.name}(${value.id})` + "</option>"
         });
         if (callback)callback(options);
     });
