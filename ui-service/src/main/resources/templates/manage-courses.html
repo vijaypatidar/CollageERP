@@ -68,19 +68,5 @@
         </div>
     </div>
 </div>
-
-<script>
-    function deleteCourse(id) {
-        const http = new XMLHttpRequest();
-        http.open("DELETE", "/api/course/removeCourse/" + id);
-        http.onload = function () {
-            if (http.status === 200) {
-                alert(JSON.parse(http.responseText).message);
-                loadPageInContentDiv("courses/manage-courses.html");
-            }
-        };
-        http.send();
-    }
-</script>
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.svceindore.courseservice.controllers;
 import com.svceindore.courseservice.configs.Roles;
 import com.svceindore.courseservice.models.Course;
 import com.svceindore.courseservice.repositories.CourseRepository;
+import com.svceindore.courseservice.repositories.EnrolledRepository;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,11 @@ import java.util.Optional;
 public class CourseController {
 
     private final CourseRepository courseRepository;
+    private final EnrolledRepository enrolledRepository;
 
-    public CourseController(CourseRepository courseRepository) {
+    public CourseController(CourseRepository courseRepository, EnrolledRepository enrolledRepository) {
         this.courseRepository = courseRepository;
+        this.enrolledRepository = enrolledRepository;
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
@@ -116,9 +119,15 @@ public class CourseController {
     public ResponseEntity<?> deleteCourse(@PathVariable String courseId) throws JSONException {
         System.out.println("DELETE COURSE "+courseId);
         JSONObject response = new JSONObject();
-        courseRepository.deleteById(courseId);
-        response.accumulate("status",true);
-        response.accumulate("message","Course deleted with id="+courseId);
+        int n = enrolledRepository.countAllByCourseId(courseId);
+        if (n==0){
+            courseRepository.deleteById(courseId);
+            response.accumulate("status",true);
+            response.accumulate("message","Course deleted with id="+courseId);
+        }else {
+            response.accumulate("status",false);
+            response.accumulate("message","These course cannot deleted as there are "+n+" students enrolled in these course.");
+        }
         return ResponseEntity.ok(response.toString());
     }
 

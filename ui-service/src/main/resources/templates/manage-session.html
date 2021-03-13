@@ -28,9 +28,6 @@
                 <thead class="table-dark">
                 <tr>
                     <th>
-                        ID
-                    </th>
-                    <th>
                         NAME
                     </th>
                     <th>
@@ -43,7 +40,6 @@
                 </thead>
                 <tbody>
                 <tr class="align-middle" th:each="ses : ${#request.getAttribute('sessions')}">
-                    <td th:text="${ses.id}"></td>
                     <td th:text="${ses.name}"></td>
                     <td th:text="${ses.year}"></td>
                     <td th:if="${ses.currentSession}" class="text-success">Yes</td>

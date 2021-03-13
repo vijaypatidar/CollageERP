@@ -5,6 +5,8 @@ import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.security.Principal;
+
 /**
  * Created by Vijay Patidar
  * Date: 12/03/21
@@ -43,5 +45,9 @@ public class CourseClient {
 
     public Semester[] getSemesters() {
         return restTemplate.getForEntity("lb://course-service/api/course/semesters", Semester[].class).getBody();
+    }
+
+    public Session getSession(String sessionId) {
+        return restTemplate.getForEntity("lb://course-service/api/course/session/"+sessionId, Session.class).getBody();
     }
 }

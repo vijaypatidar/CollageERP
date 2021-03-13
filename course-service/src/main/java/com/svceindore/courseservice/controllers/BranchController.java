@@ -45,9 +45,9 @@ public class BranchController {
             return ResponseEntity.ok(res.toString());
         }
 
-        if (branchRepository.findById(branch.getId()).isPresent()){
+        if (branchRepository.findById(branch.getId()).isPresent()) {
             res.accumulate("status", false);
-            res.accumulate("message", "Branch already exists with same id. id="+branch.getId());
+            res.accumulate("message", "Branch already exists with same id. id=" + branch.getId());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
         }
 
@@ -76,9 +76,9 @@ public class BranchController {
         }
 
 
-        if (!branchRepository.findById(branch.getId()).isPresent()){
+        if (!branchRepository.findById(branch.getId()).isPresent()) {
             res.accumulate("status", false);
-            res.accumulate("message", "Branch not found with branchId = "+branch.getId());
+            res.accumulate("message", "Branch not found with branchId = " + branch.getId());
             return ResponseEntity.ok(res.toString());
         }
 
@@ -107,10 +107,18 @@ public class BranchController {
     @RolesAllowed(Roles.ROLE_ADMIN)
     @DeleteMapping("/branch/{branchId}")
     public ResponseEntity<?> deleteBranch(@PathVariable String branchId) throws JSONException {
-        branchRepository.deleteById(branchId);
         JSONObject response = new JSONObject();
-        response.accumulate("status", true);
-        response.accumulate("message", "Branch deleted with id=" + branchId);
+
+        int n = enrolledRepository.countAllByBranchId(branchId);
+
+        if (n == 0) {
+            branchRepository.deleteById(branchId);
+            response.accumulate("status", true);
+            response.accumulate("message", "Branch deleted with id=" + branchId);
+        } else {
+            response.accumulate("status", false);
+            response.accumulate("message", "These course cannot deleted as there are "+n+" students enrolled in these course.");
+        }
         return ResponseEntity.ok(response.toString());
     }
 
@@ -120,7 +128,7 @@ public class BranchController {
     }
 
     @GetMapping("/branch/{id}")
-    public Branch getBranchById(@PathVariable String id){
+    public Branch getBranchById(@PathVariable String id) {
         return branchRepository.findById(id).get();
     }
 }

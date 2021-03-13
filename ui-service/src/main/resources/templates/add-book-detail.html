@@ -22,22 +22,13 @@
         http.open("POST", "/api/library/bookDetail", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
+            let res = JSON.parse(this.responseText);
             if (this.status === 201) {
-                let res = JSON.parse(this.responseText);
                 console.log(res)
                 loadPageInContentDiv("library/add-book-copy.html?bookId=" + res.id);
             } else {
                 $("#btnAddDetail").prop("disabled", false);
-                if (this.status === 403) {
-                    // $(this).prop("disabled",false);
-                    alert("Access denied")
-
-                } else if (this.status === 409) {
-                    // $(this).prop("disabled",false);
-                    alert("Username or email already exists")
-                } else {
-                    alert(this.responseText);
-                }
+                defaultResponseHandler(res,this.status);
             }
         };
 
@@ -54,6 +45,7 @@
     </div>
 
     <div class="row my-2">
+        <div th:replace="fragments/default-alerts"></div>
         <div class="col-12">
             <form class="needs-validation" id="bookDetailForm" name="bookDetail"
                   onsubmit="addBookDetail();return false;">

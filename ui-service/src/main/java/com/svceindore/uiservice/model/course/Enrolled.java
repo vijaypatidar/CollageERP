@@ -22,6 +22,10 @@ public class Enrolled {
     private String courseId;
     private String branchId;
     private String sessionId;
+    private String courseName;
+    private String branchName;
+    private String sessionName;
+    private int currentSemester;
     private String studentName;
     private String studentUsername;
     private Date enrollmentDate;

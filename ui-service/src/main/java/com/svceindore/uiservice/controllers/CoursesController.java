@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.logging.Logger;
 
 /**
@@ -43,7 +44,7 @@ public class CoursesController {
 
     @GetMapping("/update-course-detail.html")
     public String getUpdateCoursePage(@RequestParam String courseId, Model model) {
-        model.addAttribute("course", courseClient.getCourses());
+        model.addAttribute("course", courseClient.getCourse(courseId));
         return "update-course-detail";
     }
 
@@ -122,6 +123,28 @@ public class CoursesController {
         }
 
         return "enrolled-student-detail";
+    }
+
+    @GetMapping("my-enrolled-courses-detail.html")
+    public String getMyEnrolledCoursesPage(Model model) {
+        Enrolled[] enrolleds = restTemplate.getForEntity("lb://course-service/api/course/self-enrolls", Enrolled[].class).getBody();
+
+        for (Enrolled enrolled:enrolleds){
+            enrolled.setCourseName(
+                    courseClient.getCourse(enrolled.getCourseId()).getName()
+            );
+            enrolled.setBranchName(
+                    courseClient.getBranch(enrolled.getBranchId()).getName()
+            );
+            enrolled.setSessionName(
+                    courseClient.getSession(enrolled.getSessionId()).getName()
+            );
+        }
+        model.addAttribute("courses", courseClient.getCourses());
+        model.addAttribute("enrolls", enrolleds);
+        model.addAttribute("sessions", courseClient.getSessions());
+
+        return "my-enrolled-courses-detail";
     }
 
     @GetMapping("/manage-session.html")

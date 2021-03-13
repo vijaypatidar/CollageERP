@@ -75,6 +75,19 @@
         };
         http.send();
     }
+    function deleteCourse(id) {
+        const http = new XMLHttpRequest();
+        http.open("DELETE", "/api/course/removeCourse/" + id);
+        http.onload = function () {
+            let data = JSON.parse(this.responseText);
+            if (data.status){
+                loadPageInContentDiv("courses/manage-courses.html");
+            }else {
+                defaultResponseHandler(data,this.status);
+            }
+        };
+        http.send();
+    }
 </script>
 </body>
 </html>
