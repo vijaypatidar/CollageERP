@@ -9,7 +9,8 @@
             id: courseForm['id'].value,
             name: courseForm['name'].value,
             duration: courseForm['duration'].value,
-            totalFee: courseForm['totalFee'].value
+            totalFee: courseForm['totalFee'].value,
+            active: courseForm['active'].checked
         };
 
         const http = new XMLHttpRequest();
@@ -74,7 +75,16 @@
                                 class="text-muted">(In Rupee)</span></label>
                         <input class="form-control" required id="totalFee" type="number">
                     </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   id="active"
+                                   name="active"
+                                   type="checkbox">
+                            <label class="form-check-label" for="active">Admission is open</label>
 
+                        </div>
+                    </div>
                 </div>
                 <button class="btn btn-outline-success my-4" id="btnAddDetail"
                         onclick="checkForm('#courseForm')" type="submit">Add Course

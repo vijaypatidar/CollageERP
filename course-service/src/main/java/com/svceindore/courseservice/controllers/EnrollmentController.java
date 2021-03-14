@@ -1,6 +1,7 @@
 package com.svceindore.courseservice.controllers;
 
 import com.svceindore.courseservice.configs.Roles;
+import com.svceindore.courseservice.models.Course;
 import com.svceindore.courseservice.models.Enrolled;
 import com.svceindore.courseservice.models.User;
 import com.svceindore.courseservice.repositories.BranchRepository;
@@ -9,6 +10,9 @@ import com.svceindore.courseservice.repositories.EnrolledRepository;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +34,14 @@ public class EnrollmentController {
     private final BranchRepository branchRepository;
     private final EnrolledRepository enrolledRepository;
     private final KeycloakRestTemplate restTemplate;
+    private final MongoTemplate mongoTemplate;
 
-    public EnrollmentController(CourseRepository courseRepository, BranchRepository branchRepository, EnrolledRepository enrolledRepository, KeycloakRestTemplate restTemplate) {
+    public EnrollmentController(CourseRepository courseRepository, BranchRepository branchRepository, EnrolledRepository enrolledRepository, KeycloakRestTemplate restTemplate, MongoTemplate mongoTemplate) {
         this.courseRepository = courseRepository;
         this.branchRepository = branchRepository;
         this.enrolledRepository = enrolledRepository;
         this.restTemplate = restTemplate;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
@@ -45,47 +51,59 @@ public class EnrollmentController {
         JSONObject res = new JSONObject();
 
 
-        if (enrolled.getCourseId() != null && courseRepository.findById(enrolled.getCourseId()).isPresent()) {
+        if (enrolled.getCourseId() != null) {
 
-            if (enrolled.getBranchId() != null && branchRepository.findById(enrolled.getBranchId()).isPresent()) {
-                //checking for previous record for duplicate
-                List<Enrolled> enrolls = enrolledRepository.findAllByCourseIdAndBranchIdAndStudentUsername(
-                        enrolled.getCourseId(),
-                        enrolled.getBranchId(),
-                        enrolled.getStudentUsername()
-                );
+            Optional<Course> optional = courseRepository.findById(enrolled.getCourseId());
+            if (optional.isPresent() && optional.get().isActive()) {
+                if (enrolled.getBranchId() != null && branchRepository.findById(enrolled.getBranchId()).isPresent()) {
+                    //checking for previous record for duplicate
+                    List<Enrolled> enrolls = enrolledRepository.findAllByCourseIdAndBranchIdAndStudentUsername(
+                            enrolled.getCourseId(),
+                            enrolled.getBranchId(),
+                            enrolled.getStudentUsername()
+                    );
 
-                if (!enrolls.isEmpty()) {
-                    res.accumulate("status", false);
-                    res.accumulate("message", "Already enrolled in this course.");
-                    res.accumulate("id", enrolls.get(0).getId());
-                    return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
-                }
+                    if (!enrolls.isEmpty()) {
+                        res.accumulate("status", false);
+                        res.accumulate("message", "Already enrolled in this course.");
+                        res.accumulate("id", enrolls.get(0).getId());
+                        return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
+                    }
 
-                ResponseEntity<User> entity = restTemplate.getForEntity("lb://user-service/api/user/profile/" + enrolled.getStudentUsername(), User.class);
-                User u = entity.getBody();
-                if (entity.getStatusCodeValue() == 200 && u != null) {
-                    enrolled.setStudentName(u.getFirstName() + " " + u.getLastName());
-                    enrolled.setEnrollmentDate(new Date());
-                    enrolled.setCurrentSemester(1);
-                    enrolledRepository.insert(enrolled);
-                    res.accumulate("status", true);
-                    res.accumulate("message", "Enrolled successfully");
-                    res.accumulate("id", enrolled.getId());
+                    ResponseEntity<User> entity = restTemplate.getForEntity("lb://user-service/api/user/profile/" + enrolled.getStudentUsername(), User.class);
+                    User u = entity.getBody();
+                    if (entity.getStatusCodeValue() == 200 && u != null) {
+                        enrolled.setStudentName(u.getFirstName() + " " + u.getLastName());
+                        enrolled.setEnrollmentDate(new Date());
+                        enrolled.setCurrentSemester(1);
+                        enrolledRepository.insert(enrolled);
+                        res.accumulate("status", true);
+                        res.accumulate("message", "Enrolled successfully");
+                        res.accumulate("id", enrolled.getId());
+                    } else {
+                        res.accumulate("status", false);
+                        res.accumulate("message", "Invalid studentUsername");
+                    }
+                    return ResponseEntity.ok(res.toString());
                 } else {
                     res.accumulate("status", false);
-                    res.accumulate("message", "Invalid studentUsername");
+                    res.accumulate("message", "Branch not found with id=" + enrolled.getBranchId());
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
                 }
+            } else if (!optional.isPresent()) {
+                res.accumulate("status", false);
+                res.accumulate("message", "Course not found with courseId=" + enrolled.getCourseId());
                 return ResponseEntity.ok(res.toString());
             } else {
                 res.accumulate("status", false);
-                res.accumulate("message", "Branch not found with id=" + enrolled.getBranchId());
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toString());
+                res.accumulate("message", "Course is not active.");
+                return ResponseEntity.ok(res.toString());
             }
+
 
         } else {
             res.accumulate("status", false);
-            res.accumulate("message", "Course not found with courseId=" + enrolled.getCourseId());
+            res.accumulate("message", "Course id required.");
             return ResponseEntity.ok(res.toString());
         }
     }
@@ -95,27 +113,19 @@ public class EnrollmentController {
     public List<Enrolled> getEnrolledStudents(@RequestParam(required = false, defaultValue = "") String courseId,
                                               @RequestParam(required = false, defaultValue = "") String branchId,
                                               @RequestParam(required = false, defaultValue = "") String sessionId) {
-        if (sessionId.isEmpty()) {
-            if (courseId.isEmpty()) {
-                return enrolledRepository.findAll();
-            } else {
-                if (branchId.isEmpty()) {
-                    return enrolledRepository.findAllByCourseId(courseId);
-                } else {
-                    return enrolledRepository.findAllByCourseIdAndBranchId(courseId, branchId);
-                }
-            }
-        } else {
-            if (courseId.isEmpty()) {
-                return enrolledRepository.findAllBySessionId(sessionId);
-            } else {
-                if (branchId.isEmpty()) {
-                    return enrolledRepository.findAllByCourseIdAndSessionId(courseId, sessionId);
-                } else {
-                    return enrolledRepository.findAllByCourseIdAndBranchIdAndSessionId(courseId, branchId, sessionId);
-                }
-            }
+        Query query = new Query();
+        Criteria criteria = new Criteria();
+
+        if (!sessionId.isEmpty()) criteria.and("sessionId").is(sessionId);
+
+        if (!courseId.isEmpty()) {
+            criteria.and("courseId").is(courseId);
+            if (!branchId.isEmpty())
+                criteria.and("branchId").is(branchId);
+
         }
+        query.addCriteria(criteria);
+        return mongoTemplate.find(query, Enrolled.class);
     }
 
     @GetMapping("/self-enrolls")

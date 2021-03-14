@@ -21,6 +21,7 @@ public class Course {
     private String name;
     private int duration;
     private int feePerYear;
+    private boolean active;
     private int totalFee;
 
 }
