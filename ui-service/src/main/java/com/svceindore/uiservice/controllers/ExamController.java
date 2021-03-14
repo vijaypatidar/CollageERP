@@ -1,9 +1,12 @@
 package com.svceindore.uiservice.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svceindore.uiservice.clients.CourseClient;
+import com.svceindore.uiservice.configs.Roles;
 import com.svceindore.uiservice.model.course.*;
 import com.svceindore.uiservice.model.exam.ExamDetail;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Date;
 
 /**
@@ -81,5 +85,12 @@ public class ExamController {
         model.addAttribute("semesters",courseClient.getSemesters());
         model.addAttribute("semester",5);
         return "view-exam-for-enrolled-courses";
+    }
+
+    @RolesAllowed(Roles.ADMIN_ROLE)
+    @GetMapping("/create-new-paper.html")
+    public String createPaperPage(Model model){
+
+        return "design-new-paper";
     }
 }

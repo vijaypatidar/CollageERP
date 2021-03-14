@@ -18,4 +18,14 @@ public class Question {
     private List<String> options;
     private int mark;
 
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", question='" + question + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", options=" + options +
+                ", mark=" + mark +
+                '}';
+    }
 }
