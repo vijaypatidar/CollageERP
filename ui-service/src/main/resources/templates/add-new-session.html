@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script>
+     function addNewSession() {
+        $("#btnAddSession").prop("disabled", true);
+
+        const form = document.forms["sessionDetail"];
+
+        let data = {
+            name: form['name'].value,
+            year: form['year'].value,
+            currentSession: form['currentSession'].checked
+        };
+
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/course/session", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            $("#btnAddSession").prop("disabled", false);
+            defaultResponseHandler(JSON.parse(this.responseText),this.status);
+        };
+
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col">
+            <h1 class="h2">New Session</h1>
+        </div>
+    </div>
+
+    <div class="row my-2">
+        <div th:replace="fragments/default-alerts"></div>
+
+        <div class="col-12">
+            <form class="needs-validation" id="sessionForm" name="sessionDetail"
+                  onsubmit="addNewSession();return false;">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label" for="name">Session Name</label>
+                        <input class="form-control"
+                               id="name"
+                               name="name"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Session name is required.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="year">Session starting year.</label>
+
+                        <input class="form-control"
+                               id="year"
+                               name="year"
+                               placeholder="Year of session starting"
+                               required
+                               type="number">
+                        <div class="invalid-feedback">
+                            Year required!
+                        </div>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   id="currentSession"
+                                   name="currentSession"
+                                   type="checkbox">
+                            <label class="form-check-label" for="currentSession">These is current session</label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <button class="btn btn-outline-success my-4" id="btnAddSession"
+                        onclick="checkForm('#sessionForm')" type="submit">Add Session
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

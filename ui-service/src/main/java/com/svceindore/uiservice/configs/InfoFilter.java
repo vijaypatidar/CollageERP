@@ -22,14 +22,17 @@ public class InfoFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest,
                          ServletResponse servletResponse,
                          FilterChain filterChain
-    ) throws IOException, ServletException {
+    ) {
         try {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             KeycloakAuthenticationToken keycloakAuthenticationToken = (KeycloakAuthenticationToken) request.getUserPrincipal();
-            AccessToken accessToken = keycloakAuthenticationToken.getAccount().getKeycloakSecurityContext().getToken();
-            request.setAttribute("name", accessToken.getGivenName() + " " + Objects.toString(accessToken.getFamilyName(),""));
-        }catch (Exception ignored){
+            if (keycloakAuthenticationToken!=null){
+                AccessToken accessToken = keycloakAuthenticationToken.getAccount().getKeycloakSecurityContext().getToken();
+                request.setAttribute("name", accessToken.getGivenName() + " " + Objects.toString(accessToken.getFamilyName(),""));
+            }
+            filterChain.doFilter(servletRequest,servletResponse);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        filterChain.doFilter(servletRequest,servletResponse);
     }
 }

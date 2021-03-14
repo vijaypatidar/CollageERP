@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2">All exams</h2>
+        </div>
+    </div>
+
+    <div class="row my-3 g-2">
+        <div class="col-md-3 offset-md-6">
+            <label for="sessionSelection">Select Session</label>
+            <select class="form-select" id="sessionSelection">
+                <option value="">Select session</option>
+                <option th:each="s : ${#request.getAttribute('semesters')}" th:value="${s.id}"
+                        th:selected="${s.id==semester}" th:text="${s.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label></label>
+            <button class="btn btn-outline-success w-100" onclick="fetchList()">Get List</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered rounded shadow-sm">
+                <thead class="table-dark">
+                <tr>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Subject
+                    </th>
+                    <th>
+                        Semester
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Time
+                    </th>
+                    <th>
+                        Mark
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="align-middle" th:each="exam : ${#request.getAttribute('exams')}">
+                    <td th:text="${exam.title}"></td>
+                    <td th:text="${exam.subjectId}"></td>
+                    <td th:text="${exam.semester}"></td>
+                    <td th:text="${#dates.format(exam.scheduledOn, 'dd-MMM-yyyy')}"></td>
+                    <td th:text="${#dates.format(exam.scheduledOn, 'HH:mm a')}"></td>
+                    <td th:text="${exam.totalMark}"></td>
+                    <td th:if="${exam.onlineMode}" class="text-success">Online</td>
+                    <td th:if="${!exam.onlineMode}" class="text-danger">Offline</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function loadBranches(courseId) {
+        const branchSelection = document.getElementById("branchSelection");
+        branchSelection.innerHTML = "<option value=''>Select branch</option>";
+
+        loadBranchListOptions(courseId, (options) => {
+            branchSelection.innerHTML = options;
+        });
+    }
+
+    function fetchList() {
+        let courseSelection = document.getElementById("courseSelection").value;
+        let branchSelection = document.getElementById("branchSelection").value;
+        let sessionSelection = document.getElementById("sessionSelection").value;
+        let url = "exams/view-all-exams.html?"
+        url += "courseId=" + courseSelection + "&branchId=" + branchSelection + "&sessionId=" + sessionSelection;
+        loadPageInContentDiv(url)
+    }
+</script>
+</body>
+</html>

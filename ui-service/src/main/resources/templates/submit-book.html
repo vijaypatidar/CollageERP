@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
-
 
     function submitBook() {
         //disable button
@@ -19,20 +15,9 @@
         http.open("POST", "/api/library/submitBook", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            $("#btnAddDetail").prop("disabled", false);
-            if (this.status === 201) {
-                alert(this.responseText);
-            } else {
-                if (this.status === 403) {
-                    // $(this).prop("disabled",false);
-                    alert("Access denied")
-                } else if (this.status === 409) {
-                    // $(this).prop("disabled",false);
-                    alert("Book already exits with same copy id");
-                } else {
-                    alert(this.responseText);
-                }
-            }
+            $("#btnSubmitBook").prop("disabled", false);
+            let res = JSON.parse(this.responseText);
+            defaultResponseHandler(res,this.status);
         };
 
         http.send(JSON.stringify(data));
@@ -54,6 +39,8 @@
             <form class="needs-validation" name="submitBookForm"
                   onsubmit="submitBook();return false;">
                 <div class="row g-2">
+                    <div th:replace="fragments/default-alerts"></div>
+
                     <div class="col-12">
                         <label class="form-label" for="bid">Book Id</label>
 

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2">Enrolled courses</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered rounded shadow-sm">
+                <thead class="table-dark">
+                <tr>
+                    <th>
+                        Course ID
+                    </th>
+                    <th>
+                        Course Name
+                    </th>
+                    <th>
+                        Branch Name
+                    </th>
+                    <th>
+                        Session
+                    </th>
+                    <th>
+                        Semester
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="align-middle" th:each="enroll : ${#request.getAttribute('enrolls')}">
+                    <td th:text="${enroll.courseId}"></td>
+                    <td th:text="${enroll.courseName}"></td>
+                    <td th:text="${enroll.branchName}"></td>
+                    <td th:text="${enroll.sessionName}"></td>
+                    <td th:text="${enroll.currentSemester}"></td>
+                    <td>
+                        detail
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function loadBranches(courseId) {
+        const branchSelection = document.getElementById("branchSelection");
+        branchSelection.innerHTML = "<option value=''>Select branch</option>";
+
+        loadBranchListOptions(courseId,(options)=>{
+            branchSelection.innerHTML = options;
+        });
+    }
+
+    function fetchList(){
+        let courseSelection = document.getElementById("courseSelection").value;
+        let branchSelection = document.getElementById("branchSelection").value;
+        let sessionSelection = document.getElementById("sessionSelection").value;
+        let url = "courses/enrolled-student-detail.html?"
+        url+="courseId="+courseSelection+"&branchId="+branchSelection+"&sessionId="+sessionSelection;
+        loadPageInContentDiv(url)
+    }
+</script>
+</body>
+</html>

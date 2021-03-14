@@ -2,43 +2,43 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
 
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
-
     function enrollStudent() {
         const enrollStudentForm = document.forms['enrollStudentForm'];
 
         let data = {
-            studentUsername:enrollStudentForm['studentUsername'].value,
-            branchId:enrollStudentForm['branchId'].value,
-            courseId:enrollStudentForm['courseId'].value
+            studentUsername: enrollStudentForm['studentUsername'].value,
+            branchId: enrollStudentForm['branchId'].value,
+            courseId: enrollStudentForm['courseId'].value,
+            sessionId: enrollStudentForm['sessionId'].value
         };
         let http = new XMLHttpRequest();
-        http.open("POST","/api/course/enrollStudent");
+        http.open("POST", "/api/course/enrollStudent");
         http.setRequestHeader("Content-type", "application/json");
-        http.onload = function (){
-            alert(http.responseText)
+        http.onload = function () {
+            let res = JSON.parse(this.responseText);
+            defaultResponseHandler(res,this.status);
         };
         http.send(JSON.stringify(data));
         return false;
     }
 
-    function loadBranches(courseId){
+    function loadBranches(courseId) {
         const branchSelection = document.getElementById("branchOptions");
-        branchSelection.innerHTML="<option value=''>Select branch</option>";
-
-        const http = new XMLHttpRequest();
-        http.open("GET","/api/course/getBranchList/"+courseId);
-        http.onload = function (){
-            let options = "<option value=''>Select branch</option>";
-            JSON.parse(http.responseText).forEach(function (value) {
-                options+="<option value='"+value.id+"'>"+value.name+"</option>"
-            });
-            branchSelection.innerHTML=options;
-        }
-        http.send();
+        loadBranchListOptions(courseId, function (options) {
+            branchSelection.innerHTML = options;
+        });
     }
+
+    function usernameChangeHandler(username) {
+        if (username !== "")
+            loadUserInformation(username, function (data) {
+                console.log(data);
+                document.getElementById("firstName").value = data.firstName || "";
+                document.getElementById("lastName").value = data.lastName || "";
+                document.getElementById("email").value = data.email || "";
+            });
+    }
+
 </script>
 <body>
 <div class="container">
@@ -49,25 +49,49 @@
                   onsubmit="return enrollStudent();">
                 <div class="row g-2">
 
+                    <div th:replace="fragments/default-alerts"></div>
+
                     <div class="col-12">
-                        <label class="form-label" for="username">Username</label>
+                        <label class="form-label" for="username">Student Username</label>
                         <div class="input-group">
                             <span class="input-group-text">@</span>
-                            <input class="form-control rounded-end" id="username" name="studentUsername" th:value="${studentUsername}" placeholder="Username"
+                            <input class="form-control rounded-end" id="username" name="studentUsername"
+                                   th:value="${studentUsername}" placeholder="Username"
                                    required
-                                   type="text">
+                                   type="text" onchange="usernameChangeHandler(this.value)">
                             <div class="invalid-feedback">
                                 Your username is required.
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="firstName">First name</label>
+                        <input class="form-control" id="firstName" name="firstName"
+                               disabled type="text">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label class="form-label" for="lastName">Last name</label>
+                        <input class="form-control" id="lastName" name="lastName" disabled type="text">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="email">Email</label>
+                        <input class="form-control" id="email" readonly placeholder="you@example.com" required
+                               type="email">
+                        <div class="invalid-feedback">
+                            Please enter a valid email address for regular updates.
+                        </div>
+                    </div>
 
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label" for="courseOptions">Select Course</label>
-                        <select class="form-select" name="courseId" id="courseOptions" onchange="loadBranches(this.value)" required>
+                        <select class="form-select" name="courseId" id="courseOptions"
+                                onchange="loadBranches(this.value)" required>
                             <option value="">Choose...</option>
-                            <option th:each="course : ${#request.getAttribute('courses')}" th:value="${course.id}" th:text="${course.name}">
+                            <option th:each="course : ${#request.getAttribute('courses')}" th:value="${course.id}"
+                                    th:text="${course.name}">
                                 B.Tech
                             </option>
                         </select>
@@ -75,10 +99,8 @@
                             Please select a valid course.
                         </div>
                     </div>
-                    <div class="w-100"></div>
 
-
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label" for="branchOptions">Select Branch</label>
                         <select class="form-select" id="branchOptions" name="branchId" required>
                             <option value="">Choose...</option>
@@ -87,11 +109,25 @@
                             Please select a valid course.
                         </div>
                     </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label" for="sessionOptions">Select session</label>
+                        <select class="form-select" id="sessionOptions" name="sessionId" required>
+                            <option value="">Choose...</option>
+                            <option th:each="s : ${#request.getAttribute('sessions')}" th:selected="${s.currentSession}" th:value="${s.id}"
+                                    th:text="${s.name}">
+                                B.Tech
+                            </option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a session.
+                        </div>
+                    </div>
+
                     <hr class="my-4">
 
                     <button class="btn btn-outline-success" id="btnCreate"
-                            onclick="checkForm('#enrollStudentForm')" type="submit">Continue
-                        to registration
+                            onclick="checkForm('#enrollStudentForm')" type="submit">Enroll Student
                     </button>
                 </div>
             </form>
@@ -99,5 +135,8 @@
     </div>
 
 </div>
+<script>
+    usernameChangeHandler(document.getElementById("username").value);
+</script>
 </body>
 </html>

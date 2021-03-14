@@ -18,6 +18,7 @@
     </div>
 
     <div class="row my-3">
+        <div th:replace="fragments/default-alerts"></div>
         <div class="col-12">
             <form class="needs-validation" name="profilePicForm"
                   onsubmit="uploadProfilePic();return false;">
@@ -32,7 +33,7 @@
                     </div>
                     <div class="col-4 offset-1">
                         <div class="row g-2">
-                            <input type="file" name="file" accept="image/*" id="profileFile" onchange="previewProfile()"
+                            <input type="file" name="file" required accept="image/*" id="profileFile" onchange="previewProfile()"
                                    class="form-control">
                             <button type="submit" class="btn btn-outline-success">Upload Picture</button>
                         </div>
@@ -48,17 +49,17 @@
             let http = new XMLHttpRequest();
             http.open("POST", "/api/user/photos/profile/update");
             http.onload = function () {
-                alert(http.responseText)
+                defaultResponseHandler(JSON.parse(this.responseText),this.status);
             }
             http.send(data);
             return false;
         }
 
         function previewProfile() {
-            let oFReader = new FileReader();
-            oFReader.readAsDataURL(document.getElementById("profileFile").files[0]);
-            oFReader.onload = function (oFREvent) {
-                document.getElementById("profileImg").src = oFREvent.target.result;
+            let reader = new FileReader();
+            reader.readAsDataURL(document.getElementById("profileFile").files[0]);
+            reader.onload = function (e) {
+                document.getElementById("profileImg").src = e.target.result;
             };
         }
     </script>

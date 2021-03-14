@@ -2,10 +2,6 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
 
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
-
     function createStudent() {
         //disable button
         $("#btnCreate").prop("disabled", true);
@@ -21,19 +17,9 @@
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
             if (this.status === 201) {
-                loadPageInContentDiv("courses/enroll-student-in-course.html?studentUsername="+username)
+                loadPageInContentDiv("courses/enroll-student-in-course.html?studentUsername="+username);
             } else {
-                $("#btnCreate").prop("disabled", false);
-                if (this.status === 403) {
-                    // $(this).prop("disabled",false);
-                    alert("Access denied")
-
-                } else if (this.status === 409) {
-                    // $(this).prop("disabled",false);
-                    alert("Username or email already exists")
-                } else {
-                    alert(this.responseText);
-                }
+                defaultResponseHandler(JSON.parse(this.responseText),this.status);
             }
         };
         //year=first,brach,batch,semester,rollNumber
@@ -55,6 +41,8 @@
             <h4 class="h5 mb-2">Personal detail</h4>
             <form class="mb-3 needs-validation" id="studentRegistrationForm" name="studentForm"
                   onsubmit="createStudent();return false;">
+                <div th:replace="fragments/default-alerts"></div>
+
                 <div class="row g-2">
                     <div class="col-sm-6">
                         <label class="form-label" for="firstName">First name</label>

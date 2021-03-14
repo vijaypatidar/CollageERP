@@ -7,17 +7,18 @@
 <body>
 <div class="container">
     <div class="row my-3  align-items-center">
-        <div class="col-6">
+        <div class="col-12">
             <h2 class="h2" th:text="${courseName+'('+courseId+')'}">Course management</h2>
         </div>
     </div>
 
     <div class="row my-3  align-items-center" sec:authorize="hasRole('ADMIN')">
+        <div th:replace="fragments/default-alerts"></div>
         <div class="col-12">
-            <button class="btn btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/add-branch.html?courseId=${courseId}')|">Add Branch
-            </button>
+            <button class="btn btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/add-branch.html?courseId=${courseId}')|">Add Branch</button>
             <button class="btn btn-outline-info" th:attr="onclick=|loadPageInContentDiv('courses/update-course-detail.html?courseId=${courseId}')|">Update</button>
             <button class="btn btn-outline-danger" th:attr="onclick=|deleteCourse('${courseId}')|">Delete</button>
+            <button class="btn btn-outline-success" th:attr="onclick=|loadPageInContentDiv('courses/manage-subject.html?courseId=${courseId}')|">Subjects</button>
         </div>
     </div>
 
@@ -50,8 +51,8 @@
                     <td th:text="${branch.hodUsername}"></td>
                     <td th:text="${branch.hodContact}"></td>
                     <td sec:authorize="hasRole('ADMIN')">
-                        <button class="btn btn-sm btn-outline-danger" th:attr="onclick=|deleteBranch('${branch.id}')|">Delete</button>
-                        <button class="btn btn-sm btn-outline-secondary" th:attr="onclick=|alert('${branch.id}')|">Update</button>
+                        <button class="btn btn-sm btn-outline-danger" th:attr="onclick=|deleteBranch('${branch.id}','${branch.courseId}')|">Delete</button>
+                        <button class="btn btn-sm btn-outline-secondary" th:attr="onclick=|loadPageInContentDiv('courses/update-branch.html?branchId=${branch.id}')|">Update</button>
                     </td>
                 </tr>
                 </tbody>
@@ -61,12 +62,28 @@
 </div>
 
 <script>
-    function deleteBranch(id){
+    function deleteBranch(id,courseId){
         const http = new XMLHttpRequest();
-        http.open("DELETE","/api/course/deleteBranch/"+id);
+        http.open("DELETE","/api/course/branch/"+id);
         http.onload = function (){
-            if (http.status===200){
-                alert(JSON.parse(http.responseText).message);
+            let data = JSON.parse(this.responseText);
+            if (data.status){
+                loadPageInContentDiv("courses/manage-branches-for-course.html?courseId="+courseId);
+            }else {
+                defaultResponseHandler(data,this.status);
+            }
+        };
+        http.send();
+    }
+    function deleteCourse(id) {
+        const http = new XMLHttpRequest();
+        http.open("DELETE", "/api/course/removeCourse/" + id);
+        http.onload = function () {
+            let data = JSON.parse(this.responseText);
+            if (data.status){
+                loadPageInContentDiv("courses/manage-courses.html");
+            }else {
+                defaultResponseHandler(data,this.status);
             }
         };
         http.send();

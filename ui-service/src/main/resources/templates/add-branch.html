@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
+
 
     function addBranch() {
         //disable button
@@ -19,17 +17,10 @@
 
         const http = new XMLHttpRequest();
         // send post request to login url
-        http.open("POST", "/api/course/addNewBranch", true);
+        http.open("POST", "/api/course/branch", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-
-            if (this.status === 403) {
-                // $(this).prop("disabled",false);
-                alert("Access denied")
-
-            } else {
-                alert(JSON.parse(this.responseText).message);
-            }
+            defaultResponseHandler(JSON.parse(http.responseText),http.status);
         };
 
         http.send(JSON.stringify(data));
@@ -45,6 +36,9 @@
     </div>
 
     <div class="row my-2">
+
+        <div th:replace="fragments/default-alerts"></div>
+
         <div class="col-12">
             <form class="needs-validation" id="branchForm" name="branchForm"
                   onsubmit="addBranch();return false;">
@@ -58,9 +52,6 @@
                                readonly
                                th:value="${courseId}"
                                type="text">
-                        <div class="invalid-feedback">
-                            Book title is required.
-                        </div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="courseName">Course Name</label>
@@ -71,9 +62,6 @@
                                required
                                th:value="${courseName}"
                                type="text">
-                        <div class="invalid-feedback">
-                            Book title is required.
-                        </div>
                     </div>
                     <div class="col-12">
                         <label class="form-label" for="branchId">Branch Id</label>
@@ -83,7 +71,7 @@
                                required
                                type="text">
                         <div class="invalid-feedback">
-                            Book title is required.
+                            Branch id is required.
                         </div>
                     </div>
                     <div class="col-12">
@@ -94,7 +82,7 @@
                                required
                                type="text">
                         <div class="invalid-feedback">
-                            Book title is required.
+                            Branch name is required.
                         </div>
                     </div>
 

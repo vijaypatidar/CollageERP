@@ -1,33 +1,29 @@
 <!DOCTYPE html>
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<script crossorigin="use-credentials" src="/js/jquery.min.js"></script>
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<script src="/js/bootstrap.bundle.min.js"></script>
+<style>
+    .rack {
+        min-height: 25px;
+        padding: 0;
+    }
 
-    <title>Title</title>
-    <script crossorigin="use-credentials" src="/js/jquery.min.js"></script>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .rack {
-            min-height: 25px;
-            padding: 0;
-        }
+    .rack:hover {
+        background-color: #e8eaed;
+    }
 
-        .rack:hover {
-            background-color: #e8eaed;
-        }
-
-        .moving-path {
-            height: 20px;
-        }
-    </style>
-</head>
+    .moving-path {
+        height: 20px;
+    }
+</style>
 
 <body>
-<div class="container-fluid overflow-auto">
+<div class="container-fluid overflow-auto bg-dark">
 
-    <div class="container shadow p-4 rounded my-5 bg-dark text-light" style="min-width: 780px;max-width: 780px">
+    <div class="container p-4 rounded my-5 bg-dark text-light" style="min-width: 780px;max-width: 780px">
         <h1 class="h4 mb-3" style="text-align: center;">Library Map</h1>
         <div class="row ">
             <div class="rack col-1 border" id="rack1"></div>

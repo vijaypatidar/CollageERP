@@ -2,10 +2,6 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
 
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
-
     function createStudent() {
         //disable button
         $("#btnCreate").prop("disabled", true);
@@ -20,22 +16,9 @@
         http.open("POST", "/api/user/createFaculty", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-                if (this.status === 201) {
-                    alert(this.responseText);
-                } else {
-                    $("#btnCreate").prop("disabled", false);
-                    if (this.status === 403) {
-                        // $(this).prop("disabled",false);
-                        alert("Access denied")
-
-                    } else if (this.status === 409) {
-                        // $(this).prop("disabled",false);
-                        alert("Username or email already exists")
-                    } else {
-                        alert(this.responseText);
-                    }
-                }
-            };
+            let res = JSON.parse(this.responseText);
+            defaultResponseHandler(res, this.status);
+        };
         //year=first,brach,batch,semester,rollNumber
         let data = {
             username: username,
@@ -55,11 +38,13 @@
             <h4 class="h5 mb-2">Personal detail</h4>
             <form class="mb-3 needs-validation" id="studentRegistrationForm" name="facultyForm"
                   onsubmit="createStudent();return false;">
+
+                <div th:replace="fragments/default-alerts"></div>
                 <div class="row g-2">
                     <div class="col-sm-6">
                         <label class="form-label" for="firstName">First name</label>
-                            <input class="form-control" id="firstName" name="firstName"
-                                   required type="text">
+                        <input class="form-control" id="firstName" name="firstName"
+                               required type="text">
                         <div class="invalid-feedback">
                             Valid first name is required.
                         </div>
@@ -131,7 +116,8 @@
                     </div>
                     <hr class="my-4">
 
-                    <button class="btn btn-outline-success" id="btnCreate" onclick="checkForm('#studentRegistrationForm')" type="submit">Continue
+                    <button class="btn btn-outline-success" id="btnCreate"
+                            onclick="checkForm('#studentRegistrationForm')" type="submit">Continue
                         to registration
                     </button>
                 </div>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+
+<div class="container">
+    <div class="row my-3">
+        <div class="col-12">
+            <h1 class="h2">Edit Exam detail</h1>
+            <form class="mb-3 needs-validation" id="createExamForm" name="createExamForm"
+                  onsubmit="return createExam();">
+
+                <div class="row g-2">
+
+                    <div th:replace="fragments/default-alerts"></div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="id">Exam id</label>
+                        <input class="form-control" required id="id" th:value="${examDetail.id}" name="id" type="text" readonly>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="title">Exam title</label>
+                        <input class="form-control" required id="title" name="title" th:value="${examDetail.title}" type="text">
+                    </div>
+
+
+                    <div class="col-12">
+                        <label class="form-label" for="totalMark">Total marks</label>
+                        <input class="form-control" required id="totalMark" th:value="${examDetail.totalMark}" name="totalMark" type="number">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="courseSelection">Select Course</label>
+                        <select class="form-select" name="courseId" required id="courseSelection"
+                                onchange="loadBranchesAndSubject(this.value)">
+                            <option value="">Choose course</option>
+                            <option th:each="course : ${#request.getAttribute('courses')}" th:value="${course.id}"
+                                   th:selected="${examDetail.courseId==course.id}" th:text="${course.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="branchSelection">Select Branch</label>
+                        <select class="form-select" name="branchId" required id="branchSelection">
+                            <option value="">Select branch</option>
+                            <option th:each="branch : ${#request.getAttribute('branches')}" th:value="${branch.id}"
+                                    th:selected="${examDetail.branchId==branch.id}"   th:text="${branch.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="sessionSelection">Select Session</label>
+                        <select class="form-select" name="sessionId" required id="sessionSelection">
+                            <option value="">Select session</option>
+                            <option th:each="s : ${#request.getAttribute('sessions')}" th:value="${s.id}"
+                                    th:selected="${examDetail.sessionId==s.id}"  th:text="${s.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="semesterSelection">Select Semester</label>
+                        <select class="form-select" required name="semester" id="semesterSelection">
+                            <option value="">Select semester</option>
+                            <option th:each="semester : ${#request.getAttribute('semesters')}" th:value="${semester.id}"
+                                    th:selected="${examDetail.semester==semester.id}"  th:text="${semester.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="subjectSelection">Select Subject</label>
+                        <select class="form-select" name="subjectId" required id="subjectSelection">
+                            <option value="">Choose subject</option>
+                            <option th:each="subject : ${#request.getAttribute('subjects')}" th:value="${subject.id}"
+                                    th:selected="${examDetail.subjectId==subject.id}"  th:text="${subject.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="scheduledOn">Schedule On</label>
+                        <input class="form-control" required id="scheduledOn" th:value="${examDetail.scheduledOn.toLocaleString()}" name="scheduledOn" type="datetime-local">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="duration">Duration<span class="text-muted">(In minutes)</span></label>
+                        <input class="form-control" required id="duration" th:value="${examDetail.duration}" name="duration" type="number">
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   id="onlineMode"
+                                   name="onlineMode"
+                                   type="checkbox">
+                            <label class="form-check-label" for="onlineMode">Online mode</label>
+
+                        </div>
+                    </div>
+                    <hr class="my-4">
+
+                    <button class="btn btn-outline-success" id="btnCreate"
+                            onclick="checkForm('#createExamForm')" type="submit">Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function loadBranchesAndSubject(courseId) {
+        const branchSelection = document.getElementById("branchSelection");
+        branchSelection.innerHTML = "<option value=''>Select branch</option>";
+
+        loadBranchListOptions(courseId, (options) => {
+            branchSelection.innerHTML = options;
+        });
+
+        const subjectSelection = document.getElementById("subjectSelection");
+        branchSelection.innerHTML = "<option value=''>Select subject</option>";
+
+        loadSubjectListOptions(courseId, (options) => {
+            subjectSelection.innerHTML = options;
+        });
+
+
+    }
+
+
+    function createExam() {
+        const form = document.forms['createExamForm'];
+
+        let data = {
+            id: form['id'].value,
+            title: form['title'].value,
+            courseId: form['courseId'].value,
+            subjectId: form['subjectId'].value,
+            branchId: form['branchId'].value,
+            sessionId: form['sessionId'].value,
+            totalMark: form['totalMark'].value,
+            semester: form['semester'].value,
+            duration: form['duration'].value,
+            scheduledOn:new Date(form['scheduledOn'].value).toUTCString(),
+            onlineMode: form['onlineMode'].checked
+        };
+        console.log(data);
+        let http = new XMLHttpRequest();
+        http.open("PUT", "/api/exam/exam");
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            let res = JSON.parse(http.responseText);
+            defaultResponseHandler(res,this.status);
+        };
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+</body>
+</html>

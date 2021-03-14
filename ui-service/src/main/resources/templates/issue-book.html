@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
-
 
     function issueBook() {
         //disable button
@@ -20,30 +16,21 @@
         http.open("POST", "/api/library/issueBook", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            $("#btnAddDetail").prop("disabled", false);
-            if (this.status === 201) {
-                alert(this.responseText);
-            } else {
-                if (this.status === 403) {
-                    // $(this).prop("disabled",false);
-                    alert("Access denied")
-                } else if (this.status === 409) {
-                    // $(this).prop("disabled",false);
-                    alert("Book already exits with same copy id");
-                } else {
-                    alert(this.responseText);
-                }
-            }
+            $("#btnIssueBook").prop("disabled", false);
+            let res = JSON.parse(this.responseText);
+            defaultResponseHandler(res, this.status);
         };
 
         http.send(JSON.stringify(data));
         return false;
     }
 
-    function usernameChangeHandler(usernameInput){
-        let username=usernameInput.value;
-        //change profile pic
-        document.getElementById("selectedUserImg").src="/api/user/photos/profile/"+username
+    function usernameChangeHandler(username) {
+        loadUserInformation(username, function (data) {
+            //change profile pic
+            document.getElementById("selectedUserImg").src = "/api/user/photos/profile/" + username
+            document.getElementById("issuerName").innerText = `${data.firstName} ${data.lastName}`;
+        });
     }
 </script>
 <body>
@@ -63,6 +50,8 @@
             <form class="needs-validation" id="bookIssueForm" name="issueBookForm"
                   onsubmit="issueBook();return false;">
                 <div class="row">
+                    <div th:replace="fragments/default-alerts">
+                    </div>
                     <div class="col-8">
                         <div class="row g-2">
                             <div class="col-12">
@@ -70,7 +59,7 @@
                                 <input class="form-control"
                                        id="username" name="username"
                                        placeholder=""
-                                       required type="text" onchange="usernameChangeHandler(this)">
+                                       required type="text" onchange="usernameChangeHandler(this.value)">
                             </div>
                             <div class="col-12">
                                 <label class="form-label" for="bid">Book Id</label>
@@ -78,6 +67,7 @@
                                 <input class="form-control"
                                        id="bid"
                                        name="bid"
+                                       required
                                        th:value="${bid}" type="text">
 
                             </div>
@@ -91,11 +81,12 @@
                         <div class="card rounded shadow-sm text-center p-2 ">
                             <div class="row">
                                 <div class="col">
-                                    <img style="height: 200px;width: 200px;" class="card-img-top shadow-sm rounded-circle" id="selectedUserImg" alt="#">
+                                    <img style="height: 200px;width: 200px;"
+                                         class="card-img-top shadow-sm rounded-circle" id="selectedUserImg" alt="#">
                                 </div>
                             </div>
 
-                            <div class="card-title my-2 px-2">Vijay Patidar</div>
+                            <div class="card-title my-2 px-2" id="issuerName"></div>
                         </div>
                     </div>
                 </div>

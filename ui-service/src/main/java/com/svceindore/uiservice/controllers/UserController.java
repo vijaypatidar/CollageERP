@@ -13,13 +13,18 @@ import java.security.Principal;
  * Time: 9:05 PM
  **/
 @Controller
-@RequestMapping("/profile/")
-public class ProfileController {
+@RequestMapping("/user/")
+public class UserController {
 
     @GetMapping("/my-profile.html")
     public String getMyProfilePage(Model model, Principal principal){
         model.addAttribute("username",principal.getName());
 
         return "user-profile-page";
+    }
+
+    @GetMapping("/reset-user-password.html")
+    public String getResetPasswordPage(){
+        return "reset-user-password";
     }
 }

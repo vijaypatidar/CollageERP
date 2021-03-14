@@ -27,9 +27,13 @@ public class Enrolled {
     @Indexed
     private String courseId;
     @Indexed
+    private String sessionId;
+    @Indexed
     private String branchId;
     private String studentUsername;
+    private String studentName;
     private Date enrollmentDate;
+    private int currentSemester;
 
     @Override
     public String toString() {

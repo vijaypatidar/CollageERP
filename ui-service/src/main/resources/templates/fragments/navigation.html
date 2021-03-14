@@ -3,28 +3,33 @@
 <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar pb-3" th:fragment="navigation">
     <link href="/css/navigation.css" rel="stylesheet">
 
-    <div class="nav-item-heading">Exam</div>
-    <div class="nav-item" sec:authorize="hasRole('USER')">Time table</div>
-    <div class="nav-item" sec:authorize="hasRole('ADMIN')">Create Exam</div>
+    <div class="nav-item-heading fw-bold">Exam</div>
+    <div class="nav-item" sec:authorize="hasRole('STUDENT')" onclick="loadPageInContentDiv('exams/view-exam-for-enrolled-courses.html')">Time table</div>
+    <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('exams/view-all-exams.html')">View Exams</div>
+    <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('exams/create-new-exam.html')">Create Exam</div>
     <div class="nav-item">Declare Result</div>
     <div class="nav-item">View Result</div>
 
-    <div class="nav-item-heading">Courses</div>
-    <div class="nav-item" onclick="loadPageInContentDiv('courses/manage-courses.html')">Manage</div>
+    <div class="nav-item-heading fw-bold">Courses</div>
+    <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/manage-courses.html')">Manage</div>
+    <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/enroll-student-in-course.html')">Enroll student</div>
+    <div class="nav-item" sec:authorize="!hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/manage-courses.html')">Explore</div>
     <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/enrolled-student-detail.html')">Enrolled Student</div>
+    <div class="nav-item" sec:authorize="hasRole('STUDENT')" onclick="loadPageInContentDiv('courses/my-enrolled-courses-detail.html')">Enrolled</div>
+    <div class="nav-item" sec:authorize="hasRole('ADMIN')" onclick="loadPageInContentDiv('courses/manage-session.html')">Sessions</div>
 
-    <div class="nav-item-heading">Schedule</div>
+    <div class="nav-item-heading fw-bold">Schedule</div>
     <div class="nav-item">Time table</div>
     <div class="nav-item" sec:authorize="hasRole('ADMIN')">Manage</div>
 
     <div sec:authorize="hasRole('ADMIN')">
-        <div class="nav-item-heading">Students</div>
+        <div class="nav-item-heading fw-bold">Students</div>
         <div class="nav-item" onclick="loadPageInContentDiv('student/create-student-account.html')">New Student</div>
         <div class="nav-item">Manage Student</div>
-        <div class="nav-item">Reset Password</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('user/reset-user-password.html')">Reset Password</div>
     </div>
     <div>
-        <div class="nav-item-heading">Library</div>
+        <div class="nav-item-heading fw-bold">Library</div>
         <div class="nav-item" onclick="loadPageInContentDiv('library/add-book-detail.html')" sec:authorize="hasRole('LIBRARIAN')">Add Book detail</div>
         <div class="nav-item" onclick="loadPageInContentDiv('library/issue-book.html')" sec:authorize="hasRole('LIBRARIAN')">Issue Book</div>
         <div class="nav-item" onclick="loadPageInContentDiv('library/submit-book.html')" sec:authorize="hasRole('LIBRARIAN')">Submit Book</div>
@@ -34,13 +39,15 @@
     </div>
 
     <div sec:authorize="hasRole('ADMIN')">
-        <div class="nav-item-heading" sec:authorize="hasRole('ADMIN')">Faculties</div>
+        <div class="nav-item-heading fw-bold" sec:authorize="hasRole('ADMIN')">Faculties</div>
         <div class="nav-item" onclick="loadPageInContentDiv('faculty/create-faculty-account.html')">New Faculty</div>
         <div class="nav-item">Manage Faculty</div>
+        <div class="nav-item" onclick="loadPageInContentDiv('user/reset-user-password.html')">Reset Password</div>
     </div>
 
 
-    <div class="nav-item-heading" onclick="loadPageInContentDiv('profile/my-profile.html')">My Profile</div>
+    <div class="nav-item-heading fw-bold">Profile</div>
+    <div class="nav-item" onclick="loadPageInContentDiv('user/my-profile.html')">My Profile</div>
 
 </nav>
 

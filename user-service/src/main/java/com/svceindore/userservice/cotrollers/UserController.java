@@ -5,6 +5,7 @@ import com.svceindore.userservice.configs.Roles;
 import com.svceindore.userservice.model.Faculty;
 import com.svceindore.userservice.model.Student;
 import com.svceindore.userservice.model.User;
+import com.svceindore.userservice.model.helpers.ResetPassword;
 import net.minidev.json.JSONObject;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessToken;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.security.Principal;
 import java.util.Set;
@@ -43,7 +45,7 @@ public class UserController {
             response.appendField("status", false);
             response.appendField("message", "User already exist for this username or email.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response.toString());
-        }else if (re.getStatus()==403){
+        } else if (re.getStatus() == 403) {
             response.appendField("status", false);
             response.appendField("message", "Internal access denied.");
             return ResponseEntity.ok(response.toString());
@@ -66,7 +68,7 @@ public class UserController {
             response.appendField("status", false);
             response.appendField("message", "User already exist for this username or email.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response.toString());
-        }else if (re.getStatus()==403){
+        } else if (re.getStatus() == 403) {
             response.appendField("status", false);
             response.appendField("message", "Internal access denied.");
             return ResponseEntity.ok(response.toString());
@@ -75,16 +77,15 @@ public class UserController {
         return null;
     }
 
-    @GetMapping("/myProfile")
+    @GetMapping("/profile")
     public User getMyProfile(Principal principal) {
-        KeycloakAuthenticationToken keycloakAuthenticationToken = (KeycloakAuthenticationToken) principal;
-        AccessToken accessToken = keycloakAuthenticationToken.getAccount().getKeycloakSecurityContext().getToken();
-        User user = new User();
-        user.setUsername(accessToken.getPreferredUsername());
-        user.setEmail(accessToken.getEmail());
-        user.setFirstName(accessToken.getGivenName());
-        user.setLastName(accessToken.getFamilyName());
-        return user;
+        return keycloakClient.getUser(principal.getName());
+    }
+
+    @RolesAllowed({Roles.ADMIN_ROLE,Roles.ROLE_LIBRARIAN})
+    @GetMapping("/profile/{username}")
+    public User getProfile(@PathVariable String username) {
+        return keycloakClient.getUser(username);
     }
 
     @GetMapping("/myRoles")
@@ -98,4 +99,27 @@ public class UserController {
         return "API for managing user.";
     }
 
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPassword resetPassword) {
+        JSONObject res = new JSONObject();
+
+        if (resetPassword.getUsername() == null || resetPassword.getUsername().isEmpty()) {
+            res.appendField("status", false);
+            res.appendField("message", "username required");
+        } else if (resetPassword.getPassword() == null || resetPassword.getPassword().isEmpty()) {
+            res.appendField("status", false);
+            res.appendField("message", "password required");
+        } else {
+            try {
+                keycloakClient.resetPassword(resetPassword.getUsername(), resetPassword.getPassword());
+                res.appendField("status", true);
+                res.appendField("message", "Password changed successfully.");
+            }catch (NotFoundException e){
+                res.appendField("status", false);
+                res.appendField("message", "User not found.");
+            }
+        }
+
+        return ResponseEntity.ok(res.toString());
+    }
 }

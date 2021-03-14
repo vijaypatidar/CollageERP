@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
-
     function handleRackIdChange(rackId) {
         document.getElementById('rackId').value = rackId
     }
@@ -23,20 +19,9 @@
         http.open("POST", "/api/library/bookCopy", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-                $("#btnAddDetail").prop("disabled", false);
-                if (this.status === 201) {
-                    alert(this.responseText);
-                } else {
-                    if (this.status === 403) {
-                        // $(this).prop("disabled",false);
-                        alert("Access denied")
-                    } else if (this.status === 409) {
-                        // $(this).prop("disabled",false);
-                        alert("Book already exits with same copy id");
-                    } else {
-                        alert(this.responseText);
-                    }
-                }
+            $("#btnAddDetail").prop("disabled", false);
+            let res = JSON.parse(this.responseText);
+            defaultResponseHandler(res, this.status);
         };
 
         http.send(JSON.stringify(data));
@@ -45,8 +30,11 @@
 <body>
 <div class="container">
     <div class="row my-2">
-        <div class="col-md-8 offset-md-2">
-            <h1 class="h2 my-3">Add Book copy</h1>
+        <h1 class="h2 my-3">Add Book copy</h1>
+
+        <div th:replace="fragments/default-alerts"></div>
+
+        <div class="col-12">
             <form class="mb-3 needs-validation" id="bookDetailForm" name="bookDetail"
                   onsubmit="addBookCopy();return false;">
                 <div class="row g-2">

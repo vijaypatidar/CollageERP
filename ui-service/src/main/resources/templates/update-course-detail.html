@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <script>
-    function checkForm(id) {
-        $(id).addClass('was-validated')
-    }
 
     function updateCourse() {
         //disable button
@@ -21,12 +18,7 @@
         http.open("PUT", "/api/course/updateCourse", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            if (this.status === 403) {
-                // $(this).prop("disabled",false);
-                alert("Access denied")
-            }
-            alert(JSON.parse(http.responseText).message);
-
+            defaultResponseHandler(JSON.parse(http.responseText).message,this.status);
         };
 
         http.send(JSON.stringify(data));
@@ -46,6 +38,7 @@
             <form class="needs-validation" id="courseForm" name="courseForm"
                   onsubmit="updateCourse();return false;">
                 <div class="row g-2">
+                    <div th:replace="fragments/default-alerts"></div>
                     <div class="col-12">
                         <label class="form-label" for="courseId">Course ID</label>
                         <input class="form-control"

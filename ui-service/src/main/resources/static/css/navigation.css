@@ -2,12 +2,12 @@
     padding: 2px 10px;
     margin-bottom: 1px;
     color: #27343b;
+    font-size: 16px;
     font-family: system-ui, sans-serif;
     user-select: none;
 }
 
 .nav-item {
-    padding-left: 25px;
     font-size: 14px;
 }
 

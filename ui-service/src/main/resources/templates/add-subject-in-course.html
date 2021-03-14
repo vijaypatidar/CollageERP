@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script>
+    function addSubject() {
+        //disable button
+        const courseForm = document.forms["subjectForm"];
+
+        let data = {
+            name: courseForm['name'].value,
+            id: courseForm['subjectCode'].value,
+            courseId: courseForm['courseId'].value
+        };
+
+        const http = new XMLHttpRequest();
+        // send post request to login url
+        http.open("POST", "/api/course/subject", true);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            let res = JSON.parse(http.responseText);
+            defaultResponseHandler(res, this.status);
+        };
+
+        http.send(JSON.stringify(data));
+        return false;
+    }
+</script>
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col">
+            <h1 class="h2">New Subject</h1>
+        </div>
+    </div>
+
+    <div class="row my-2">
+        <div th:replace="fragments/default-alerts"></div>
+        <div class="col-12">
+            <form class="needs-validation" id="subjectForm" name="subjectForm"
+                  onsubmit="addSubject();return false;">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label" for="courseId">Course ID</label>
+                        <input class="form-control"
+                               id="courseId"
+                               name="courseId"
+                               required
+                               readonly
+                               th:value="${course.id}"
+                               type="text">
+                        <div class="invalid-feedback">
+                            Course ID is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="name">Subject Name</label>
+                        <input class="form-control"
+                               id="name"
+                               name="name"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Subject name is required.
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="subjectCode">Subject Code</label>
+                        <input class="form-control"
+                               id="subjectCode"
+                               name="subjectCode"
+                               required
+                               type="text">
+                        <div class="invalid-feedback">
+                            Subject Code is required.
+                        </div>
+                    </div>
+
+
+                </div>
+                <button class="btn btn-outline-success my-4" id="btnAddSubject"
+                        onclick="checkForm('#subjectForm')" type="submit">Add Subject
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
