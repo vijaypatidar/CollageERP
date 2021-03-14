@@ -89,8 +89,8 @@ public class ExamController {
 
     @RolesAllowed(Roles.ADMIN_ROLE)
     @GetMapping("/create-new-paper.html")
-    public String createPaperPage(Model model){
-
+    public String createPaperPage(Model model,@RequestParam String paperId){
+        model.addAttribute("paperId",paperId);
         return "design-new-paper";
     }
 }
