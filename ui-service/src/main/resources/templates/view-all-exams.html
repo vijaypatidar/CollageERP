@@ -86,10 +86,14 @@
                     <td th:text="${#dates.format(exam.scheduledOn, 'HH:mm a')}"></td>
                     <td th:text="${exam.totalMark}"></td>
                     <td>
-                        <button class="btn w-100 btn-outline-success btn-sm"
+                        <button class="btn btn-outline-success btn-sm"
                                 th:attr="onclick=|loadPageInContentDiv('exams/edit-exam-detail.html?examDetailId=${exam.id}')|">
                             Edit
                         </button>
+                        <a class="btn btn-sm btn-outline-success"
+                           th:if="${exam.onlineMode}"
+                           th:href="${'/exams/create-new-paper.html?paperId='+exam.id}"
+                           target="_blank">Paper</a>
                     </td>
                 </tr>
                 </tbody>

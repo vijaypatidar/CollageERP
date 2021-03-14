@@ -59,7 +59,11 @@
                     <td th:text="${#dates.format(exam.scheduledOn, 'dd-MMM-yyyy')}"></td>
                     <td th:text="${#dates.format(exam.scheduledOn, 'HH:mm a')}"></td>
                     <td th:text="${exam.totalMark}"></td>
-                    <td th:if="${exam.onlineMode}" class="text-success">Online</td>
+                    <td th:if="${exam.onlineMode}" class="text-success">Online
+                        <a class="btn btn-sm btn-outline-success"
+                        th:href="${'/exam/online/start-exam?examId='+exam.id}"
+                        target="_blank">LAUNCH</a>
+                    </td>
                     <td th:if="${!exam.onlineMode}" class="text-danger">Offline</td>
                 </tr>
                 </tbody>

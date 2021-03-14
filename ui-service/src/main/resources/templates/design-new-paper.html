@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+
+    <title>CollageERP-Create paper</title>
+    <script crossorigin="use-credentials" src="/js/jquery.min.js"></script>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/home.js"></script>
+</head>
+<body th:attr="onload=|loadPaper('${paperId}');return false;|">
+<div th:class="container-fluid" th:replace="fragments/header::header"></div>
+<div class="container py-3">
+    <form name="paper" id="paper" th:attr="onsubmit=|showData('${paperId}');return false;|">
+        <div class="row">
+            <div th:replace="fragments/default-alerts"></div>
+        </div>
+        <div class="row" id="question-container">
+
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    Submit
+                </button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-outline-success w-100" onclick="addQuestion(); return false">Add
+                    new
+                    question
+                </button>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script>
+    let index = 0;
+
+    function addQuestion(question) {
+        let data;
+        if (question) {
+            data = question;
+        } else {
+            data = {
+                options: ["", "", "", ""]
+            };
+        }
+        let template = `<div class="col card p-4 my-2">
+                    <h4>Question ${index + 1}</h4>
+                    <div class="mb-3">
+                        <label for="question${index}" class="form-label">Enter question</label>
+                        <textarea class="form-control" required name="questions[${index}][question]" id="question${index}" rows="3">${data.question || ""}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mark${index}" class="form-label">Enter mark</label>
+                        <input type="number" required name="questions[${index}][mark]" value="${data.mark||""}" class="form-control" id="mark${index}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="options1" class="form-label">Enter options</label>
+                        <div id="options1">
+                            <div>
+                                <label for="q${index}option1" class="form-label">Option 1</label>
+                                <input type="text" required name="questions[${index}][options][0]" value="${data.options[0]}" class="form-control" id="1${index}option1">
+                            </div>
+                            <div >
+                                <label for="q${index}option2" class="form-label">Option 2</label>
+                                <input type="text" required name="questions[${index}][options][1]" value="${data.options[1]}" class="form-control" id="q${index}option2">
+                            </div>
+                            <div >
+                                <label for="q${index}option3" class="form-label">Option 3</label>
+                                <input type="text" required name="questions[${index}][options][2]" value="${data.options[2]}" class="form-control" id="q${index}option3">
+                            </div>
+                            <div>
+                                <label for="q${index}option4" class="form-label">Option 4</label>
+                                <input type="text" required name="questions[${index}][options][3]" value="${data.options[3]}" class="form-control" id="q${index}option4">
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+
+        let container = document.getElementById('question-container');
+        let div = document.createElement('div');
+        div.innerHTML = template;
+        container.appendChild(div);
+
+        index++;
+
+    }
+
+    function showData(id) {
+        let data = {};
+        let questions = [];
+        let totalMark = 0;
+        for (let a = 0; a < index; a++) {
+
+            let question = {};
+            question['question'] = document.getElementsByName(`questions[${a}][question]`)[0].value;
+            question['mark'] = document.getElementsByName(`questions[${a}][mark]`)[0].value;
+
+            totalMark += parseInt(question['mark']);
+
+            let options = [];
+            for (let o = 0; o < 4; o++) {
+                options.push(document.getElementsByName(`questions[${a}][options][${o}]`)[0].value);
+            }
+
+            question['options'] = options;
+            questions.push(question);
+        }
+
+        data['id'] = id;
+        data['questions'] = questions;
+        data['totalMark'] = totalMark;
+
+        console.log(JSON.stringify(data))
+
+        let http = new XMLHttpRequest();
+        http.open("PUT", "/api/exam/papers/paper");
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            let res = JSON.parse(this.responseText);
+            defaultResponseHandler(res, this.status);
+        }
+        http.send(JSON.stringify(data));
+    }
+
+    function loadPaper(paperId) {
+        let http = new XMLHttpRequest();
+        http.open('GET', "/api/exam/papers/paper/" + paperId);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            if (this.status === 200) {
+                let data = JSON.parse(this.responseText);
+                data.questions.forEach(value => {
+                    addQuestion(value);
+                });
+            }
+        };
+        http.send();
+    }
+
+</script>
+</body>
+</html>

@@ -20,5 +20,6 @@ public class Course {
     private int duration;
     private int feePerYear;
     private int totalFee;
+    private boolean active;
 
 }

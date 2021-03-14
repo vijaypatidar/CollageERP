@@ -1,25 +1,20 @@
-package com.svceindore.examservice.models;
+package com.svceindore.uiservice.model.exam;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 /**
- * Created by Vijay Patidar
- * Date: 23/02/21
- * Time: 8:44 AM
+ * Date: 14/03/21
+ * Time: 9:44 PM
  **/
-@Document
 @NoArgsConstructor
 @Getter
 @Setter
 public class Paper {
-    @Id
-    private String id;//same as exam id for which this paper is created i.e foreign key
+    private String id;
     private List<Question> questions;
     private int totalMark;
 

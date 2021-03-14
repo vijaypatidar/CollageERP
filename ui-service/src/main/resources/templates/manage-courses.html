@@ -37,7 +37,10 @@
                         Duration
                     </th>
                     <th>
-                        FEE
+                        Fee
+                    </th>
+                    <th>
+                        Admission
                     </th>
                     <th>
                         ACTIONS
@@ -50,6 +53,9 @@
                     <td th:text="${course.name}"></td>
                     <td th:text="${course.duration+' year' }"></td>
                     <td th:text="${course.totalFee}"></td>
+                    <td th:if="${course.active}" class="text-success">Open</td>
+                    <td th:if="${!course.active}" class="text-danger">Closed</td>
+
                     <td>
                         <button class="btn btn-sm btn-outline-success w-100"
                                 sec:authorize="hasRole('ADMIN')"

@@ -1,44 +1,74 @@
 package com.svceindore.uiservice.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.svceindore.uiservice.configs.Roles;
+import com.svceindore.uiservice.model.exam.ExamDetail;
+import com.svceindore.uiservice.model.exam.Paper;
 import com.svceindore.uiservice.model.exam.Question;
+import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Vijay Patidar
  * Date: 25/02/21
  * Time: 2:24 PM
  **/
 @Controller
 @RequestMapping("/exam/online")
 public class OnlineExamController {
+    private final KeycloakRestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
-    @RequestMapping("/paper")
-    public String getOnlinePaper(Model model) {
-        List<Question> questions = new ArrayList<>();
-        List<String> options = new ArrayList<>();
-        options.add("Language");
-        options.add("Framework");
-        options.add("Library");
-        options.add("Software");
+    public OnlineExamController(KeycloakRestTemplate restTemplate, ObjectMapper objectMapper) {
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+    }
 
-        for(int i=1;i<=10;i++){
-            questions.add(new Question(i,
-                    "What is spring boot."+i,
-                    null,
-                    options,
-                    i%2==0?i%3==0?1:2:3
-            ));
+    @RequestMapping("/start-exam")
+    public String getOnlinePaper(Model model, @RequestParam String examId) throws JsonProcessingException {
+
+        ExamDetail examDetail = restTemplate.getForEntity("lb://exam-service/api/exam/exam/" + examId, ExamDetail.class).getBody();
+
+        if (examDetail == null) {
+            return "505";
         }
 
-        model.addAttribute("paperTitle", "MST-1");
-        model.addAttribute("questions", questions);
-        model.addAttribute("time","2 Hours");
-        model.addAttribute("endTimeMillisecond","1614869432832");
-        return "online-exam-question-paper";
+        long sTime = examDetail.getScheduledOn().getTime();
+        long eTime = sTime + examDetail.getDuration() * 60000L;
+        long cTime = new Date().getTime();
+
+        if (sTime <= cTime && cTime <= eTime) {
+            ResponseEntity<String> entity = restTemplate.getForEntity(
+                    "lb://exam-service/api/exam/papers/paper/" + examId,
+                    String.class
+            );
+            if (entity.getStatusCode() == HttpStatus.OK) {
+                Paper p = objectMapper.readValue(entity.getBody(), Paper.class);
+                model.addAttribute("questions", p.getQuestions());
+                model.addAttribute("paperTitle", examDetail.getTitle());
+                model.addAttribute("time", examDetail.getDuration() + " Min");
+                model.addAttribute("endTimeMillisecond", eTime);
+                return "online-exam-question-paper";
+            } else {
+                return "505";
+            }
+        } else if (eTime < cTime) {
+            model.addAttribute("message", "Exam already ended.");
+            return "505";
+        } else {
+            model.addAttribute("message", "Exam not started.");
+            return "505";
+        }
     }
 }
