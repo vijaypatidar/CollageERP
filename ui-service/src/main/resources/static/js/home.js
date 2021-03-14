@@ -38,8 +38,10 @@ function loadBranchList(courseId, callback) {
 }
 
 function loadBranchListOptions(courseId, callback) {
+    let msg = "<option value=''>Select branch</option>";
+    if (callback)callback(msg);
     loadBranchList(courseId, function (branches) {
-        let options = "<option value=''>Select branch</option>";
+        let options = msg;
         branches.forEach(function (value) {
             options += "<option value='" + value.id + "'>" + value.name + "</option>"
         });
@@ -58,8 +60,10 @@ function loadSessionList(callback) {
 
 
 function loadSessionListOptions(callback) {
+    let msg = "<option value=''>Select session</option>";
+    if (callback)callback(msg);
     loadSessionList(function (sessions) {
-        let options = "<option value=''>Select session</option>";
+        let options = msg;
         sessions.forEach(function (value) {
             options += "<option value='" + value.id + "'>" + value.name + "</option>"
         });
@@ -77,8 +81,10 @@ function loadSubjectList(courseId, callback) {
 }
 
 function loadSubjectListOptions(courseId, callback) {
+    let msg = "<option value=''>Select subject</option>";
+    if (callback)callback(msg);
     loadSubjectList(courseId, function (sessions) {
-        let options = "<option value=''>Select subject</option>";
+        let options = msg;
         sessions.forEach(function (value) {
             options += "<option value='" + value.id + "'>" + `${value.name}(${value.id})` + "</option>"
         });

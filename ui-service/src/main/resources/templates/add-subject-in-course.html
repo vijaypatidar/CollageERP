@@ -16,21 +16,8 @@
         http.open("POST", "/api/course/subject", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
-            if (http.status === 403) {
-                alert(http.responseText)
-            } else {
-                let res = JSON.parse(http.responseText);
-                console.log(res);
-                if (res.status) {
-                    $("#alertSuccess").show();
-                    $("#alertFail").hide();
-                    document.getElementById("successMessage").innerText = res.message;
-                } else {
-                    $("#alertSuccess").hide();
-                    $("#alertFail").show();
-                    document.getElementById("errorMessage").innerText = res.message;
-                }
-            }
+            let res = JSON.parse(http.responseText);
+            defaultResponseHandler(res, this.status);
         };
 
         http.send(JSON.stringify(data));
@@ -46,15 +33,7 @@
     </div>
 
     <div class="row my-2">
-        <div class="col-12">
-            <div class="alert alert-success" style="display: none" id="alertSuccess" role="alert">
-                <strong>Success!</strong> <span id="successMessage"></span>
-            </div>
-            <div class="alert alert-danger" style="display: none" id="alertFail" role="alert">
-                <strong>Failed!</strong> <span id="errorMessage"></span>
-            </div>
-        </div>
-
+        <div th:replace="fragments/default-alerts"></div>
         <div class="col-12">
             <form class="needs-validation" id="subjectForm" name="subjectForm"
                   onsubmit="addSubject();return false;">

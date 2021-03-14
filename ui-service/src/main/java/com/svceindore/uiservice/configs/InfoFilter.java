@@ -26,10 +26,13 @@ public class InfoFilter extends GenericFilterBean {
         try {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             KeycloakAuthenticationToken keycloakAuthenticationToken = (KeycloakAuthenticationToken) request.getUserPrincipal();
-            AccessToken accessToken = keycloakAuthenticationToken.getAccount().getKeycloakSecurityContext().getToken();
-            request.setAttribute("name", accessToken.getGivenName() + " " + Objects.toString(accessToken.getFamilyName(),""));
+            if (keycloakAuthenticationToken!=null){
+                AccessToken accessToken = keycloakAuthenticationToken.getAccount().getKeycloakSecurityContext().getToken();
+                request.setAttribute("name", accessToken.getGivenName() + " " + Objects.toString(accessToken.getFamilyName(),""));
+            }
             filterChain.doFilter(servletRequest,servletResponse);
-        }catch (Exception ignored){
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }
