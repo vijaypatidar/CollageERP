@@ -20,7 +20,7 @@
         <div class="row" id="question-container">
 
         </div>
-        <div class="row">
+        <div class="row my-2">
             <div class="col">
                 <button type="submit" class="btn btn-outline-primary w-100">
                     Submit
@@ -40,6 +40,8 @@
 <script src="/js/bootstrap.bundle.min.js"></script>
 <script>
     let index = 0;
+    let number = 1;
+    let keys = [];
 
     function addQuestion(question) {
         let data;
@@ -51,7 +53,14 @@
             };
         }
         let template = `<div class="col card p-4 my-2">
-                    <h4>Question ${index + 1}</h4>
+                    <div class="row my-3  align-items-center">
+                        <div class="col">
+                            <h4 id="questionNo${index}">Question ${number}</h4>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-outline-danger float-end" onclick="deleteQuestion(${index})" type="button">Delete</button>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label for="question${index}" class="form-label">Enter question</label>
                         <textarea class="form-control" required name="questions[${index}][question]" id="question${index}" rows="3">${data.question || ""}</textarea>
@@ -59,26 +68,26 @@
 
                     <div class="mb-3">
                         <label for="mark${index}" class="form-label">Enter mark</label>
-                        <input type="number" required name="questions[${index}][mark]" value="${data.mark||""}" class="form-control" id="mark${index}">
+                        <input type="number" required name="questions[${index}][mark]" value="${data.mark || ""}" class="form-control" id="mark${index}">
                     </div>
 
                     <div class="mb-3">
                         <label for="options1" class="form-label">Enter options</label>
                         <div id="options1">
                             <div>
-                                <label for="q${index}option1" class="form-label">Option 1</label>
+                                <label for="q${index}option1" class="form-label mb-0 mt-1">Option 1</label>
                                 <input type="text" required name="questions[${index}][options][0]" value="${data.options[0]}" class="form-control" id="1${index}option1">
                             </div>
                             <div >
-                                <label for="q${index}option2" class="form-label">Option 2</label>
+                                <label for="q${index}option2" class="form-label mb-0 mt-1">Option 2</label>
                                 <input type="text" required name="questions[${index}][options][1]" value="${data.options[1]}" class="form-control" id="q${index}option2">
                             </div>
                             <div >
-                                <label for="q${index}option3" class="form-label">Option 3</label>
+                                <label for="q${index}option3" class="form-label mb-0 mt-1">Option 3</label>
                                 <input type="text" required name="questions[${index}][options][2]" value="${data.options[2]}" class="form-control" id="q${index}option3">
                             </div>
                             <div>
-                                <label for="q${index}option4" class="form-label">Option 4</label>
+                                <label for="q${index}option4" class="form-label mb-0 mt-1">Option 4</label>
                                 <input type="text" required name="questions[${index}][options][3]" value="${data.options[3]}" class="form-control" id="q${index}option4">
                             </div>
                         </div>
@@ -87,18 +96,36 @@
 
         let container = document.getElementById('question-container');
         let div = document.createElement('div');
+        div.setAttribute('id','q_id_'+index);
         div.innerHTML = template;
         container.appendChild(div);
-
+        keys.push(index);
         index++;
+        number++;
 
+    }
+
+    function deleteQuestion(index){
+        let container = document.getElementById('question-container');
+        let qId = 'q_id_'+index;
+        container.removeChild(document.getElementById(qId));
+        for( let i = 0; i < keys.length; i++){
+            if ( keys[i] === index) {
+                keys.splice(i, 1);
+            }
+        }
+        number=1;
+        keys.forEach(value => {
+            document.getElementById("questionNo"+value).innerText = "Question "+number;
+            number++;
+        });
     }
 
     function showData(id) {
         let data = {};
         let questions = [];
         let totalMark = 0;
-        for (let a = 0; a < index; a++) {
+        keys.forEach(a => {
 
             let question = {};
             question['question'] = document.getElementsByName(`questions[${a}][question]`)[0].value;
@@ -113,7 +140,8 @@
 
             question['options'] = options;
             questions.push(question);
-        }
+
+        });
 
         data['id'] = id;
         data['questions'] = questions;
@@ -140,6 +168,7 @@
                 let data = JSON.parse(this.responseText);
                 data.questions.forEach(value => {
                     addQuestion(value);
+                    scrollTo(S)
                 });
             }
         };
