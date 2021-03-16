@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2">View time table</h2>
+        </div>
+    </div>
+
+    <div class="row my-3 g-2">
+        <div class="col-md-3">
+            <label for="courseSelection">Select Course</label>
+            <select class="form-select" id="courseSelection" onchange="loadBranches(this.value)">
+                <option value="">Choose course</option>
+                <option th:each="course : ${#request.getAttribute('courses')}" th:value="${course.id}"
+                        th:selected="${course.id==courseId}" th:text="${course.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="branchSelection" onchange="loadSub">Select Branch</label>
+            <select class="form-select" id="branchSelection">
+                <option value="">Select branch</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="sessionSelection">Select Session</label>
+            <select class="form-select" id="sessionSelection">
+                <option value="">Select session</option>
+                <option th:each="s : ${#request.getAttribute('sessions')}" th:value="${s.id}"
+                        th:selected="${s.id==sessionId}" th:text="${s.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label></label>
+            <button class="btn btn-outline-success w-100" onclick="fetchTimeTable()">Fetch</button>
+        </div>
+    </div>
+    <div class="row" >
+        <div th:replace="fragments/default-alerts"></div>
+        <div class="col-12">
+            <table id="timeTable" class="table table-bordered rounded shadow-sm">
+                <thead class="table-dark">
+                <tr>
+                    <th>
+                        Time/Day
+                    </th>
+                    <th>
+                        Monday
+                    </th>
+                    <th>
+                        Tuesday
+                    </th>
+                    <th>
+                        Wednesday
+                    </th>
+                    <th>
+                        Thursday
+                    </th>
+                    <th>
+                        Friday
+                    </th>
+                    <th>
+                        Saturday
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="dataContainer">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+
+            <button class="btn btn-outline-success" onclick="window.print()">
+                PRINT
+            </button>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script>
+
+    function loadBranches(courseId) {
+        const branchSelection = document.getElementById("branchSelection");
+        branchSelection.innerHTML = "<option value=''>Select branch</option>";
+
+        loadBranchListOptions(courseId, (options) => {
+            branchSelection.innerHTML = options;
+        });
+
+
+        loadSubjectListOptions(courseId, (options) => {
+            document.querySelectorAll(".subjectSelection").forEach((el) => {
+                el.innerHTML = options;
+            });
+        });
+    }
+
+    let index = 1;
+    let number = 1;
+    let keys = [];
+
+
+    function addLecture() {
+
+        let template = `<td id="time${index}">
+
+                        </td>
+                        <td  id="day1lec${index}">
+                        </td>
+                        <td id="day2lec${index}">
+                        </td>
+                        <td  id="day3lec${index}">
+                        </td>
+                        <td  id="day4lec${index}">
+                        </td>
+                        <td  id="day5lec${index}">
+                        </td>
+                        <td  id="day6lec${index}">
+                        </td>`;
+
+
+        let container = document.getElementById('dataContainer');
+        let tr = document.createElement('tr');
+        tr.setAttribute('id', 'tr' + index);
+        tr.setAttribute('class', 'align-middle');
+        tr.innerHTML = template;
+        container.appendChild(tr);
+        keys.push(index);
+        index++;
+        number++;
+
+        let trId = "#tr" + (index - 1);
+        let courseId = document.getElementById("courseSelection").value;
+        loadSubjectListOptions(courseId, (options) => {
+            document.querySelectorAll(trId + " .subjectSelection").forEach((el) => {
+                el.innerHTML = options;
+            });
+        });
+
+    }
+
+
+    function fetchTimeTable() {
+
+
+        let courseId = document.getElementById("courseSelection").value;
+        let branchId = document.getElementById("branchSelection").value;
+        let sessionId = document.getElementById("sessionSelection").value;
+
+        let http = new XMLHttpRequest();
+        http.open("GET", `/api/course/timeTable?courseId=${courseId}&branchId=${branchId}&sessionId=${sessionId}`);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            console.log(this.responseText);
+            displayTimeTable(JSON.parse(this.responseText));
+        };
+        http.send();
+
+    }
+
+    function displayTimeTable(data) {
+        if (data) {
+            resetData();
+            for (let lec = 0; lec < data.time.length; lec++) {
+                console.log("displayTimeTable", data.time.length)
+                addLecture();
+            }
+            loadSubjectList(data.courseId, (subjects) => {
+                let subMap = {};
+                subjects.forEach((v)=>{
+                    subMap[v.id]=v;
+                });
+
+                let lectures = data.lectures;
+                for (let day = 1; day < 7; day++) {
+                    let lecture = lectures[0];
+                    for (let lec = 1; lec < index; lec++) {
+                        let id = `day${day}lec${lec}`;
+                        // console.log(id);
+                        document.getElementById(id).innerText = lecture[lec-1]+`(${subMap[lecture[lec-1]].name})`;
+                    }
+                }
+
+                let inAmPm=(t)=>{
+                    let s = t.split(":");
+                    if (parseInt(s)>12){
+                        return (parseInt(s[0])-12)+":"+s[1]+" PM";
+                    }else {
+                        return s[0]+":"+s[1]+" AM";
+                    }
+                };
+
+                let time = data.time;
+                for (let lec = 1; lec < index; lec++) {
+                    document.getElementById("time" + lec).innerText = `${inAmPm(time[lec - 1].start)}-${inAmPm(time[lec - 1].end)}`;
+                }
+
+            });
+        }
+    }
+
+    function resetData() {
+        index = 1;
+        number = 1;
+        keys = [];
+        document.getElementById('dataContainer').innerHTML = "";
+    }
+</script>
+</html>
