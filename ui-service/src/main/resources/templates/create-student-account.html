@@ -16,6 +16,7 @@
         http.open("POST", "/api/user/createStudent", true);
         http.setRequestHeader("Content-type", "application/json");
         http.onload = function () {
+            $("#btnCreate").prop("disabled", false);
             if (this.status === 201) {
                 loadPageInContentDiv("courses/enroll-student-in-course.html?studentUsername="+username);
             } else {
