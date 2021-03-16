@@ -117,7 +117,7 @@ public class BranchController {
             response.accumulate("message", "Branch deleted with id=" + branchId);
         } else {
             response.accumulate("status", false);
-            response.accumulate("message", "These course cannot deleted as there are "+n+" students enrolled in these course.");
+            response.accumulate("message", "These branch cannot deleted as there are "+n+" students enrolled in these branch.");
         }
         return ResponseEntity.ok(response.toString());
     }
