@@ -18,7 +18,7 @@ public class FacultyController {
         this.dataUtils = dataUtils;
     }
 
-    @RolesAllowed({Roles.ADMIN_ROLE})
+    @RolesAllowed({Roles.ROLE_ADMIN})
     @RequestMapping({"/create-faculty-account.html", "/create-faculty-account"})
     public String createStudentAccount(HttpServletRequest request) {
         request.setAttribute("states",dataUtils.getStates());

@@ -8,6 +8,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,10 +64,10 @@ public class TimeTableController {
         List<TimeTable> timeTables = mongoTemplate.find(query, TimeTable.class);
 
         timeTable.setLastUpdatedOn(new Date());
-        if (timeTables.isEmpty()){
+        if (timeTables.isEmpty()) {
             timeTableRepository.insert(timeTable);
             res.accumulate("message", "Time table saved successfully.");
-        }else {
+        } else {
             timeTable.setId(timeTables.get(0).getId());
             timeTableRepository.save(timeTable);
             res.accumulate("message", "Time table updated successfully.");
@@ -78,11 +79,11 @@ public class TimeTableController {
     }
 
     @GetMapping("/timeTable")
-    public TimeTable getTimeTable(
+    public ResponseEntity<?> getTimeTable(
             @RequestParam String courseId,
             @RequestParam String branchId,
             @RequestParam String sessionId
-    ){
+    ) {
         Query query = new Query();
         query.addCriteria(
                 Criteria.where("courseId").is(courseId)
@@ -91,7 +92,10 @@ public class TimeTableController {
         );
 
         List<TimeTable> timeTables = mongoTemplate.find(query, TimeTable.class);
-
-        return timeTables.get(0);
+        if (timeTables.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            return ResponseEntity.ok(timeTables.get(0));
+        }
     }
 }

@@ -3,15 +3,22 @@ package com.svceindore.examservice.controllers;
 import com.svceindore.examservice.configs.Roles;
 import com.svceindore.examservice.models.ExamDetail;
 import com.svceindore.examservice.models.Paper;
+import com.svceindore.examservice.models.Solution;
 import com.svceindore.examservice.repositories.ExamRepository;
 import com.svceindore.examservice.repositories.PaperRepository;
+import com.svceindore.examservice.repositories.SolutionRepository;
 import net.minidev.json.JSONObject;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.security.Principal;
 import java.util.Date;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -27,40 +34,63 @@ public class PaperController {
     private final KeycloakRestTemplate restTemplate;
     private final ExamRepository examRepository;
     private final PaperRepository paperRepository;
+    private final MongoTemplate mongoTemplate;
+    private final SolutionRepository solutionRepository;
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    public PaperController(KeycloakRestTemplate restTemplate, ExamRepository examRepository, PaperRepository paperRepository) {
+    public PaperController(KeycloakRestTemplate restTemplate, ExamRepository examRepository, PaperRepository paperRepository, MongoTemplate mongoTemplate, SolutionRepository solutionRepository) {
         this.restTemplate = restTemplate;
         this.examRepository = examRepository;
         this.paperRepository = paperRepository;
+        this.mongoTemplate = mongoTemplate;
+        this.solutionRepository = solutionRepository;
     }
 
-    @RolesAllowed(Roles.ADMIN_ROLE)
+    @RolesAllowed(Roles.ROLE_FACULTY)
     @PostMapping("/paper")
     public ResponseEntity<?> newPaper(@RequestBody Paper paper) {
         return createOrUpdatePaper(paper, true);
     }
 
-    @RolesAllowed(Roles.ADMIN_ROLE)
+    @RolesAllowed(Roles.ROLE_FACULTY)
     @PutMapping("/paper")
     public ResponseEntity<?> updatePaper(@RequestBody Paper paper) {
         return createOrUpdatePaper(paper, false);
     }
 
     @GetMapping("/paper/{paperId}")
-    public ResponseEntity<?> getPaper(@PathVariable String paperId){
-         ExamDetail examDetail = examRepository.findById(paperId).get();
+    public ResponseEntity<?> getPaper(@PathVariable String paperId) {
 
-         if (examDetail.getScheduledOn().getTime()<=new Date().getTime()){
-            return ResponseEntity.ok(paperRepository.findById(paperId).get());
-         }else {
-             JSONObject res = new JSONObject();
-             res.appendField("status",false);
-             res.appendField("message","Paper not started yet.");
-             return ResponseEntity.status(HttpStatus.ACCEPTED).body(res.toJSONString());
-         }
+
+        Optional<ExamDetail> optional = examRepository.findById(paperId);
+        if (optional.isPresent()) {
+            ExamDetail examDetail = optional.get();
+            if (examDetail.getScheduledOn().getTime() <= new Date().getTime()) {
+
+                Query query = new Query();
+                query.fields().exclude("answers");
+                query.addCriteria(Criteria.where("_id").is(paperId));
+                Paper paper = mongoTemplate.findOne(query, Paper.class);
+
+                return ResponseEntity.ok(paper);
+            } else {
+                JSONObject res = new JSONObject();
+                res.appendField("status", false);
+                res.appendField("message", "Paper not started yet.");
+                return ResponseEntity.status(HttpStatus.ACCEPTED).body(res.toJSONString());
+            }
+
+        } else {
+
+            JSONObject res = new JSONObject();
+            res.appendField("status", false);
+            res.appendField("message", "Exam detail not found.");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(res.toJSONString());
+
+        }
     }
 
+    @RolesAllowed(Roles.ROLE_FACULTY)
     public ResponseEntity<?> createOrUpdatePaper(Paper paper, boolean create) {
         JSONObject res = new JSONObject();
         if (isNullOrEmpty(paper.getId())) {
@@ -99,6 +129,84 @@ public class PaperController {
             return ResponseEntity.ok(res.toJSONString());
         }
     }
+
+    @PostMapping("/submit-exam/{paperId}")
+    public ResponseEntity<?> submitExam(@PathVariable String paperId, @RequestBody Solution solution, Principal principal) {
+        Optional<ExamDetail> optional = examRepository.findById(paperId);
+
+        if (optional.isPresent()) {
+            ExamDetail examDetail = optional.get();
+            long sTime = examDetail.getScheduledOn().getTime();
+            long eTime = sTime + examDetail.getDuration() * 60000L;
+            long cTime = new Date().getTime();
+            long submissionTime = eTime + 10 * 60 * 1000L;
+
+            if (sTime <= cTime && cTime <= submissionTime) {
+                if (solutionRepository.findByPaperIdAndStudentId(paperId, principal.getName()).isPresent()) {
+
+                    JSONObject res = new JSONObject();
+                    res.appendField("status", false);
+                    res.appendField("message", "Solution already submitted.");
+                    return ResponseEntity.ok(res.toJSONString());
+                } else {
+                    solution.setPaperId(paperId);
+                    solution.setStudentId(principal.getName());
+                    solutionRepository.insert(solution);
+
+                    JSONObject res = new JSONObject();
+                    res.appendField("status", true);
+                    res.appendField("message", "Solution saved successfully.");
+                    return ResponseEntity.ok(res.toJSONString());
+                }
+            } else if (sTime >= cTime) {
+                JSONObject res = new JSONObject();
+                res.appendField("status", false);
+                res.appendField("message", "Paper not started yet.");
+                logger.warning(principal.getName() + " is trying to submit paper before it started.");
+                return ResponseEntity.ok(res.toJSONString());
+            } else {
+                JSONObject res = new JSONObject();
+                res.appendField("status", false);
+                res.appendField("message", "You are too late, you can not submit solution.");
+                return ResponseEntity.ok(res.toJSONString());
+            }
+        } else {
+            JSONObject res = new JSONObject();
+            res.appendField("status", false);
+            res.appendField("message", "Exam detail not found");
+            return ResponseEntity.ok(res.toJSONString());
+        }
+
+    }
+
+
+    @RolesAllowed(Roles.ROLE_FACULTY)
+    @PostMapping("/submit-exam-solution/{paperId}")
+    public ResponseEntity<?> submitExamSolution(@PathVariable String paperId, @RequestBody Solution solution, Principal principal) {
+        Optional<ExamDetail> optional = examRepository.findById(paperId);
+
+        if (optional.isPresent()) {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("id").is(paperId));
+            Update update = new Update();
+            update.addToSet("answers").value(solution.getAnswers());
+
+            mongoTemplate.updateFirst(query, update, Paper.class);
+            
+            JSONObject res = new JSONObject();
+            res.appendField("status", true);
+            res.appendField("message", "Solution saved successfully.");
+            return ResponseEntity.ok(res.toJSONString());
+
+        } else {
+            JSONObject res = new JSONObject();
+            res.appendField("status", false);
+            res.appendField("message", "Exam detail not found");
+            return ResponseEntity.ok(res.toJSONString());
+        }
+
+    }
+
 
     public boolean isNullOrEmpty(String data) {
         return data == null || data.isEmpty();

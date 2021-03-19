@@ -4,7 +4,6 @@ import com.svceindore.userservice.ProfilePicRepository;
 import com.svceindore.userservice.configs.Roles;
 import com.svceindore.userservice.model.ProfilePicture;
 import net.minidev.json.JSONObject;
-import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.bson.types.Binary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,7 @@ public class ProfilePicController {
         this.profilePicRepository = profilePicRepository;
     }
 
-    @RolesAllowed(Roles.ADMIN_ROLE)
+    @RolesAllowed(Roles.ROLE_ADMIN)
     @PostMapping("/profile/update/{username}")
     public ResponseEntity<?> updateUserProfile(@RequestParam("file") MultipartFile file, @PathVariable String username) throws IOException {
 

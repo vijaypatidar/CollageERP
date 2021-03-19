@@ -54,11 +54,15 @@ public class OnlineExamController {
                     String.class
             );
             if (entity.getStatusCode() == HttpStatus.OK) {
+                System.out.println(entity.getBody());
+
                 Paper p = objectMapper.readValue(entity.getBody(), Paper.class);
-                model.addAttribute("questions", p.getQuestions());
-                model.addAttribute("paperTitle", examDetail.getTitle());
-                model.addAttribute("time", examDetail.getDuration() + " Min");
-                model.addAttribute("endTimeMillisecond", eTime);
+
+                model.addAttribute("questions", p.getQuestions())
+                        .addAttribute("paperTitle", examDetail.getTitle())
+                        .addAttribute("time", examDetail.getDuration() + " Min")
+                        .addAttribute("endTimeMillisecond", eTime)
+                        .addAttribute("paperId", p.getId());
                 return "online-exam-question-paper";
             } else {
                 return "505";
@@ -70,5 +74,36 @@ public class OnlineExamController {
             model.addAttribute("message", "Exam not started.");
             return "505";
         }
+    }
+
+    @RolesAllowed(Roles.ROLE_FACULTY)
+    @RequestMapping("/submit-exam-solution")
+    public String getSubmitOnlinePaperSolutionPage(Model model, @RequestParam String examId) throws JsonProcessingException {
+
+        ExamDetail examDetail = restTemplate.getForEntity("lb://exam-service/api/exam/exam/" + examId, ExamDetail.class).getBody();
+
+        if (examDetail == null) {
+            return "505";
+        }
+
+
+        ResponseEntity<String> entity = restTemplate.getForEntity(
+                "lb://exam-service/api/exam/papers/paper/" + examId,
+                String.class
+        );
+        if (entity.getStatusCode() == HttpStatus.OK) {
+            System.out.println(entity.getBody());
+
+            Paper p = objectMapper.readValue(entity.getBody(), Paper.class);
+
+            model.addAttribute("questions", p.getQuestions())
+                    .addAttribute("paperTitle", examDetail.getTitle())
+                    .addAttribute("time", examDetail.getDuration() + " Min")
+                    .addAttribute("paperId", p.getId());
+            return "online-exam-solution";
+        } else {
+            return "505";
+        }
+
     }
 }
