@@ -95,6 +95,7 @@
                            th:href="${'/exams/create-new-paper.html?paperId='+exam.id}"
                            target="_blank">Paper</a>
                         <a class="btn btn-sm btn-outline-success"
+                           th:if="${exam.onlineMode}"
                            th:href="${'/exam/online/submit-exam-solution?examId='+exam.id}"
                            target="_blank">Solution</a>
                     </td>

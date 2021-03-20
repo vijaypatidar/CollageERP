@@ -80,7 +80,8 @@ public class ResultControllers {
                                     markObtained
                             ));
                         }
-
+                        //First delete the result of student with same exam id in case of result is reevaluated
+                        resultRepository.deleteByExamId(examId);
                         resultRepository.insert(results);
 
                         examRepository.save(examDetail);

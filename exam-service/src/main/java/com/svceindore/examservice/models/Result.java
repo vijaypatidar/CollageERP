@@ -22,9 +22,9 @@ public class Result {
     @Id
     private String id;
     @Indexed
-    private String eid;
+    private String examId;
     @Indexed
-    private String sid;
+    private String studentId;
     private boolean present;
     private int markObtain;
 
