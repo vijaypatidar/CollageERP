@@ -23,7 +23,7 @@ public class StudentController {
         return "student-home";
     }
 
-    @RolesAllowed({Roles.ADMIN_ROLE})
+    @RolesAllowed({Roles.ROLE_ADMIN})
     @RequestMapping({"/create-student-account.html", "/create-student-account"})
     public String createStudentAccount(HttpServletRequest request) {
         request.setAttribute("states", dataUtils.getStates());

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div class="container">
     <div class="row my-3  align-items-center">
         <div class="col-6">
-            <h2 class="h2">All exams</h2>
+            <h2 class="h2">Declare Result</h2>
         </div>
     </div>
 
@@ -42,6 +42,7 @@
         </div>
     </div>
     <div class="row">
+        <div th:replace="fragments/default-alerts"></div>
         <div class="col-12">
             <table class="table table-bordered rounded shadow-sm">
                 <thead class="table-dark">
@@ -65,12 +66,6 @@
                         Date
                     </th>
                     <th>
-                        Time
-                    </th>
-                    <th>
-                        Mark
-                    </th>
-                    <th>
                         Actions
                     </th>
                 </tr>
@@ -82,22 +77,19 @@
                     <td th:text="${exam.branchId}"></td>
                     <td th:text="${exam.subjectId}"></td>
                     <td th:text="${exam.semester}"></td>
-                    <td th:text="${#dates.format(exam.scheduledOn, 'dd-MMM-yyyy')}"></td>
-                    <td th:text="${#dates.format(exam.scheduledOn, 'HH:mm a')}"></td>
                     <td th:text="${exam.totalMark}"></td>
                     <td>
                         <button class="btn btn-outline-success btn-sm"
-                                th:attr="onclick=|loadPageInContentDiv('exams/edit-exam-detail.html?examDetailId=${exam.id}')|">
-                            Edit
+                                th:if="${!exam.onlineMode}"
+                                th:attr="onclick=|loadPageInContentDiv('exams/upload-exam-marks.html?examId=${exam.id}')|">
+                            Upload Result
                         </button>
+
                         <a class="btn btn-sm btn-outline-success"
                            th:if="${exam.onlineMode}"
-                           th:href="${'/exams/create-new-paper.html?paperId='+exam.id}"
-                           target="_blank">Paper</a>
-                        <a class="btn btn-sm btn-outline-success"
-                           th:if="${exam.onlineMode}"
-                           th:href="${'/exam/online/submit-exam-solution?examId='+exam.id}"
-                           target="_blank">Solution</a>
+                           th:attr="onclick=|declareResult('${exam.id}')|"
+                           target="_blank">Declare Result</a>
+
                     </td>
                 </tr>
                 </tbody>
@@ -117,11 +109,22 @@
         });
     }
 
+
+    function declareResult(examId) {
+        let http = new XMLHttpRequest();
+        http.open("POST","/api/exam/results/declare?examId="+examId,true);
+        http.setRequestHeader("Content-type","application/json");
+        http.onload = function (){
+            defaultResponseHandler(JSON.parse(this.responseText),this.status)
+        };
+        http.send();
+    }
+
     function fetchList() {
         let courseSelection = document.getElementById("courseSelection").value;
         let branchSelection = document.getElementById("branchSelection").value;
         let sessionSelection = document.getElementById("sessionSelection").value;
-        let url = "exams/view-all-exams.html?"
+        let url = "exams/declare-exams-result.html?"
         url += "courseId=" + courseSelection + "&branchId=" + branchSelection + "&sessionId=" + sessionSelection;
         loadPageInContentDiv(url)
     }

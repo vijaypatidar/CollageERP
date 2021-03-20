@@ -8,7 +8,6 @@ import com.svceindore.userservice.model.User;
 import com.svceindore.userservice.model.helpers.ResetPassword;
 import net.minidev.json.JSONObject;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +30,7 @@ public class UserController {
         this.keycloakClient = keycloakClient;
     }
 
-    @RolesAllowed({Roles.ADMIN_ROLE})
+    @RolesAllowed({Roles.ROLE_ADMIN})
     @PostMapping("/createStudent")
     public ResponseEntity<String> createStudent(@RequestBody Student student) {
         logger.info("Create student account request " + student.toString());
@@ -54,7 +53,7 @@ public class UserController {
         return null;
     }
 
-    @RolesAllowed({Roles.ADMIN_ROLE})
+    @RolesAllowed({Roles.ROLE_ADMIN})
     @PostMapping("/createFaculty")
     public ResponseEntity<String> createFaculty(@RequestBody Faculty faculty) {
         logger.info("Create faculty account request " + faculty.toString());
@@ -82,7 +81,7 @@ public class UserController {
         return keycloakClient.getUser(principal.getName());
     }
 
-    @RolesAllowed({Roles.ADMIN_ROLE,Roles.ROLE_LIBRARIAN})
+    @RolesAllowed({Roles.ROLE_ADMIN,Roles.ROLE_LIBRARIAN})
     @GetMapping("/profile/{username}")
     public User getProfile(@PathVariable String username) {
         return keycloakClient.getUser(username);

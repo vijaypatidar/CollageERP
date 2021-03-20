@@ -1,7 +1,6 @@
 package com.svceindore.courseservice.controllers;
 
 import com.svceindore.courseservice.configs.Roles;
-import com.svceindore.courseservice.models.Course;
 import com.svceindore.courseservice.models.Session;
 import com.svceindore.courseservice.repositories.SessionRepository;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Vijay Patidar

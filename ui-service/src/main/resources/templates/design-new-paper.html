@@ -13,7 +13,7 @@
 <body th:attr="onload=|loadPaper('${paperId}');return false;|">
 <div th:class="container-fluid" th:replace="fragments/header::header"></div>
 <div class="container py-3">
-    <form name="paper" id="paper" th:attr="onsubmit=|showData('${paperId}');return false;|">
+    <form name="paper" id="paper" th:attr="onsubmit=|savePaper('${paperId}');return false;|">
         <div class="row">
             <div th:replace="fragments/default-alerts"></div>
         </div>
@@ -121,16 +121,17 @@
         });
     }
 
-    function showData(id) {
+    function savePaper(id) {
         let data = {};
         let questions = [];
         let totalMark = 0;
+        let qid = 1;
         keys.forEach(a => {
 
             let question = {};
             question['question'] = document.getElementsByName(`questions[${a}][question]`)[0].value;
             question['mark'] = document.getElementsByName(`questions[${a}][mark]`)[0].value;
-
+            question['id'] = qid++;
             totalMark += parseInt(question['mark']);
 
             let options = [];
@@ -168,7 +169,6 @@
                 let data = JSON.parse(this.responseText);
                 data.questions.forEach(value => {
                     addQuestion(value);
-                    scrollTo(S)
                 });
             }
         };

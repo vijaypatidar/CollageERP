@@ -32,7 +32,7 @@ public class ExamController {
         this.examRepository = examRepository;
     }
 
-    @RolesAllowed(Roles.ADMIN_ROLE)
+    @RolesAllowed(Roles.ROLE_FACULTY)
     @PostMapping("/exam")
     public ResponseEntity<?> createExam(@RequestBody ExamDetail examDetail) {
         JSONObject res = new JSONObject();
@@ -79,7 +79,7 @@ public class ExamController {
         return ResponseEntity.ok(res.toJSONString());
     }
 
-    @RolesAllowed(Roles.ADMIN_ROLE)
+    @RolesAllowed(Roles.ROLE_FACULTY)
     @PutMapping("/exam")
     public ResponseEntity<?> updateExam(@RequestBody ExamDetail examDetail) {
         JSONObject res = new JSONObject();

@@ -2,6 +2,7 @@ package com.svceindore.uiservice.controllers;
 
 import com.svceindore.uiservice.clients.CourseClient;
 import com.svceindore.uiservice.model.course.*;
+import com.svceindore.uiservice.model.exam.ExamDetail;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -51,7 +52,7 @@ public class CoursesController {
     @GetMapping("/add-branch.html")
     public String getAddBranchPage(@RequestParam String courseId, Model model) {
         Course course = courseClient.getCourse(courseId);
-        if (course!=null) {
+        if (course != null) {
             model.addAttribute("courseId", courseId);
             model.addAttribute("courseName", course.getName());
         }
@@ -91,7 +92,7 @@ public class CoursesController {
     public String addSubjectInCourse(@RequestParam String courseId, Model model) {
         logger.info("Add subject courseId = " + courseId);
         Course course = courseClient.getCourse(courseId);
-        if (course!=null) {
+        if (course != null) {
             model.addAttribute("course", course);
         }
         return "add-subject-in-course";
@@ -129,7 +130,7 @@ public class CoursesController {
     public String getMyEnrolledCoursesPage(Model model) {
         Enrolled[] enrolleds = restTemplate.getForEntity("lb://course-service/api/course/self-enrolls", Enrolled[].class).getBody();
 
-        for (Enrolled enrolled:enrolleds){
+        for (Enrolled enrolled : enrolleds) {
             enrolled.setCourseName(
                     courseClient.getCourse(enrolled.getCourseId()).getName()
             );
@@ -158,4 +159,17 @@ public class CoursesController {
         return "add-new-session";
     }
 
+    @GetMapping("/set-time-table.html")
+    public String getSetTimeTablePage(Model model) {
+        model.addAttribute("sessions", courseClient.getSessions());
+        model.addAttribute("courses", courseClient.getCourses());
+        return "set-time-table";
+    }
+
+    @GetMapping("/view-time-table.html")
+    public String getViewTimeTablePage(Model model) {
+        model.addAttribute("sessions", courseClient.getSessions());
+        model.addAttribute("courses", courseClient.getCourses());
+        return "view-time-table";
+    }
 }

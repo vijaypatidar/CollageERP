@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2">Manage time table</h2>
+        </div>
+    </div>
+
+    <div class="row my-3 g-2">
+        <div class="col-md-3">
+            <label for="courseSelection">Select Course</label>
+            <select class="form-select" id="courseSelection" onchange="loadBranches(this.value)">
+                <option value="">Choose course</option>
+                <option th:each="course : ${#request.getAttribute('courses')}" th:value="${course.id}"
+                        th:selected="${course.id==courseId}" th:text="${course.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="branchSelection" onchange="loadSub">Select Branch</label>
+            <select class="form-select" id="branchSelection">
+                <option value="">Select branch</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="sessionSelection">Select Session</label>
+            <select class="form-select" id="sessionSelection">
+                <option value="">Select session</option>
+                <option th:each="s : ${#request.getAttribute('sessions')}" th:value="${s.id}"
+                        th:selected="${s.id==sessionId}" th:text="${s.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label></label>
+            <button class="btn btn-outline-success w-100" onclick="fetchTimeTableOld()">Fetch</button>
+        </div>
+    </div>
+    <div class="row">
+        <form onsubmit="saveTimeTable(); return false;">
+            <div th:replace="fragments/default-alerts"></div>
+            <div class="col-12">
+                <table class="table table-bordered rounded shadow-sm">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>
+                            Time/Day
+                        </th>
+                        <th>
+                            Monday
+                        </th>
+                        <th>
+                            Tuesday
+                        </th>
+                        <th>
+                            Wednesday
+                        </th>
+                        <th>
+                            Thursday
+                        </th>
+                        <th>
+                            Friday
+                        </th>
+                        <th>
+                            Saturday
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="dataContainer">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12">
+                <button class="btn btn-outline-success" onclick="addLecture(null)" type="button">
+                    ADD
+                </button>
+                <button class="btn btn-outline-danger" onclick="removeLecture(null)" type="button">
+                    REMOVE LAST
+                </button>
+                <button class="btn btn-outline-success" type="submit">
+                    SAVE
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+
+    function loadBranches(courseId) {
+        const branchSelection = document.getElementById("branchSelection");
+        branchSelection.innerHTML = "<option value=''>Select branch</option>";
+
+        loadBranchListOptions(courseId, (options) => {
+            branchSelection.innerHTML = options;
+        });
+
+
+        loadSubjectListOptions(courseId, (options) => {
+            document.querySelectorAll(".subjectSelection").forEach((el) => {
+                el.innerHTML = options;
+            });
+        });
+    }
+
+    let index = 1;
+    let number = 1;
+    let keys = [];
+
+    function addLecture() {
+
+        let template = `<td class="time">
+                            <div class="input-group" style="min-width: 175px">
+                                <input class="form-control form-control-sm" required
+                                       name="scheduledOn" type="time" id="sTime${index}">
+                                <input class="form-control form-control-sm" required
+                                       name="scheduledOn" type="time" id="eTime${index}" onchange="eTimeChange(${index})">
+                            </div>
+                        </td>
+                        <td class="day1">
+                            <select class="form-select form-select-sm subjectSelection" name="day1lec${index}" id="day1lec${index}" required>
+                                <option value="">Choose subject</option>
+                            </select>
+                        </td>
+                        <td class="day2">
+                            <select class="form-select form-select-sm subjectSelection" name="day2lec${index}" id="day2lec${index}" required>
+                                <option value="">Choose subject</option>
+                            </select>
+                        </td>
+                        <td class="day3">
+                            <select class="form-select form-select-sm subjectSelection" name="day3lec${index}" id="day3lec${index}" required>
+                                <option value="">Choose subject</option>
+                            </select>
+                        </td>
+                        <td  class="day4">
+                            <select class="form-select form-select-sm subjectSelection" name="day4lec${index}" id="day4lec${index}" required>
+                                <option value="">Choose subject</option>
+                            </select>
+                        </td>
+                        <td  class="day5">
+                            <select class="form-select form-select-sm subjectSelection" name="day5lec${index}" id="day5lec${index}" required>
+                                <option value="">Choose subject</option>
+                            </select>
+                        </td>
+                        <td class="day6">
+                            <select class="form-select form-select-sm subjectSelection" name="day6lec${index}" id="day6lec${index}" required>
+                                <option value="">Choose subject</option>
+                            </select>
+                        </td>`;
+
+
+        let container = document.getElementById('dataContainer');
+        let tr = document.createElement('tr');
+        tr.setAttribute('id', 'tr' + index);
+        tr.setAttribute('class', 'align-middle');
+        tr.innerHTML = template;
+        container.appendChild(tr);
+        keys.push(index);
+        index++;
+        number++;
+
+        let trId = "#tr" + (index - 1);
+        let courseId = document.getElementById("courseSelection").value;
+        loadSubjectListOptions(courseId, (options) => {
+            document.querySelectorAll(trId + " .subjectSelection").forEach((el) => {
+                el.innerHTML = options;
+            });
+        });
+
+    }
+
+    function removeLecture() {
+        index--;
+        let container = document.getElementById('dataContainer');
+        let tr = document.getElementById('tr' + (index));
+        container.removeChild(tr);
+        for (let i = 0; i < keys.length; i++) {
+            if (keys[i] === index) {
+                keys.splice(i, 1);
+            }
+        }
+    }
+
+    function eTimeChange(id) {
+        let eTimeEl = document.getElementById("eTime" + id);
+        let sTimeEl = document.getElementById("sTime" + id);
+
+        let nextSTime = document.getElementById("sTime" + (id + 1));
+        if (nextSTime) nextSTime.value = eTimeEl.value;
+
+        if (inMin(sTimeEl.value) > inMin(eTimeEl.value)) {
+            eTimeEl.classList.add("is-invalid")
+        } else {
+            eTimeEl.classList.remove("is-invalid")
+        }
+
+    }
+
+    function inMin(time) {
+        let ar = time.split(":");
+        return parseInt(ar[0]) * 60 + parseInt(ar[1]);
+    }
+
+    function saveTimeTable() {
+        let courseId = document.getElementById("courseSelection").value;
+        let branchId = document.getElementById("branchSelection").value;
+        let sessionId = document.getElementById("sessionSelection").value;
+
+        console.log(courseId, branchId, sessionId);
+
+
+        let data = {};
+        let lectures = [];
+        for (let day = 1; day < 7; day++) {
+            let lecture = [];
+            for (let lec = 1; lec < index; lec++) {
+                lecture.push(document.getElementsByName(`day${day}lec${lec}`)[0].value);
+            }
+            lectures.push(lecture);
+        }
+
+        let time = [];
+        for (let lec = 1; lec < index; lec++) {
+            let e = document.getElementById("eTime" + lec);
+            let s = document.getElementById("sTime" + lec);
+            time.push({start: s.value, end: e.value});
+        }
+
+        data['time'] = time;
+        data['lectures'] = lectures;
+        data['courseId'] = courseId;
+        data['branchId'] = branchId;
+        data['sessionId'] = sessionId;
+
+        console.log(JSON.stringify(data));
+
+        let http = new XMLHttpRequest();
+        http.open("POST", "/api/course/timeTable");
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            console.log(this.responseText);
+            defaultResponseHandler(JSON.parse(this.responseText), this.status);
+        };
+        http.send(JSON.stringify(data));
+    }
+
+    function fetchTimeTableOld() {
+
+
+        let courseId = document.getElementById("courseSelection").value;
+        let branchId = document.getElementById("branchSelection").value;
+        let sessionId = document.getElementById("sessionSelection").value;
+
+        let http = new XMLHttpRequest();
+        http.open("GET", `/api/course/timeTable?courseId=${courseId}&branchId=${branchId}&sessionId=${sessionId}`);
+        http.setRequestHeader("Content-type", "application/json");
+        http.onload = function () {
+            console.log(this.responseText);
+            displayTimeTable(JSON.parse(this.responseText));
+        };
+        http.send();
+
+    }
+
+    function displayTimeTable(data) {
+        if (data) {
+            resetData();
+            for (let lec = 0; lec < data.time.length; lec++) {
+                console.log("displayTimeTable", data.time.length)
+                addLecture();
+            }
+            loadSubjectListOptions(data.courseId, (options) => {
+                document.querySelectorAll(".subjectSelection").forEach((el) => {
+                    el.innerHTML = options;
+                });
+
+                let lectures = data.lectures;
+                for (let day = 1; day < 7; day++) {
+                    let lecture = lectures[0];
+                    for (let lec = 1; lec < index; lec++) {
+                        let id = `day${day}lec${lec}`;
+                        // console.log(id);
+                        document.getElementById(id).childNodes.forEach((el) => {
+                            if (el.value===lecture[lec-1]){
+                                el.selected = "selected";
+                            }
+                        });
+                    }
+                }
+
+                let time = data.time;
+                for (let lec = 1; lec < index; lec++) {
+                    document.getElementById("sTime" + lec).value = time[lec-1].start;
+                    document.getElementById("eTime" + lec).value = time[lec-1].end;
+                }
+
+            });
+        }
+    }
+
+    function resetData() {
+        index = 1;
+        number = 1;
+        keys = [];
+        document.getElementById('dataContainer').innerHTML="";
+    }
+</script>
+</body>
+</html>
