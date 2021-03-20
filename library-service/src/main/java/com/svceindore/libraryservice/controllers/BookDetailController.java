@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RestController
 public class BookDetailController {
 
-    private Logger logger = Logger.getLogger(getClass().getCanonicalName());
+    private final Logger logger = Logger.getLogger(getClass().getCanonicalName());
     private final BookRepository bookRepository;
     private final BookDetailRepository bookDetailRepository;
 

@@ -101,8 +101,8 @@ public class BookController {
                 bookRepository.save(book);
 
                 History history = new History();
-                history.setBid(book.getId());
-                history.setBcid(book.getBid());
+                history.setBid(book.getBid());
+                history.setBcid(book.getId());
                 history.setIssuedOn(book.getIssuedOn());
                 history.setIssuedTo(book.getIssuedTo());
 

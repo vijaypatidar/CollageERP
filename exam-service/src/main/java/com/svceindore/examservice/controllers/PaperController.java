@@ -15,10 +15,13 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -61,11 +64,23 @@ public class PaperController {
     @GetMapping("/paper/{paperId}")
     public ResponseEntity<?> getPaper(@PathVariable String paperId) {
 
-
         Optional<ExamDetail> optional = examRepository.findById(paperId);
         if (optional.isPresent()) {
             ExamDetail examDetail = optional.get();
-            if (examDetail.getScheduledOn().getTime() <= new Date().getTime()) {
+
+            boolean isAdmin = false;
+
+
+            Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+
+            for (GrantedAuthority authority:authorities){
+                if (authority.getAuthority().equals(Roles.ROLE_FACULTY)){
+                    isAdmin=true;
+                    break;
+                }
+            }
+
+            if (examDetail.getScheduledOn().getTime() <= new Date().getTime()||isAdmin) {
 
                 Query query = new Query();
                 query.fields().exclude("answers");
@@ -192,7 +207,7 @@ public class PaperController {
             update.addToSet("answers").value(solution.getAnswers());
 
             mongoTemplate.updateFirst(query, update, Paper.class);
-            
+
             JSONObject res = new JSONObject();
             res.appendField("status", true);
             res.appendField("message", "Solution saved successfully.");
