@@ -72,6 +72,27 @@ public class ExamController {
         return "view-all-exams";
     }
 
+    @GetMapping("/declare-exams-result.html")
+    public String getDeclareExamsResultPage(Model model, @RequestParam(required = false, defaultValue = "") String courseId,
+                                      @RequestParam(required = false, defaultValue = "") String branchId,
+                                      @RequestParam(required = false, defaultValue = "") String sessionId) {
+
+        ResponseEntity<ExamDetail[]> entity3 = restTemplate.getForEntity("lb://exam-service/api/exam/exams?courseId=" + courseId + "&branchId=" + branchId + "&sessionId=" + sessionId, ExamDetail[].class);
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("branchId", branchId);
+        model.addAttribute("sessionId", sessionId);
+        model.addAttribute("courses", courseClient.getCourses());
+        model.addAttribute("sessions", courseClient.getSessions());
+        model.addAttribute("exams", entity3.getBody());
+
+
+        if (!courseId.isEmpty()) {
+            model.addAttribute("branches", courseClient.getBranches(courseId));
+        }
+
+        return "declare-exams-result";
+    }
+
     @GetMapping("/view-exam-for-enrolled-courses.html")
     public String getViewExamsForEnrolledCoursePage(Model model) {
 

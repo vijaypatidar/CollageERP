@@ -10,6 +10,10 @@ import com.svceindore.libraryservice.repositories.BookRepository;
 import com.svceindore.libraryservice.repositories.HistoryRepository;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,15 +35,18 @@ public class BookController {
     private final BookRepository bookRepository;
     private final BookDetailRepository bookDetailRepository;
     private final HistoryRepository historyRepository;
+    private final MongoTemplate mongoTemplate;
+
     @Value("${issueBookForDays:30}")
     private int bookIssuedForDays;
     @Value("${finePerDay:5}")
     private int finePerDay;
 
-    public BookController(BookRepository bookRepository, BookDetailRepository bookDetailRepository, HistoryRepository historyRepository) {
+    public BookController(BookRepository bookRepository, BookDetailRepository bookDetailRepository, HistoryRepository historyRepository, MongoTemplate mongoTemplate) {
         this.bookRepository = bookRepository;
         this.bookDetailRepository = bookDetailRepository;
         this.historyRepository = historyRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @RolesAllowed({Roles.ROLE_LIBRARIAN})
@@ -170,12 +177,11 @@ public class BookController {
 
 
     private void incrementAvailableBookCountBy(String bid, int n) {
-        Optional<BookDetail> optional = bookDetailRepository.findById(bid);
-        if (optional.isPresent()) {
-            BookDetail book = optional.get();
-            book.setAvailableCopies(book.getAvailableCopies() + n);
-            bookDetailRepository.save(book);
-        }
+        Query query = new Query();
+        query.addCriteria(Criteria.where("id").is(bid));
+        Update update = new Update();
+        update.inc("availableCopies",n);
+        mongoTemplate.updateFirst(query,update,BookDetail.class);
     }
 
 

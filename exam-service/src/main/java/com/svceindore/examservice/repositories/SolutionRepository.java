@@ -3,6 +3,7 @@ package com.svceindore.examservice.repositories;
 import com.svceindore.examservice.models.Solution;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,4 +14,6 @@ import java.util.Optional;
 public interface SolutionRepository extends MongoRepository<Solution,String> {
 
     Optional<Solution> findByPaperIdAndStudentId(String paperId, String name);
+
+    List<Solution> findByPaperId(String paperId);
 }

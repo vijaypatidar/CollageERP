@@ -2,6 +2,7 @@ package com.svceindore.examservice.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 /**
  * Created by Vijay Patidar

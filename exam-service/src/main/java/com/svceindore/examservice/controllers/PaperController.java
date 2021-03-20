@@ -3,6 +3,7 @@ package com.svceindore.examservice.controllers;
 import com.svceindore.examservice.configs.Roles;
 import com.svceindore.examservice.models.ExamDetail;
 import com.svceindore.examservice.models.Paper;
+import com.svceindore.examservice.models.Question;
 import com.svceindore.examservice.models.Solution;
 import com.svceindore.examservice.repositories.ExamRepository;
 import com.svceindore.examservice.repositories.PaperRepository;
@@ -73,14 +74,14 @@ public class PaperController {
 
             Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
-            for (GrantedAuthority authority:authorities){
-                if (authority.getAuthority().equals(Roles.ROLE_FACULTY)){
-                    isAdmin=true;
+            for (GrantedAuthority authority : authorities) {
+                if (authority.getAuthority().equals(Roles.ROLE_FACULTY)) {
+                    isAdmin = true;
                     break;
                 }
             }
 
-            if (examDetail.getScheduledOn().getTime() <= new Date().getTime()||isAdmin) {
+            if (examDetail.getScheduledOn().getTime() <= new Date().getTime() || isAdmin) {
 
                 Query query = new Query();
                 query.fields().exclude("answers");
@@ -105,7 +106,6 @@ public class PaperController {
         }
     }
 
-    @RolesAllowed(Roles.ROLE_FACULTY)
     public ResponseEntity<?> createOrUpdatePaper(Paper paper, boolean create) {
         JSONObject res = new JSONObject();
         if (isNullOrEmpty(paper.getId())) {
@@ -122,6 +122,13 @@ public class PaperController {
 
         Optional<ExamDetail> optionalExamDetail = examRepository.findById(paper.getId());
         if (optionalExamDetail.isPresent() && optionalExamDetail.get().isOnlineMode()) {
+
+            int mark = paper.getQuestions().stream().mapToInt(Question::getMark).sum();
+            if (mark!=optionalExamDetail.get().getTotalMark()){
+                res.appendField("status", false);
+                res.appendField("message", "Sum of mark is not equal to total mark declared in exam detail.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(res.toJSONString());
+            }
             if (create && paperRepository.findById(paper.getId()).isPresent()) {
                 res.appendField("status", false);
                 res.appendField("message", "Paper already exists with this id.");
@@ -201,12 +208,9 @@ public class PaperController {
         Optional<ExamDetail> optional = examRepository.findById(paperId);
 
         if (optional.isPresent()) {
-            Query query = new Query();
-            query.addCriteria(Criteria.where("id").is(paperId));
-            Update update = new Update();
-            update.addToSet("answers").value(solution.getAnswers());
-
-            mongoTemplate.updateFirst(query, update, Paper.class);
+            Paper paper = paperRepository.findById(paperId).get();
+            paper.setAnswers(solution.getAnswers());
+            paperRepository.save(paper);
 
             JSONObject res = new JSONObject();
             res.appendField("status", true);
