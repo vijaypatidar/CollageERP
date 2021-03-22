@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<div class="row my-3 g-2">
+    <div class="col-md-3">
+        <label for="courseSelection">Select Course</label>
+        <select class="form-select" id="courseSelection" onchange="loadBranches(this.value);loadSubjects(this.value)">
+            <option value="">Choose course</option>
+            <option th:each="course : ${#request.getAttribute('courses')}" th:value="${course.id}"
+                    th:selected="${course.id==courseId}" th:text="${course.name}">
+            </option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="branchSelection">Select Branch</label>
+        <select class="form-select" id="branchSelection">
+            <option value="">Select branch</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="sessionSelection">Select Session</label>
+        <select class="form-select" id="sessionSelection">
+            <option value="">Select session</option>
+            <option th:each="s : ${#request.getAttribute('sessions')}" th:value="${s.id}"
+                    th:selected="${s.id==sessionId}" th:text="${s.name}">
+            </option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label></label>
+        <button class="btn btn-outline-success w-100" onclick="fetchTimeTableOld()">Fetch</button>
+    </div>
+</div>

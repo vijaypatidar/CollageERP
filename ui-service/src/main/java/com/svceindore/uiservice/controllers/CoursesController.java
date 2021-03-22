@@ -3,6 +3,8 @@ package com.svceindore.uiservice.controllers;
 import com.svceindore.uiservice.clients.CourseClient;
 import com.svceindore.uiservice.model.course.*;
 import com.svceindore.uiservice.model.exam.ExamDetail;
+import com.svceindore.uiservice.model.timetables.Time;
+import com.svceindore.uiservice.model.timetables.TimeTable;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -167,9 +172,61 @@ public class CoursesController {
     }
 
     @GetMapping("/view-time-table.html")
-    public String getViewTimeTablePage(Model model) {
+    public String getViewTimeTablePage(Model model, @RequestParam(required = false, defaultValue = "") String courseId,
+                                       @RequestParam(required = false, defaultValue = "") String branchId,
+                                       @RequestParam(required = false, defaultValue = "") String sessionId) {
         model.addAttribute("sessions", courseClient.getSessions());
         model.addAttribute("courses", courseClient.getCourses());
+
+        System.out.println("=======================");
+        if(courseId.isEmpty()||branchId.isEmpty()||sessionId.isEmpty()){
+
+        }else {
+            model.addAttribute("courseId",courseId);
+            model.addAttribute("branchId",branchId);
+            model.addAttribute("sessionId",sessionId);
+            model.addAttribute("branches",courseClient.getBranches(courseId));
+
+            try{
+
+                ResponseEntity<TimeTable> entity = restTemplate.getForEntity("lb://course-service//api/course/timeTable?courseId="+courseId+"&branchId="+branchId+"&sessionId=" + sessionId , TimeTable.class);
+                TimeTable timeTable = entity.getBody();
+                if (entity.getStatusCodeValue()==200&&timeTable!=null){
+                    List<List<String>> lectures = timeTable.getLectures();
+                    Subject[] subjects = courseClient.getSubjects(courseId);
+                    Map<String,String> map = new HashMap<>();
+                    for (Subject subject:subjects){
+                        map.put(subject.getId(),subject.getId()+"("+subject.getName()+")");
+                    }
+                    String[][] time = new String[timeTable.getLectures().get(0).size()][7];
+                    for (int d=0;d<6;d++){
+                        List<String> lecture = lectures.get(d);
+                        for (int i=0;i<time.length;i++){
+                            time[i][d+1]=map.get(lecture.get(i));
+                        }
+                    }
+
+                    List<Time> times = timeTable.getTime();
+                    for (int i=0;i<time.length;i++) {
+                        time[i][0] = times.get(i).getStart()+"-"+times.get(i).getEnd();
+                    }
+
+
+                    for (String[] ss:time){
+                        for (String si:ss){
+                            System.out.print(si+"   ");
+                        }
+                        System.out.println();
+                    }
+
+                    model.addAttribute("timeTable",time);
+                }
+            }catch (Exception e){
+
+                e.printStackTrace();
+            }
+
+        }
         return "view-time-table";
     }
 }

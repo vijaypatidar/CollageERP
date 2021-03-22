@@ -49,6 +49,15 @@ function loadBranchListOptions(courseId, callback) {
     });
 }
 
+function onCourseSelectionChange(courseSelection,branchSelectionId) {
+    const branchSelection = document.getElementById(branchSelectionId);
+    branchSelection.innerHTML = "<option value=''>Select branch</option>";
+
+    loadBranchListOptions(courseSelection, (options) => {
+        branchSelection.innerHTML = options;
+    });
+}
+
 function loadSessionList(callback) {
     const http = new XMLHttpRequest();
     http.open("GET", "/api/course/session");
