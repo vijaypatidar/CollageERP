@@ -24,4 +24,24 @@ public class Time {
                 ", end='" + end + '\'' +
                 '}';
     }
+
+    public String inAmPm(String time) {
+        String[] split = time.split(":");
+        int h = Integer.parseInt(split[0]);
+        int m = Integer.parseInt(split[1]);
+        String res = "";
+        boolean am = false;
+        if (h >= 13)
+            h = h - 12;
+        else am = true;
+
+        if (h <= 9) res = res + "0";
+        res = res + h + ":";
+
+        if (m <= 9) res = res + "0";
+        res += m+(am?"AM":"PM");
+
+        return res;
+    }
+
 }

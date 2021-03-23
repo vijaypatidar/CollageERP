@@ -47,7 +47,6 @@ public class ResultControllers {
             if (examDetail.getScheduledOn().getTime()+examDetail.getDuration()*60000L < new Date().getTime()) {
                 examDetail.setResultDeclared(true);
                 if (examDetail.isOnlineMode()) {
-                    solutionRepository.findByPaperId(examId);
                     Optional<Paper> optionalPaper = paperRepository.findById(examId);
                     if (optionalPaper.isPresent()&&(optionalPaper.get().getAnswers()!=null)){
                         Paper paper = optionalPaper.get();

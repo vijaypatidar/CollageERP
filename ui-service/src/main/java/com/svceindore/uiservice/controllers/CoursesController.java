@@ -178,7 +178,6 @@ public class CoursesController {
         model.addAttribute("sessions", courseClient.getSessions());
         model.addAttribute("courses", courseClient.getCourses());
 
-        System.out.println("=======================");
         if(courseId.isEmpty()||branchId.isEmpty()||sessionId.isEmpty()){
 
         }else {
@@ -208,15 +207,8 @@ public class CoursesController {
 
                     List<Time> times = timeTable.getTime();
                     for (int i=0;i<time.length;i++) {
-                        time[i][0] = times.get(i).getStart()+"-"+times.get(i).getEnd();
-                    }
-
-
-                    for (String[] ss:time){
-                        for (String si:ss){
-                            System.out.print(si+"   ");
-                        }
-                        System.out.println();
+                        Time t = times.get(i);
+                        time[i][0] = t.inAmPm(t.getStart())+"-"+t.inAmPm(t.getEnd());
                     }
 
                     model.addAttribute("timeTable",time);

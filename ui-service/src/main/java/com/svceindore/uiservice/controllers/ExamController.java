@@ -94,13 +94,13 @@ public class ExamController {
     }
 
     @GetMapping("/view-exam-for-enrolled-courses.html")
-    public String getViewExamsForEnrolledCoursePage(Model model) {
+    public String getViewExamsForEnrolledCoursePage(Model model,@RequestParam(required = false,defaultValue = "-1") int semester) {
 
-        ResponseEntity<ExamDetail[]> entity3 = restTemplate.getForEntity("lb://exam-service/api/exam/my-exams", ExamDetail[].class);
-        model.addAttribute("courses", courseClient.getCourses());
+        System.out.println(semester);
+        ResponseEntity<ExamDetail[]> entity3 = restTemplate.getForEntity("lb://exam-service/api/exam/my-exams?semester="+semester, ExamDetail[].class);
         model.addAttribute("exams", entity3.getBody());
         model.addAttribute("semesters",courseClient.getSemesters());
-        model.addAttribute("semester",5);
+        model.addAttribute("semester",semester);
         return "view-exam-for-enrolled-courses";
     }
 
