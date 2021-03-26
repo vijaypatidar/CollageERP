@@ -41,6 +41,44 @@ public class ResultControllers {
         this.mongoTemplate = mongoTemplate;
     }
 
+    @PostMapping("/declareOfflineResult/{examId}")
+    public ResponseEntity<?> uploadMark(@PathVariable String examId, @RequestBody List<Result> results) {
+        System.out.println(results);
+        JSONObject res = new JSONObject();
+
+        Optional<ExamDetail> optional = examRepository.findById(examId);
+        if (optional.isPresent()) {
+            ExamDetail examDetail = optional.get();
+
+            if (examDetail.getScheduledOn().getTime() + examDetail.getDuration() * 60000L < new Date().getTime()) {
+                examDetail.setResultDeclared(true);
+                if (!examDetail.isOnlineMode()) {
+
+                    results.forEach(result -> {
+                        result.setExamId(examId);
+                    });
+
+                    //First delete the result of student with same exam id in case of result is reevaluated
+                    resultRepository.deleteByExamId(examId);
+                    resultRepository.insert(results);
+
+                    examRepository.save(examDetail);
+                    res.appendField("status", true);
+                    res.appendField("message", "Result declared successfully.");
+                }
+            } else {
+                res.appendField("status", false);
+                res.appendField("message", "Exam not ended yet. Result can only be declared after exam is over.");
+            }
+
+        } else {
+            res.appendField("status", false);
+            res.appendField("message", "Exam detail not found.");
+        }
+
+        return ResponseEntity.ok(res.toString());
+    }
+
     @RolesAllowed(Roles.ROLE_FACULTY)
     @PostMapping("/declare")
     public ResponseEntity<?> declareResult(@RequestParam String examId) {

@@ -2,6 +2,7 @@ package com.svceindore.uiservice.controllers;
 
 import com.svceindore.uiservice.clients.CourseClient;
 import com.svceindore.uiservice.configs.Roles;
+import com.svceindore.uiservice.model.course.Enrolled;
 import com.svceindore.uiservice.model.course.Subject;
 import com.svceindore.uiservice.model.exam.ExamDetail;
 import com.svceindore.uiservice.model.exam.Result;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Vijay Patidar
  * Date: 10/03/21
  * Time: 10:07 PM
  **/
@@ -148,7 +148,7 @@ public class ExamController {
             if (entity.getStatusCodeValue() == 200) {
                 Result[] results = entity.getBody();
                 model.addAttribute("results", results);
-                model.addAttribute("dataNotFound", results.length==0);
+                model.addAttribute("dataNotFound", results.length == 0);
             }
         } else {
             model.addAttribute("insufficientData", true);
@@ -157,4 +157,23 @@ public class ExamController {
 //        System.out.println(semesterId);
         return "view-exam-result";
     }
+
+    @GetMapping("upload-exam-marks.html")
+    public String uploadExamMarks(@RequestParam String examId, Model model) {
+        ResponseEntity<ExamDetail> entity = restTemplate.getForEntity("lb://exam-service/api/exam/exam/" + examId, ExamDetail.class);
+        if (entity.hasBody()) {
+            ExamDetail detail = entity.getBody();
+            System.out.println(detail.toString());
+            ResponseEntity<Enrolled[]> entity1 = restTemplate.getForEntity("lb://course-service/api/course/enrolledStudents?courseId="
+                    + detail.getCourseId()
+                    + "&branchId=" + detail.getBranchId()
+                    + "&sessionId=" + detail.getSessionId()
+                    + "&semester=" + detail.getSemester(), Enrolled[].class);
+
+            model.addAttribute("examDetail", detail);
+            model.addAttribute("enrolls", entity1.getBody());
+        }
+        return "upload-exam-marks";
+    }
+
 }

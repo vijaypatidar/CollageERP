@@ -28,4 +28,14 @@ public class Result {
     private boolean present;
     private int markObtain;
 
+    @Override
+    public String toString() {
+        return "Result{" +
+                "id='" + id + '\'' +
+                ", examId='" + examId + '\'' +
+                ", studentId='" + studentId + '\'' +
+                ", present=" + present +
+                ", markObtain=" + markObtain +
+                '}';
+    }
 }

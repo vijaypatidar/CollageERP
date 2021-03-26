@@ -24,4 +24,22 @@ public class ExamDetail {
     private boolean resultDeclared;
     private int totalMark;
     private String sessionId;
+
+    @Override
+    public String toString() {
+        return "ExamDetail{" +
+                "id='" + id + '\'' +
+                ", courseId='" + courseId + '\'' +
+                ", branchId='" + branchId + '\'' +
+                ", title='" + title + '\'' +
+                ", subjectId='" + subjectId + '\'' +
+                ", semester=" + semester +
+                ", duration=" + duration +
+                ", scheduledOn=" + scheduledOn +
+                ", onlineMode=" + onlineMode +
+                ", resultDeclared=" + resultDeclared +
+                ", totalMark=" + totalMark +
+                ", sessionId='" + sessionId + '\'' +
+                '}';
+    }
 }
