@@ -122,6 +122,7 @@ public class ExamController {
     public String getViewTimeTablePage(Model model, @RequestParam(required = false, defaultValue = "") String courseId,
                                        @RequestParam(required = false, defaultValue = "") String branchId,
                                        @RequestParam(required = false, defaultValue = "") String sessionId,
+                                       @RequestParam(required = false, defaultValue = "") String subjectId,
                                        @RequestParam(required = false, defaultValue = "-1") int semesterId) {
 
         model.addAttribute("sessions", courseClient.getSessions());
@@ -131,9 +132,13 @@ public class ExamController {
         model.addAttribute("courseId", courseId)
                 .addAttribute("branchId", branchId)
                 .addAttribute("sessionId", sessionId)
-                .addAttribute("semesterId", semesterId);
+                .addAttribute("semesterId", semesterId)
+                .addAttribute("subjectId", subjectId);
 
-        if (!courseId.isEmpty()) model.addAttribute("branches", courseClient.getBranches(courseId));
+        if (!courseId.isEmpty()) {
+            model.addAttribute("branches", courseClient.getBranches(courseId));
+            model.addAttribute("subjects", courseClient.getSubjects(courseId));
+        }
 
         if (!courseId.isEmpty() && !branchId.isEmpty() && !sessionId.isEmpty() && semesterId != -1) {
             ResponseEntity<Result[]> entity = restTemplate.getForEntity(
@@ -141,6 +146,7 @@ public class ExamController {
                             + "courseId=" + courseId
                             + "&branchId=" + branchId
                             + "&sessionId=" + sessionId
+                            + "&subjectId=" + subjectId
                             + "&semesterId=" + semesterId,
                     Result[].class
             );
@@ -158,7 +164,7 @@ public class ExamController {
         return "view-exam-result";
     }
 
-    @GetMapping("upload-exam-marks.html")
+    @GetMapping("/upload-exam-marks.html")
     public String uploadExamMarks(@RequestParam String examId, Model model) {
         ResponseEntity<ExamDetail> entity = restTemplate.getForEntity("lb://exam-service/api/exam/exam/" + examId, ExamDetail.class);
         if (entity.hasBody()) {

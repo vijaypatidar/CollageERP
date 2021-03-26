@@ -153,6 +153,7 @@ public class ResultControllers {
     public List<ResultRest> getResults(@RequestParam(required = false, defaultValue = "") String courseId,
                                        @RequestParam(required = false, defaultValue = "") String branchId,
                                        @RequestParam(required = false, defaultValue = "") String sessionId,
+                                       @RequestParam(required = false, defaultValue = "") String subjectId,
                                        @RequestParam(required = false, defaultValue = "-1") int semesterId
             , Principal principal) {
 
@@ -172,6 +173,9 @@ public class ResultControllers {
                 .and("branchId").is(branchId)
                 .and("sessionId").is(sessionId)
                 .and("semester").is(semesterId);
+
+        if (!subjectId.isEmpty()) criteria.and("subjectId").is(subjectId);
+
         query.addCriteria(criteria);
         List<ExamDetail> examDetails = mongoTemplate.find(query, ExamDetail.class);
         String username = principal.getName();

@@ -56,6 +56,11 @@ function onCourseSelectionChange(courseSelection,branchSelectionId) {
     loadBranchListOptions(courseSelection, (options) => {
         branchSelection.innerHTML = options;
     });
+
+    loadSubjectListOptions(courseSelection,function (options){
+        console.log(options)
+        document.getElementById("subjectSelection").innerHTML=options;
+    })
 }
 
 function loadSessionList(callback) {
