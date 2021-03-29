@@ -3,9 +3,9 @@ package com.svceindore.userservice.client;
 import com.svceindore.userservice.model.Faculty;
 import com.svceindore.userservice.model.Student;
 import com.svceindore.userservice.model.User;
+import com.svceindore.userservice.repositories.UserRepository;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,15 +26,18 @@ public class KeycloakClient {
     private String defaultPassword;
     private final String realm;
     private final Keycloak keycloak;
+    private final UserRepository userRepository;
+
     Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     public KeycloakClient(
             @Value("${keycloak.auth-server-url:http://localhost:8180/auth}") String serverUrl,
             @Value("${keycloak.realm:CollageERP}") String realm,
             @Value("${env.MANAGE_USER_USERNAME:admin}") String username,
-            @Value("${env.MANAGE_USER_PASSWORD:root}") String password
-    ) {
+            @Value("${env.MANAGE_USER_PASSWORD:root}") String password,
+            UserRepository userRepository) {
         this.realm = realm;
+        this.userRepository = userRepository;
         String clientId = "admin-cli";
         this.keycloak = Keycloak.getInstance(
                 serverUrl,
@@ -70,6 +73,9 @@ public class KeycloakClient {
         logger.info("Create account request " + user.toString() + " Password " + defaultPassword);
         try {
             Response response = keycloak.realm(realm).users().create(userRepresentation);
+            if (response.getStatus()==201){
+                userRepository.insert(user);
+            }
             logger.info("Response: " + response.getStatus());
             return response;
         } catch (Exception e) {
@@ -101,13 +107,7 @@ public class KeycloakClient {
         if (search.isEmpty()){
             throw new NotFoundException("User not found with username = "+username);
         }else {
-            UserRepresentation userRepresentation = search.get(0);
-            return new User(
-                    userRepresentation.getUsername(),
-                    userRepresentation.getEmail(),
-                    userRepresentation.getFirstName(),
-                    userRepresentation.getLastName()
-            );
+            return userRepository.findById(username).get();
         }
     }
 

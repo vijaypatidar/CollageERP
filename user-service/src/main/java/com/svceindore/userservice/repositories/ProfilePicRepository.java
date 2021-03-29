@@ -1,4 +1,4 @@
-package com.svceindore.userservice;
+package com.svceindore.userservice.repositories;
 
 import com.svceindore.userservice.model.ProfilePicture;
 import org.springframework.data.mongodb.repository.MongoRepository;

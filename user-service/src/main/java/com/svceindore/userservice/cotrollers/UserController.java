@@ -39,6 +39,7 @@ public class UserController {
         if (re.getStatus() == 201) {
             response.appendField("status", true);
             response.appendField("message", "User account created successfully.");
+            response.appendField("redirect","courses/enroll-student-in-course.html?studentUsername="+student.getUsername());
             return ResponseEntity.status(HttpStatus.CREATED).body(response.toString());
         } else if (re.getStatus() == 409) {
             response.appendField("status", false);

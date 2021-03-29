@@ -28,7 +28,9 @@ public class StudentController {
     public String createStudentAccount(HttpServletRequest request) {
         request.setAttribute("states", dataUtils.getStates());
         request.setAttribute("countries", dataUtils.getCountries());
-        return "create-student-account";
+        request.setAttribute("formTitle","Student Registration");
+        request.setAttribute("url","/api/user/createStudent");
+        return "create-user-account";
     }
 
 

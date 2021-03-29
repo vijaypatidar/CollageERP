@@ -1,6 +1,6 @@
 package com.svceindore.userservice.cotrollers;
 
-import com.svceindore.userservice.ProfilePicRepository;
+import com.svceindore.userservice.repositories.ProfilePicRepository;
 import com.svceindore.userservice.configs.Roles;
 import com.svceindore.userservice.model.ProfilePicture;
 import net.minidev.json.JSONObject;

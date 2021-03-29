@@ -21,9 +21,11 @@ public class FacultyController {
     @RolesAllowed({Roles.ROLE_ADMIN})
     @RequestMapping({"/create-faculty-account.html", "/create-faculty-account"})
     public String createStudentAccount(HttpServletRequest request) {
-        request.setAttribute("states",dataUtils.getStates());
-        request.setAttribute("countries",dataUtils.getCountries());
-        return "create-faculty-account";
+        request.setAttribute("states", dataUtils.getStates());
+        request.setAttribute("countries", dataUtils.getCountries());
+        request.setAttribute("formTitle","Faculty Registration");
+        request.setAttribute("url","/api/user/createFaculty");
+        return "create-user-account";
     }
 
 }
