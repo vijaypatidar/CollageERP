@@ -6,6 +6,11 @@ import com.svceindore.examservice.models.rest.Enrolled;
 import com.svceindore.examservice.repositories.ExamRepository;
 import net.minidev.json.JSONObject;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +31,11 @@ public class ExamController {
     private final KeycloakRestTemplate restTemplate;
     private final ExamRepository examRepository;
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
-
-    public ExamController(KeycloakRestTemplate restTemplate, ExamRepository examRepository) {
+    private final MongoTemplate mongoTemplate;
+    public ExamController(KeycloakRestTemplate restTemplate, ExamRepository examRepository, MongoTemplate mongoTemplate) {
         this.restTemplate = restTemplate;
         this.examRepository = examRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @RolesAllowed(Roles.ROLE_FACULTY)
@@ -163,13 +169,19 @@ public class ExamController {
     }
 
     @GetMapping("/my-exams")
-    public List<ExamDetail> getAllExamDetailForEnrolledCourse(Principal principal) {
+    public List<ExamDetail> getAllExamDetailForEnrolledCourse(@RequestParam(required = false,defaultValue = "-1") int semester) {
         List<ExamDetail> examDetails = new ArrayList<>();
         Enrolled[] enrolls = restTemplate.getForEntity(
                 "lb://course-service/api/course/self-enrolls", Enrolled[].class
         ).getBody();
         if (enrolls != null) for (Enrolled e : enrolls) {
-            examDetails.addAll(examRepository.findAllBySessionIdAndBranchId(e.getSessionId(),e.getBranchId()));
+            Query query = new Query();
+            Criteria criteria = Criteria.where("sessionId").is(e.getSessionId())
+                    .and("branchId").is(e.getBranchId());
+
+            if (semester!=-1)criteria.and("semester").is(semester);
+            query.addCriteria(criteria);
+            examDetails.addAll(mongoTemplate.find(query, ExamDetail.class));
         }
 
         return examDetails;

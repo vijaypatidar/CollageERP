@@ -1,60 +1,67 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<style>
-    #profile-container{
-        width: 400px;
-        background: white;
-        display: inline-block;
-        margin-top: 10px;
-        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.2);
-        text-align: center;
-        padding: 20px;
-    }
-    #profile-container:hover{
-        box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
-    }
-    table td:first-child{
-        text-align: right;
-    }
-    table td:last-child{
-        text-align: left;
-    }
-    table{
-        display: inline-block;
-    }
-    body{
-        background: white;
-        text-align: center;
-    }
-</style>
 <body>
-    <div id="profile-container" th:fragment="user-profile">
-        <table>
-            <tr>
-                <td>
-                    Name:
-                </td>
-                <td th:text="${#authentication.name}">
-                    vijay
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Username:
-                </td>
-                <td>
-                    vijay31
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Email:
-                </td>
-                <td th:text="${#authentication.name}">
-                    vijay@gmail.com
-                </td>
-            </tr>
-        </table>
+    <div class="container my-3">
+        <div class="row">
+            <div class="col-8 offset-2">
+                <div class="mb-3 row">
+                    <div class="col-4 offset-4">
+                        <img id="profileImg" style="border-radius: 50%;"
+                             height="250px"
+                             width="250px"
+                             th:src="${'/api/user/photos/profile/'+username}" alt="#">
+
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="name" class="col-sm-2 col-form-label">Username</label>
+                    <div class="col-sm-10">
+                        <input type="text" readonly required class="form-control" th:value="${user.username}" name="name" id="name">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="url" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" required class="form-control" th:value="${user.firstName+' '+user.lastName}" name="url" id="url">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="email" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="text" required class="form-control" th:value="${user.email}" name="email" id="email">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="mobile" class="col-sm-2 col-form-label">Mobile</label>
+                    <div class="col-sm-10">
+                        <input type="text" required class="form-control" th:value="${user.mobile}" name="mobile" id="mobile">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="address" class="col-sm-2 col-form-label">Address</label>
+                    <div class="col-sm-10">
+                        <input type="text" required class="form-control" th:value="${user.address.address}" id="address">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="state" class="col-sm-2 col-form-label">State</label>
+                    <div class="col-sm-10">
+                        <input type="text" required class="form-control" th:value="${user.address.state}" id="state">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="zip" class="col-sm-2 col-form-label">Zip code</label>
+                    <div class="col-sm-10">
+                        <input type="text" required class="form-control" th:value="${user.address.zip}" id="zip">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <button class="btn btn-outline-success" th:attr="onclick=|loadPageInContentDiv('user/edit-profile-picture-page.html?username=${username}')|">Change Profile Picture</button>
+                </div>
+            </div>
+
+        </div>
     </div>
 </body>
 </html>

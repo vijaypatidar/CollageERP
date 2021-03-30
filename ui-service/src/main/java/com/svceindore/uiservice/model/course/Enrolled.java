@@ -30,4 +30,20 @@ public class Enrolled {
     private String studentUsername;
     private Date enrollmentDate;
 
+    @Override
+    public String toString() {
+        return "Enrolled{" +
+                "id='" + id + '\'' +
+                ", courseId='" + courseId + '\'' +
+                ", branchId='" + branchId + '\'' +
+                ", sessionId='" + sessionId + '\'' +
+                ", courseName='" + courseName + '\'' +
+                ", branchName='" + branchName + '\'' +
+                ", sessionName='" + sessionName + '\'' +
+                ", currentSemester=" + currentSemester +
+                ", studentName='" + studentName + '\'' +
+                ", studentUsername='" + studentUsername + '\'' +
+                ", enrollmentDate=" + enrollmentDate +
+                '}';
+    }
 }

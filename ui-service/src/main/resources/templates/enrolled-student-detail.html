@@ -43,7 +43,7 @@
             <table class="table table-bordered rounded shadow-sm">
                 <thead class="table-dark">
                 <tr>
-                    <th>
+                    <th >
                         Username
                     </th>
                     <th>
@@ -62,7 +62,7 @@
                 </thead>
                 <tbody>
                 <tr class="align-middle" th:each="enroll : ${#request.getAttribute('enrolls')}">
-                    <td th:text="${enroll.studentUsername}"></td>
+                    <td th:attr="onclick=|loadPageInContentDiv('user/view-profile.html?username=${enroll.studentUsername}')|" th:text="${enroll.studentUsername}"></td>
                     <td th:text="${enroll.studentName}"></td>
                     <td th:text="${enroll.courseId}"></td>
                     <td th:text="${enroll.branchId}"></td>

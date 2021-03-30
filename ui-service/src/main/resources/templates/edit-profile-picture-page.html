@@ -21,7 +21,7 @@
         <div th:replace="fragments/default-alerts"></div>
         <div class="col-12">
             <form class="needs-validation" name="profilePicForm"
-                  onsubmit="uploadProfilePic();return false;">
+                  th:attr="onsubmit=|uploadProfilePic('${username}');return false;|">
                 <div class="row align-items-center">
                     <div class="col-4 border-end">
                         <img id="profileImg" style="border-radius: 50%;"
@@ -43,11 +43,11 @@
         </div>
     </div>
     <script>
-        function uploadProfilePic() {
+        function uploadProfilePic(username) {
             let data = new FormData();
             data.append("file", document.getElementById("profileFile").files[0]);
             let http = new XMLHttpRequest();
-            http.open("POST", "/api/user/photos/profile/update");
+            http.open("POST", "/api/user/photos/profile/update/"+username);
             http.onload = function () {
                 defaultResponseHandler(JSON.parse(this.responseText),this.status);
             }

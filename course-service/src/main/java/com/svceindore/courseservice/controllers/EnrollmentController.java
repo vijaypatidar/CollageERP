@@ -112,11 +112,14 @@ public class EnrollmentController {
     @GetMapping("/enrolledStudents")
     public List<Enrolled> getEnrolledStudents(@RequestParam(required = false, defaultValue = "") String courseId,
                                               @RequestParam(required = false, defaultValue = "") String branchId,
-                                              @RequestParam(required = false, defaultValue = "") String sessionId) {
+                                              @RequestParam(required = false, defaultValue = "") String sessionId,
+                                              @RequestParam(required = false, defaultValue = "-1") int semester) {
         Query query = new Query();
         Criteria criteria = new Criteria();
 
         if (!sessionId.isEmpty()) criteria.and("sessionId").is(sessionId);
+
+        if (semester!=-1) criteria.and("currentSemester").is(semester);
 
         if (!courseId.isEmpty()) {
             criteria.and("courseId").is(courseId);

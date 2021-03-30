@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div class="container">
@@ -10,9 +10,9 @@
 
     <div class="row my-3 g-2">
         <div class="col-md-3 offset-md-6">
-            <label for="sessionSelection">Select Session</label>
-            <select class="form-select" id="sessionSelection">
-                <option value="">Select session</option>
+            <label for="semesterSelection">Select Semester</label>
+            <select class="form-select" id="semesterSelection">
+                <option selected value="-1">All</option>
                 <option th:each="s : ${#request.getAttribute('semesters')}" th:value="${s.id}"
                         th:selected="${s.id==semester}" th:text="${s.name}">
                 </option>
@@ -20,7 +20,7 @@
         </div>
         <div class="col-md-3">
             <label></label>
-            <button class="btn btn-outline-success w-100" onclick="fetchList()">Get List</button>
+            <button class="btn btn-outline-success w-100" onclick="fetchListEnrolled()">Get List</button>
         </div>
     </div>
     <div class="row">
@@ -59,7 +59,7 @@
                     <td th:text="${#dates.format(exam.scheduledOn, 'dd-MMM-yyyy')}"></td>
                     <td th:text="${#dates.format(exam.scheduledOn, 'HH:mm a')}"></td>
                     <td th:text="${exam.totalMark}"></td>
-                    <td th:if="${exam.onlineMode}" class="text-success">Online
+                    <td th:if="${exam.onlineMode}" class="text-success align-middle">Online
                         <a class="btn btn-sm btn-outline-success"
                         th:href="${'/exam/online/start-exam?examId='+exam.id}"
                         target="_blank">LAUNCH</a>
@@ -83,12 +83,10 @@
         });
     }
 
-    function fetchList() {
-        let courseSelection = document.getElementById("courseSelection").value;
-        let branchSelection = document.getElementById("branchSelection").value;
-        let sessionSelection = document.getElementById("sessionSelection").value;
-        let url = "exams/view-all-exams.html?"
-        url += "courseId=" + courseSelection + "&branchId=" + branchSelection + "&sessionId=" + sessionSelection;
+    function fetchListEnrolled() {
+        let semesterSelection = document.getElementById("semesterSelection").value;
+        let url = "exams/view-exam-for-enrolled-courses.html?"
+        url += "semester="+semesterSelection;
         loadPageInContentDiv(url)
     }
 </script>

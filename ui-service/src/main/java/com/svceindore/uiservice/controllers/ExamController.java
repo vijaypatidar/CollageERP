@@ -2,7 +2,12 @@ package com.svceindore.uiservice.controllers;
 
 import com.svceindore.uiservice.clients.CourseClient;
 import com.svceindore.uiservice.configs.Roles;
+import com.svceindore.uiservice.model.course.Enrolled;
+import com.svceindore.uiservice.model.course.Subject;
 import com.svceindore.uiservice.model.exam.ExamDetail;
+import com.svceindore.uiservice.model.exam.Result;
+import com.svceindore.uiservice.model.timetables.Time;
+import com.svceindore.uiservice.model.timetables.TimeTable;
 import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Created by Vijay Patidar
  * Date: 10/03/21
  * Time: 10:07 PM
  **/
@@ -40,8 +47,8 @@ public class ExamController {
 
     @GetMapping("/edit-exam-detail.html")
     public String getEditExamPage(Model model, @RequestParam String examDetailId) {
-        ExamDetail examDetail = restTemplate.getForEntity("lb://exam-service/api/exam/exam/"+examDetailId,ExamDetail.class).getBody();
-        model.addAttribute("examDetail",examDetail);
+        ExamDetail examDetail = restTemplate.getForEntity("lb://exam-service/api/exam/exam/" + examDetailId, ExamDetail.class).getBody();
+        model.addAttribute("examDetail", examDetail);
         model.addAttribute("courses", courseClient.getCourses());
         model.addAttribute("subjects", courseClient.getSubjects(examDetail.getCourseId()));
         model.addAttribute("branches", courseClient.getBranches(examDetail.getCourseId()));
@@ -74,8 +81,8 @@ public class ExamController {
 
     @GetMapping("/declare-exams-result.html")
     public String getDeclareExamsResultPage(Model model, @RequestParam(required = false, defaultValue = "") String courseId,
-                                      @RequestParam(required = false, defaultValue = "") String branchId,
-                                      @RequestParam(required = false, defaultValue = "") String sessionId) {
+                                            @RequestParam(required = false, defaultValue = "") String branchId,
+                                            @RequestParam(required = false, defaultValue = "") String sessionId) {
 
         ResponseEntity<ExamDetail[]> entity3 = restTemplate.getForEntity("lb://exam-service/api/exam/exams?courseId=" + courseId + "&branchId=" + branchId + "&sessionId=" + sessionId, ExamDetail[].class);
         model.addAttribute("courseId", courseId);
@@ -94,20 +101,85 @@ public class ExamController {
     }
 
     @GetMapping("/view-exam-for-enrolled-courses.html")
-    public String getViewExamsForEnrolledCoursePage(Model model) {
+    public String getViewExamsForEnrolledCoursePage(Model model, @RequestParam(required = false, defaultValue = "-1") int semester) {
 
-        ResponseEntity<ExamDetail[]> entity3 = restTemplate.getForEntity("lb://exam-service/api/exam/my-exams", ExamDetail[].class);
-        model.addAttribute("courses", courseClient.getCourses());
+        System.out.println(semester);
+        ResponseEntity<ExamDetail[]> entity3 = restTemplate.getForEntity("lb://exam-service/api/exam/my-exams?semester=" + semester, ExamDetail[].class);
         model.addAttribute("exams", entity3.getBody());
-        model.addAttribute("semesters",courseClient.getSemesters());
-        model.addAttribute("semester",5);
+        model.addAttribute("semesters", courseClient.getSemesters());
+        model.addAttribute("semester", semester);
         return "view-exam-for-enrolled-courses";
     }
 
     @RolesAllowed(Roles.ROLE_ADMIN)
     @GetMapping("/create-new-paper.html")
-    public String createPaperPage(Model model,@RequestParam String paperId){
-        model.addAttribute("paperId",paperId);
+    public String createPaperPage(Model model, @RequestParam String paperId) {
+        model.addAttribute("paperId", paperId);
         return "design-new-paper";
     }
+
+    @GetMapping("/view-exam-result.html")
+    public String getViewTimeTablePage(Model model, @RequestParam(required = false, defaultValue = "") String courseId,
+                                       @RequestParam(required = false, defaultValue = "") String branchId,
+                                       @RequestParam(required = false, defaultValue = "") String sessionId,
+                                       @RequestParam(required = false, defaultValue = "") String subjectId,
+                                       @RequestParam(required = false, defaultValue = "-1") int semesterId) {
+
+        model.addAttribute("sessions", courseClient.getSessions());
+        model.addAttribute("courses", courseClient.getCourses());
+        model.addAttribute("semesters", courseClient.getSemesters());
+
+        model.addAttribute("courseId", courseId)
+                .addAttribute("branchId", branchId)
+                .addAttribute("sessionId", sessionId)
+                .addAttribute("semesterId", semesterId)
+                .addAttribute("subjectId", subjectId);
+
+        if (!courseId.isEmpty()) {
+            model.addAttribute("branches", courseClient.getBranches(courseId));
+            model.addAttribute("subjects", courseClient.getSubjects(courseId));
+        }
+
+        if (!courseId.isEmpty() && !branchId.isEmpty() && !sessionId.isEmpty() && semesterId != -1) {
+            ResponseEntity<Result[]> entity = restTemplate.getForEntity(
+                    "lb://exam-service/api/exam/results/all?"
+                            + "courseId=" + courseId
+                            + "&branchId=" + branchId
+                            + "&sessionId=" + sessionId
+                            + "&subjectId=" + subjectId
+                            + "&semesterId=" + semesterId,
+                    Result[].class
+            );
+
+            if (entity.getStatusCodeValue() == 200) {
+                Result[] results = entity.getBody();
+                model.addAttribute("results", results);
+                model.addAttribute("dataNotFound", results.length == 0);
+            }
+        } else {
+            model.addAttribute("insufficientData", true);
+        }
+
+//        System.out.println(semesterId);
+        return "view-exam-result";
+    }
+
+    @GetMapping("/upload-exam-marks.html")
+    public String uploadExamMarks(@RequestParam String examId, Model model) {
+        ResponseEntity<ExamDetail> entity = restTemplate.getForEntity("lb://exam-service/api/exam/exam/" + examId, ExamDetail.class);
+        if (entity.hasBody()) {
+            ExamDetail detail = entity.getBody();
+            System.out.println(detail.toString());
+            ResponseEntity<Enrolled[]> entity1 = restTemplate.getForEntity("lb://course-service/api/course/enrolledStudents?courseId="
+                    + detail.getCourseId()
+                    + "&branchId=" + detail.getBranchId()
+                    + "&sessionId=" + detail.getSessionId()
+                    + "&semester=" + detail.getSemester(), Enrolled[].class);
+
+            model.addAttribute("examDetail", detail);
+            model.addAttribute("enrolls", entity1.getBody());
+        }
+        return "upload-exam-marks";
+    }
+
 }

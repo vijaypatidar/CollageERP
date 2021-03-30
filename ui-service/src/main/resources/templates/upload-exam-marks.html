@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2">Upload offline exam mark</h2>
+        </div>
+    </div>
+    <form class="mb-3 needs-validation" id="uploadMarkForm" name="uploadMarkForm"
+          onsubmit="uploadMark();return false;">
+        <div th:replace="fragments/default-alerts"></div>
+        <div class="row g-2">
+            <div class="col-12">
+                <label class="form-label" for="id">Exam id</label>
+                <input class="form-control" required id="id" th:value="${examDetail.id}" name="examId" type="text" readonly>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label" for="title">Exam title</label>
+                <input class="form-control" required id="title" name="title" th:value="${examDetail.title}" readonly
+                       type="text">
+            </div>
+
+
+            <div class="col-12">
+                <label class="form-label" for="totalMark">Total marks</label>
+                <input class="form-control" required id="totalMark" th:value="${examDetail.totalMark}" name="totalMark"
+                       readonly type="number">
+            </div>
+
+            <div class="col-12">
+                <label class="form-label" for="markTable">Enter marks</label>
+                <table class="table table-bordered rounded shadow-sm" id="markTable">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>
+                            Student Username
+                        </th>
+                        <th>
+                            Mark Obtain
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="align-middle" th:each="enroll : ${#request.getAttribute('enrolls')}">
+                        <td>
+                            <input class="form-control" readonly name="usernames[]"
+                                   th:value="${enroll.studentUsername}">
+                        </td>
+                        <td>
+                            <input class="form-control" required th:max="${examDetail.totalMark}" type="number"
+                                   name="marks[]">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12">
+                <button type="submit" onclick="checkForm('#uploadMarkForm')" class="btn btn-outline-success">
+                    Upload Mark
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    function uploadMark() {
+        try {
+            const form = document.forms['uploadMarkForm'];
+            let usernames = form['usernames[]'];
+            let marks = form['marks[]'];
+            let data = [];
+            let examId = form['examId'].value;
+
+            for (let a = 0; a < usernames.length; a++) {
+                data.push({
+                    "studentId": usernames[a].value,
+                    "markObtain": marks[a].value,
+                    "present":true
+                })
+            }
+            console.log(data);
+            let http = new XMLHttpRequest();
+            http.open("POST","/api/exam/results/declareOfflineResult/"+examId,true);
+            http.setRequestHeader("Content-type","application/json");
+            http.onload = function (){
+                defaultResponseHandler(JSON.parse(this.responseText),this.status);
+            }
+            http.send(JSON.stringify(data));
+        } catch (e) {
+            console.log(e)
+        }
+        return false;
+    }
+</script>
+</body>
+
+</html>

@@ -13,15 +13,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class ProfilePicture {
     @Id
-    private String id;
+    private String username;
     private Binary image;
 
-    public String getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Binary getImage() {

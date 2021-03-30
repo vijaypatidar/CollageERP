@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div class="container">
+    <div class="row my-3  align-items-center">
+        <div class="col-6">
+            <h2 class="h2">View Results</h2>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-md-3">
+            <label for="courseSelection">Select Course</label>
+            <select class="form-select" id="courseSelection"
+                    onchange="onCourseSelectionChange(this.value,'branchSelection')">
+                <option value="">Choose course</option>
+                <option th:each="course : ${#request.getAttribute('courses')}" th:value="${course.id}"
+                        th:selected="${course.id==courseId}" th:text="${course.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="branchSelection">Select Branch</label>
+            <select class="form-select" id="branchSelection">
+                <option value="">Select branch</option>
+                <option th:each="branch : ${#request.getAttribute('branches')}" th:value="${branch.id}"
+                        th:selected="${branch.id==branchId}" th:text="${branch.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="sessionSelection">Select Session</label>
+            <select class="form-select" id="sessionSelection">
+                <option value="">Select session</option>
+                <option th:each="s : ${#request.getAttribute('sessions')}" th:value="${s.id}"
+                        th:selected="${s.id==sessionId}" th:text="${s.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="sessionSelection">Select Semester</label>
+            <select class="form-select" id="semesterSelection">
+                <option value="-1">All semester</option>
+                <option th:each="s : ${#request.getAttribute('semesters')}" th:value="${s.id}"
+                        th:selected="${s.id==semesterId}" th:text="${s.name}">
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label for="sessionSelection">Select Subject</label>
+            <select class="form-select" id="subjectSelection">
+                <option value="">Select subject</option>
+                <option th:each="s : ${#request.getAttribute('subjects')}" th:value="${s.id}"
+                        th:selected="${s.id==subjectId}" th:text="${s.name}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <div class="col">
+                <label></label>
+                <button class="btn btn-outline-success w-100" onclick="viewResult()">View</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div th:replace="fragments/default-alerts"></div>
+
+
+        <div th:if="${insufficientData}" class="col-12">
+            <p class="text-danger">Please select data to view results.</p>
+        </div>
+
+        <div class="col-12">
+            <table class="table table-bordered rounded shadow-sm">
+                <thead class="table-dark">
+                <tr>
+                    <th>
+                        Student Username
+                    </th>
+                    <th>
+                        Subject
+                    </th>
+                    <th>
+                        Exam Title
+                    </th>
+                    <th>
+                        Mark
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="align-middle" th:each="result : ${#request.getAttribute('results')}">
+                    <td th:text="${result.studentId}"></td>
+                    <td th:text="${result.examTitle}"></td>
+                    <td th:text="${result.examSubject}"></td>
+                    <td th:text="${result.markObtain}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${dataNotFound}" class="col-12">
+            <p class="text-info">No result found for selected data.</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script>
+    function viewResult() {
+        let courseSelection = document.getElementById("courseSelection").value;
+        let branchSelection = document.getElementById("branchSelection").value;
+        let sessionSelection = document.getElementById("sessionSelection").value;
+        let subjectSelection = document.getElementById("subjectSelection").value;
+        let semesterSelection = document.getElementById("semesterSelection").value;
+        let url = "exams/view-exam-result.html?";
+        url += `courseId=${courseSelection}&branchId=${branchSelection}&sessionId=${sessionSelection}&semesterId=${semesterSelection}&subjectId=${subjectSelection}`
+        loadPageInContentDiv(url);
+    }
+</script>
+</html>

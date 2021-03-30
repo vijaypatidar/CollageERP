@@ -16,8 +16,9 @@
     <div class="nav-item" sec:authorize="hasRole('FACULTY')"
          onclick="loadPageInContentDiv('exams/declare-exams-result.html')">Declare Result
     </div>
-    <div class="nav-item">View Result</div>
-
+    <div class="nav-item"
+         onclick="loadPageInContentDiv('exams/view-exam-result.html')">View Result
+    </div>
     <div class="nav-item-heading fw-bold">Courses</div>
     <div class="nav-item" sec:authorize="hasRole('ADMIN')"
          onclick="loadPageInContentDiv('courses/manage-courses.html')">Manage
@@ -79,7 +80,7 @@
 
 
     <div class="nav-item-heading fw-bold">Profile</div>
-    <div class="nav-item" onclick="loadPageInContentDiv('user/my-profile.html')">My Profile</div>
+    <div class="nav-item" onclick="loadPageInContentDiv('user/view-profile.html')">My Profile</div>
 
 </nav>
 
