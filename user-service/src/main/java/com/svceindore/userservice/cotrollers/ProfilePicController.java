@@ -7,6 +7,8 @@ import net.minidev.json.JSONObject;
 import org.bson.types.Binary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Collection;
 
 /**
  * Created by Vijay Patidar
@@ -32,23 +35,34 @@ public class ProfilePicController {
         this.profilePicRepository = profilePicRepository;
     }
 
-    @RolesAllowed(Roles.ROLE_ADMIN)
     @PostMapping("/profile/update/{username}")
-    public ResponseEntity<?> updateUserProfile(@RequestParam("file") MultipartFile file, @PathVariable String username) throws IOException {
+    public ResponseEntity<?> updateUserProfile(@RequestParam("file") MultipartFile file, @PathVariable String username,Principal principal) throws IOException {
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            ProfilePicture picture = new ProfilePicture();
-            picture.setImage(new Binary(file.getBytes()));
-            picture.setId(username);
-            profilePicRepository.save(picture);
-            jsonObject.appendField("status",true);
-            jsonObject.appendField("message","Profile picture updated successfully.");
-        }catch (Exception e){
-            jsonObject.appendField("status",false);
-            jsonObject.appendField("message","Unable to update profile");
+        boolean isAdmin = false;
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        for (GrantedAuthority authority : authorities) {
+            if (authority.getAuthority().equals(Roles.ROLE_ADMIN)) {
+                isAdmin = true;
+                break;
+            }
         }
-        return ResponseEntity.ok(jsonObject.toJSONString());
+        if (isAdmin||username.equals(principal.getName())){
+            JSONObject jsonObject = new JSONObject();
+            try {
+                ProfilePicture picture = new ProfilePicture();
+                picture.setImage(new Binary(file.getBytes()));
+                picture.setUsername(username);
+                profilePicRepository.save(picture);
+                jsonObject.appendField("status",true);
+                jsonObject.appendField("message","Profile picture updated successfully.");
+            }catch (Exception e){
+                jsonObject.appendField("status",false);
+                jsonObject.appendField("message","Unable to update profile");
+            }
+            return ResponseEntity.ok(jsonObject.toJSONString());
+        }else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @PostMapping("/profile/update")
@@ -61,7 +75,7 @@ public class ProfilePicController {
             }
             ProfilePicture picture = new ProfilePicture();
             picture.setImage(new Binary(file.getBytes()));
-            picture.setId(principal.getName());
+            picture.setUsername(principal.getName());
             profilePicRepository.save(picture);
             jsonObject.appendField("status",true);
             jsonObject.appendField("message","Profile picture uploaded successfully.");
