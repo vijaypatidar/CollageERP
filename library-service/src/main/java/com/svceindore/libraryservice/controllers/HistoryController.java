@@ -64,7 +64,7 @@ public class HistoryController {
         histories.forEach(history -> responses.add(new BookHistoryResponse(history)));
 
         responses.forEach(bookHistoryResponse -> {
-            Optional<BookDetail> optional = bookDetailRepository.findById(bookHistoryResponse.getBcid());
+            Optional<BookDetail> optional = bookDetailRepository.findById(bookHistoryResponse.getBid());
             optional.ifPresent(bookDetail -> bookHistoryResponse.setTitle(bookDetail.getTitle()));
         });
         return responses;
