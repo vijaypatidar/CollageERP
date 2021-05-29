@@ -143,7 +143,7 @@ public class BookController {
         if (bookOptional.isPresent()) {
             Book book = bookOptional.get();
             if (book.getIssuedTo() != null && !book.getIssuedTo().isEmpty()) {
-                History history = historyRepository.findByBidAndSubmittedOn(book.getId(), null);
+                History history = historyRepository.findByBcidAndSubmittedOn(book.getId(), null);
                 //submit book
                 book.setIssuedTo(null);
                 bookRepository.save(book);

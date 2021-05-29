@@ -15,7 +15,7 @@ import java.util.List;
 
 @Repository
 public interface HistoryRepository extends MongoRepository<History,String> {
-    History findByBidAndSubmittedOn(String bid, Date submittedOn);
+    History findByBcidAndSubmittedOn(String bid, Date submittedOn);
 
     List<History> findByIssuedTo(String issuedTo);
 }
