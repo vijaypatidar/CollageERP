@@ -1,0 +1,24 @@
+server:
+  port: 8583
+  forward-headers-strategy: framework
+  servlet:
+    context-path: "/api/accounts"
+spring:
+  application:
+    name: accounts-service
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+  data:
+    mongodb:
+      database: accounts-service
+      auto-index-creation: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+
+keycloak:
+  bearer-only: true
